@@ -4,7 +4,7 @@ import bgImage from "@/app/template1/images/menubg 1.png";
 import NavBar from "../components/NavBar";
 import MealCard from "../components/MealCard";
 import Footer from "../components/Footer";
-import food from "@/app/template1/images/Soup.png";
+import Category from "../components/Category";
 
 const menupg = () => {
   return (
@@ -36,47 +36,13 @@ const menupg = () => {
 
       {/* Right Section with Menu Items */}
       <div className="md:ml-1/2 h-screen z-10 w-full md:w-1/2 text-2xl flex flex-col gap-4 font-chillax text-white bg-[#010000] overflow-y-auto">
-        <div className="flex justify-center gap-12 text-lg sticky top-0 bg-black w-full z-40 p-4">
-          <span className="hover:cursor-pointer text-white hover:text-[#e5a23d]">
-            Starter
-          </span>
-          <span className="hover:cursor-pointer text-white hover:text-[#e5a23d]">
-            Lunch
-          </span>
-          <span className="hover:cursor-pointer text-white hover:text-[#e5a23d]">
-            Dinner
-          </span>
-          <span className="hover:cursor-pointer text-white hover:text-[#e5a23d]">
-            Drinks
-          </span>
-        </div>
-        <h1 className="text-6xl font-bol font-rose text-[#e5a23d] px-8 py-0">
-          Starters
-        </h1>
-        <MealCard
-          img={food}
-          name="Tomato Soup"
-          desc="This creamy soup is comforting, with a rich flavor profile."
-          price="4.6"
-        />
-        <h1 className=" text-6xl font-bol font-rose text-[#e5a23d] px-8 py-0 mt-5">
-          Lunch
-        </h1>
-        <MealCard
-          img={food}
-          name="Sandwich"
-          desc="This creamy soup is comforting, with a rich flavor profile."
-          price="4.6"
-        />
-        <h1 className=" text-6xl font-bol mb-4 font-rose text-[#e5a23d] px-8 py-0 mt-5">
-          Dinner
-        </h1>
-        <MealCard
-          img={food}
-          name="Tomato Soup"
-          desc="This creamy soup is comforting, with a rich flavor profile."
-          price="4.6"
-        />
+        <div className="flex justify-center gap-12 text-lg sticky top-0 bg-black w-full z-40 p-4"></div>
+
+        <Category cat="Breakfast" />
+        <Category cat="Burgers" />
+        <Category cat="Salad" />
+        <Category cat="Tea" />
+        <Category cat="Dessert" />
         <div className="flex items-center justify-center md:hidden">
           <NavBar />
         </div>

@@ -60,7 +60,7 @@ const HorizontalScrollCarousel = () => {
     {
       url: honey,
 
-      name: "Desert",
+      name: "Dessert",
 
       desc: "Natural Honey from Our Gardens",
     },
