@@ -1,6 +1,10 @@
 import React from "react";
+import { GoArrowDown } from "react-icons/go";
+interface ScrollButtonProps {
+  scrollToBottom: () => void;
+}
 
-const Hero = () => {
+const Hero: React.FC<ScrollButtonProps> = ({ scrollToBottom }) => {
   return (
     <div className="relative overflow-clip bg-black py-[72px] text-white bg-[linear-gradient(to_bottom,#000,#200d42_34%,#4f21a1_65%,#a46edb_82%)] flex flex-col items-center justify-center">
       <div className=" mt-20 flex flex-col justify-center w-full md:w-[75%]  lg:w-[65%] xl:w-[50%] relative z-10">
@@ -15,8 +19,13 @@ const Hero = () => {
           quickly, without coding expertise.
         </p>
         <div className="flex justify-center mt-8">
-          <button className="bg-white text-black px-5 py-3 font-medium rounded-lg">
-            Buy Now
+          <button
+            onClick={scrollToBottom}
+            className="bg-white flex gap-2 items-center hover:scale-110 transition-all duration-100
+           text-black px-5 py-3 font-medium rounded-lg"
+          >
+            Explore
+            <GoArrowDown />
           </button>
         </div>
       </div>

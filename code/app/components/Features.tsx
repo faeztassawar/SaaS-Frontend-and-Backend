@@ -5,10 +5,10 @@ import Feature from "./Feature";
 const features = [
   {
     title: "Admin Dashboard",
-    desc: "Providing Admin Dashboard to customize menu items, categories, and manage users efficiently",
+    desc: "Providing Dashboard to customize menu items, categories, and manage users efficiently",
   },
   {
-    title: " Add to Cart and Delivery",
+    title: "Cart and Delivery",
     desc: "Add to Cart and Delivery features let fast food customers order food from home easily",
   },
   {

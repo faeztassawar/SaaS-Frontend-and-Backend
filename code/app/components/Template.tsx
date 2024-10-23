@@ -10,7 +10,7 @@ import Image from "next/image";
 import { PiLineVerticalThin } from "react-icons/pi";
 import Link from "next/link";
 
-const Template = () => {
+const Template = React.forwardRef<HTMLDivElement>((props, ref) => {
   const [isClassic, setIsClassic] = useState(true);
   const [isFast, setIsFast] = useState(false);
   const [fadeKey, setFadeKey] = useState(0); // New state variable for fade
@@ -28,7 +28,10 @@ const Template = () => {
   };
 
   return (
-    <div className="bg-black bg-gradient-to-b from-black to-[#5d2ca8]/50 text-white flex flex-col items-center py-10">
+    <div
+      ref={ref}
+      className="bg-black bg-gradient-to-b from-black to-[#5d2ca8]/50 text-white flex flex-col items-center py-10"
+    >
       <h1 className="py-10 text-6xl font-bold">Templates</h1>
       <p className="text-sm sm:text-xl text-white/80 w-[50%] text-center">
         We offer both classic style restaurant templates and fast food
@@ -206,6 +209,6 @@ const Template = () => {
       `}</style>
     </div>
   );
-};
+});
 
 export default Template;

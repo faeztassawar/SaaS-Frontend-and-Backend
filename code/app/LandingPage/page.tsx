@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useRef } from "react";
 import Banner from "../components/Banner";
 import NavBar from "../components/NavBar";
 import Hero from "../components/Hero";
@@ -8,13 +9,18 @@ import Template from "../components/Template";
 import Faq from "../components/Faq";
 
 const LandingPage = () => {
+  const bottomSectionRef = useRef<HTMLDivElement>(null);
   return (
     <div className="">
       <NavBar />
-      <Hero />
+      <Hero
+        scrollToBottom={() =>
+          bottomSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+        }
+      />
       <LogoTicker />
       <Features />
-      <Template />
+      <Template ref={bottomSectionRef} />
       <Faq />
     </div>
   );
