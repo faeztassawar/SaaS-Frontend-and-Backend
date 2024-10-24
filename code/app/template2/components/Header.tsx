@@ -1,3 +1,5 @@
+"use client";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
@@ -7,6 +9,8 @@ interface HeaderProps {
 }
 
 const Header = ({ isAdmin }: HeaderProps) => {
+  const { data, status } = useSession();
+  console.log(data, status);
   return (
     <header className="flex justify-evenly items-center bg-[#800000] p-8">
       <Link className="text-white font-semibold text-2xl" href="">
@@ -22,12 +26,24 @@ const Header = ({ isAdmin }: HeaderProps) => {
           <Link href="/template2/editProfile">Profile</Link>
         )}
 
-        <Link
-          className="bg-white text-primaryTem2 px-8 py-2 rounded-full"
-          href=""
-        >
-          Login
-        </Link>
+        {status === "authenticated" ? (
+          <Link
+            onClick={() => signOut()}
+            className="bg-white text-primaryTem2 px-8 py-2 rounded-full"
+            href=""
+          >
+            LogOut
+          </Link>
+        ) : (
+          <Link
+            onClick={() => signIn("google")}
+            className="bg-white text-primaryTem2 px-8 py-2 rounded-full"
+            href=""
+          >
+            Login
+          </Link>
+        )}
+
         <div className="text-white">
           <Link href="/template2/Cart">
             <MdOutlineShoppingCart size={25} />

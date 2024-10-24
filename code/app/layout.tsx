@@ -4,6 +4,7 @@ import "./globals.css";
 import localfont from "next/font/local";
 import { DM_Sans } from "next/font/google";
 import { Orbitron } from "next/font/google";
+import AuthProvider from "@/lib/AuthProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -51,11 +52,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${dmSans.className} ${ob.variable} ${geistSans.variable} ${geistMono.variable} antialiased ${chillax.variable} ${rose.variable}`}
-      >
-        {children}
-      </body>
+      <AuthProvider>
+        <body
+          className={`${dmSans.className} ${ob.variable} ${geistSans.variable} ${geistMono.variable} antialiased ${chillax.variable} ${rose.variable}`}
+        >
+          {children}
+        </body>
+      </AuthProvider>
     </html>
   );
 }

@@ -137,7 +137,7 @@ const NavBar = () => {
           About Us
         </Link>
       </div>
-      
+
       <Link
         href="/template1/reservation"
         className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
