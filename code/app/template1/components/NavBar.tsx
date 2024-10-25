@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
 import { TfiMenu } from "react-icons/tfi";
 import { FaRegClock } from "react-icons/fa";
 import { GoChevronRight } from "react-icons/go";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -17,9 +19,17 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { stat } from "fs";
 
 const NavBar = () => {
+  const { data, status } = useSession();
+  console.log(status);
   const user = "admin";
+  if (status !== "authenticated") {
+    const router = useRouter();
+    router.push("/template1");
+  }
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
       <div className="text-3xl flex gap-8 items-center text-black font-chillax">
@@ -54,15 +64,19 @@ const NavBar = () => {
                   </Link>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <Link
-                  href="/template1/reservation"
-                  className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
-                >
-                  Reservation
-                  <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
-                </Link>
-              </DropdownMenuItem>
+              {status === "authenticated" ? (
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Link
+                    href="/template1/reservation"
+                    className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
+                  >
+                    Reservation
+                    <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
+                  </Link>
+                </DropdownMenuItem>
+              ) : (
+                ""
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
@@ -99,6 +113,19 @@ const NavBar = () => {
                 Home
                 <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="hover:cursor-pointer">
+              {status === "authenticated" ? (
+                <Link
+                  onClick={() => signOut()}
+                  href="/template1"
+                  className="flex py-2 justify-center text-center font-semibold items-center px-2 rounded-lg font-chillax w-full h-full  hover:bg-black hover:text-white transition duration-200 hover-chevron"
+                >
+                  Logout
+                </Link>
+              ) : (
+                ""
+              )}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -138,12 +165,22 @@ const NavBar = () => {
         </Link>
       </div>
 
-      <Link
-        href="/template1/reservation"
-        className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
-      >
-        Book a Table
-      </Link>
+      {status === "authenticated" ? (
+        <Link
+          href="/template1/reservation"
+          className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
+        >
+          Book a Table
+        </Link>
+      ) : (
+        <Link
+          href="/template1"
+          onClick={() => signIn("google")}
+          className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
+        >
+          Login to Reserve
+        </Link>
+      )}
     </div>
   );
 };
