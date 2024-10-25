@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import land from "../images/T1L.png";
 import menu from "../images/t1M.png";
 import res from "../images/T1Res.png";

@@ -1,14 +1,13 @@
 import React from "react";
-import Image from "next/image";
 import Feature from "./Feature";
 
 const features = [
   {
     title: "Admin Dashboard",
-    desc: "Providing Dashboard to customize menu items, categories, and manage users efficiently",
+    desc: "Providing Admin Dashboard to customize menu items, categories, and manage users efficiently",
   },
   {
-    title: "Cart and Delivery",
+    title: " Add to Cart and Delivery",
     desc: "Add to Cart and Delivery features let fast food customers order food from home easily",
   },
   {

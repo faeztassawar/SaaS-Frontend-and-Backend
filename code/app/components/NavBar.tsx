@@ -1,12 +1,11 @@
 import React from "react";
-import logo from "@/app/images/SLogo.png";
 import logos from "@/app/images/downloadlogo.png";
 import Image from "next/image";
 import { TfiMenu } from "react-icons/tfi";
 import Link from "next/link";
 
 const NavBar = () => {
-  let user = "loggedin";
+  const user = "loggedin";
   return (
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
       <div className="relative">

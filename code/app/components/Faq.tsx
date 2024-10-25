@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { FaMinus } from "react-icons/fa6";
-import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
 
 const items = [

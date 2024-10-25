@@ -20,7 +20,7 @@ const Feature = ({ title, desc }: { title: string; desc: string }) => {
     return () => {
       window.removeEventListener("mousemove", updateMousePosition);
     };
-  }, []);
+  }, [offsetX, offsetY]);
 
   return (
     <div
