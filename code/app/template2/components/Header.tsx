@@ -36,7 +36,12 @@ const Header = ({ isAdmin }: HeaderProps) => {
           </Link>
         ) : (
           <Link
-            onClick={() => signIn("google")}
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: "/template2",
+                oauth_token_params: { role: "USER" },
+              })
+            }
             className="bg-white text-primaryTem2 px-8 py-2 rounded-full"
             href=""
           >
