@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import T1Land from "../images/T1Land.png";
 import T1Menu from "../images/T1Menu.png";
@@ -14,10 +15,45 @@ import T2Admin from "../images/T2Admin.png";
 import Link from "next/link";
 import NavBar from "../components/NavBar";
 import LogoTicker from "../components/LogoTicker";
+import { useSession } from "next-auth/react";
 
 const Details = () => {
   const searchParams = useSearchParams();
   const template = searchParams.get("template");
+  const router = useRouter();
+  const { data, status } = useSession();
+
+  const createRestaurant = async () => {
+    console.log("buying");
+    const body = {
+      owner_email: data?.user?.email,
+      name: "nique",
+      about_us: "We serve delicious Food",
+      desc: "Great ambiance and friendly staff.",
+      timing: "9am - 9pm",
+      templateId: "1",
+    };
+    console.log("fetching");
+
+    const res = await fetch("/api/restaurant", {
+      method: "POST",
+      body: JSON.stringify({
+        owner_email: data?.user?.email,
+        name: "nique",
+        about_us: "We serve delicious Food",
+        desc: "Great ambiance and friendly staff.",
+        timing: "9am - 9pm",
+        templateId: "2",
+      }),
+    });
+
+    if (res.status === 200) {
+      const data = await res.json();
+      console.log(data);
+      console.log("success");
+      router.push(`/restaurants/${data.restaurant_id}`);
+    }
+  };
 
   return (
     <div className="w-full overflow-x-hidden">
@@ -126,6 +162,13 @@ const Details = () => {
               >
                 Preview
               </Link>
+
+              <button
+                onClick={createRestaurant}
+                className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
+              >
+                Buy
+              </button>
               <Link
                 href="/"
                 className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
@@ -238,6 +281,13 @@ const Details = () => {
                 className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
               >
                 Preview
+              </Link>
+              <Link
+                href="/template2"
+                target="_blank"
+                className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
+              >
+                Buy
               </Link>
               <Link
                 href="/"

@@ -3,9 +3,10 @@ import logos from "@/app/images/downloadlogo.png";
 import Image from "next/image";
 import { TfiMenu } from "react-icons/tfi";
 import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
 
 const NavBar = () => {
-  const user = "loggedin";
+  const { status } = useSession();
   return (
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
       <div className="relative">
@@ -34,12 +35,13 @@ const NavBar = () => {
         >
           Contact
         </Link>
-        <Link
-          href="/LandingPage/Profile"
-          className="px-5 py-3 bg-white text-black rounded-full"
-        >
-          {user === "loggedin" ? <h1>Profile</h1> : <h1>Login</h1>}
-        </Link>
+        <div className="px-5 py-3 bg-white text-black rounded-full">
+          {status === "authenticated" ? (
+            <Link href="/Profile">Profile</Link>
+          ) : (
+            <h1 onClick={() => signIn("google")}>Login</h1>
+          )}
+        </div>
       </div>
     </div>
   );

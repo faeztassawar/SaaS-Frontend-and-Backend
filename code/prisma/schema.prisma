@@ -13,51 +13,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model Item {
-//   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-//   name       String   @unique
-//   desc       String
-//   price      Float
-//   image      String?
-//   categoryId String   @db.ObjectId // categoryId should not be nullable
-//   Category   Category @relation(fields: [categoryId], references: [id])
-//   Order      Order?   @relation(fields: [Order_id], references: [order_id])
-//   Order_id   String?  @db.ObjectId
-// }
+model Item {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String   @unique
+  desc       String
+  price      Float
+  image      String?
+  categoryId String   @db.ObjectId // categoryId should not be nullable
+  Category   Category @relation(fields: [categoryId], references: [id])
+}
 
-// model Category {
-//   id     String  @id @default(auto()) @map("_id") @db.ObjectId
-//   name   String
-//   image  String?
-//   Menu   Menu?   @relation(fields: [menuId], references: [id])
-//   menuId String? @db.ObjectId
-//   Items  Item[] // A category can have multiple items
-// }
+model Category {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  image  String?
+  Menu   Menu?   @relation(fields: [menuId], references: [id])
+  menuId String? @db.ObjectId
+  Items  Item[] // A category can have multiple items
+}
 
-// model Menu {
-//   id            String     @id @default(auto()) @map("_id") @db.ObjectId
-//   restaurant_id String     @unique @db.ObjectId // Ensure restaurant_id is unique to allow only one menu per restaurant
-//   categories    Category[] // A menu has multiple categories
-// }
+model Menu {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  restaurant_id String     @unique @db.ObjectId // One-to-one relationship
+  categories    Category[] // A menu has multiple categories
+  restaurant    Restaurant @relation("RestaurantMenu", fields: [restaurant_id], references: [restaurant_id], onDelete: Cascade)
 
-// model Restaurant {
-//   restaurant_id String   @id @default(auto()) @map("_id") @db.ObjectId
-//   owner_email   String   @unique
-//   name          String
-//   cuisine       String?
-//   about_us      String
-//   desc          String
-//   Timing        String
-//   temp          Template @relation(fields: [templateId], references: [id])
-//   templateId    String   @db.ObjectId // Multiple SaasUsers can be linked to a restaurant
-// }
+  @@map("menus")
+}
 
-// model Template {
-//   id            String       @id @default(auto()) @map("_id") @db.ObjectId
-//   name          String
-//   customerCount Int
-//   Restaurant    Restaurant[]
-// }
+model User {
+  id            String      @id @default(cuid()) @map("_id")
+  name          String?
+  email         String?     @unique
+  emailVerified DateTime?   @map("email_verified")
+  restaurant    Restaurant? @relation("UserRestaurant") // Optional relation
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model Restaurant {
+  restaurant_id String   @id @default(auto()) @map("_id") @db.ObjectId
+  owner_email   String   @unique
+  name          String
+  cuisine       String?
+  about_us      String
+  desc          String
+  timing        String
+  temp          Template @relation(fields: [templateId], references: [id])
+  templateId    String
+  owner         User     @relation("UserRestaurant", fields: [owner_email], references: [email], onDelete: Cascade, onUpdate: Cascade)
+  menu          Menu?    @relation("RestaurantMenu") // A restaurant may have one menu
+
+  @@map("restaurants")
+}
+
+model Template {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  customerCount Int
+  Restaurant    Restaurant[]
+}
 
 // model User {
 //   user_id     String        @id @default(auto()) @map("_id") @db.ObjectId
@@ -126,18 +143,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
-}
-
-model User {
-  id            String    @id @default(cuid()) @map("_id")
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-
-  @@map("users")
 }
 
 model VerificationToken {

@@ -26,10 +26,10 @@ const NavBar = () => {
   const { data, status } = useSession();
   console.log(status);
   const user = "admin";
-  if (status !== "authenticated") {
-    const router = useRouter();
-    router.push("/template1");
-  }
+  // if (status !== "authenticated") {
+  //   const router = useRouter();
+  //   router.push("/template1");
+  // }
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
       <div className="text-3xl flex gap-8 items-center text-black font-chillax">
