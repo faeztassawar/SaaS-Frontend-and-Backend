@@ -23,7 +23,7 @@ const Details = () => {
   const router = useRouter();
   const { data, status } = useSession();
 
-  const createRestaurant = async () => {
+  const createRestaurant = async (template: string) => {
     console.log("buying");
     const body = {
       owner_email: data?.user?.email,
@@ -43,7 +43,7 @@ const Details = () => {
         about_us: "We serve delicious Food",
         desc: "Great ambiance and friendly staff.",
         timing: "9am - 9pm",
-        templateId: "2",
+        templateId: template,
       }),
     });
 
@@ -162,13 +162,17 @@ const Details = () => {
               >
                 Preview
               </Link>
+              {status === "authenticated" ? (
+                <button
+                  onClick={() => createRestaurant("1")}
+                  className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
+                >
+                  Buy
+                </button>
+              ) : (
+                ""
+              )}
 
-              <button
-                onClick={createRestaurant}
-                className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
-              >
-                Buy
-              </button>
               <Link
                 href="/"
                 className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
@@ -282,13 +286,12 @@ const Details = () => {
               >
                 Preview
               </Link>
-              <Link
-                href="/template2"
-                target="_blank"
+              <button
+                onClick={() => createRestaurant("2")}
                 className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
               >
                 Buy
-              </Link>
+              </button>
               <Link
                 href="/"
                 className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
