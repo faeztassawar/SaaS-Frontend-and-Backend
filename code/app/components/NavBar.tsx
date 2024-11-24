@@ -3,7 +3,7 @@ import logos from "@/app/images/downloadlogo.png";
 import Image from "next/image";
 import { TfiMenu } from "react-icons/tfi";
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const NavBar = () => {
   const { status } = useSession();
@@ -37,7 +37,7 @@ const NavBar = () => {
         </Link>
         <div className="px-5 py-3 bg-white text-black rounded-full">
           {status === "authenticated" ? (
-            <Link href="/Profile">Profile</Link>
+            <h1 onClick={() => signOut()}>Logout</h1>
           ) : (
             <h1 onClick={() => signIn("google")}>Login</h1>
           )}
