@@ -22,7 +22,11 @@ import {
 import { signIn, signOut, useSession } from "next-auth/react";
 import { stat } from "fs";
 
-const NavBar = () => {
+type NavBarProps = {
+  rest_id: string | any;
+};
+
+const NavBar = ({ rest_id }: NavBarProps) => {
   const { data, status } = useSession();
   console.log(status);
   const user = "admin";
@@ -175,7 +179,10 @@ const NavBar = () => {
       ) : (
         <Link
           href="/template1"
-          onClick={() => signIn("google")}
+          onClick={() => {
+            signIn("google");
+            document.cookie = `redirected_via=customer; rest_id=${rest_id}`;
+          }}
           className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
         >
           Login to Reserve

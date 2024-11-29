@@ -25,14 +25,6 @@ const Details = () => {
 
   const createRestaurant = async (template: string) => {
     console.log("buying");
-    const body = {
-      owner_email: data?.user?.email,
-      name: "nique",
-      about_us: "We serve delicious Food",
-      desc: "Great ambiance and friendly staff.",
-      timing: "9am - 9pm",
-      templateId: "1",
-    };
     console.log("fetching");
 
     const res = await fetch("/api/restaurant", {
@@ -43,7 +35,7 @@ const Details = () => {
         about_us: "We serve delicious Food",
         desc: "Great ambiance and friendly staff.",
         timing: "9am - 9pm",
-        templateId: template,
+        tempModel: template,
       }),
     });
 

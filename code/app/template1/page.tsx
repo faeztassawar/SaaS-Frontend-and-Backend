@@ -4,7 +4,18 @@ import Image from "next/image";
 import bgImage from "@/app/template1/images/Landing.png";
 import NavBar from "./components/NavBar";
 
-export default function Home() {
+interface Restaurant {
+  restaurant_id: string;
+  name: string;
+  about_us: string;
+  cuisine: string;
+}
+
+export default function Home({
+  restaurant,
+}: {
+  restaurant?: Restaurant | undefined;
+}) {
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       <Image
@@ -24,7 +35,7 @@ export default function Home() {
             animationDelay: "0s",
           }}
         >
-          lezzetli.
+          {restaurant?.name ?? "-"}
         </h1>
         <div className="text-white flex gap-2 md:gap-7 flex-col justify-between items-center">
           <h2
@@ -45,7 +56,7 @@ export default function Home() {
               animationDelay: "0.4s",
             }}
           >
-            France
+            {restaurant?.cuisine}
           </h1>
           <span
             className="font-chillax flex flex-wrap w-[60%] md:w-[75%] text-xl md:text-3xl text-center mx-5"
@@ -55,11 +66,12 @@ export default function Home() {
               animationDelay: "0.6s",
             }}
           >
-            a place where people cooked and served & taste a place where people
-            cooked
+            {restaurant?.about_us}
           </span>
         </div>
-        <NavBar />
+        <NavBar
+          rest_id={restaurant?.restaurant_id ? restaurant?.restaurant_id : ""}
+        />
       </div>
       <style jsx>{`
         @keyframes fadeIn {

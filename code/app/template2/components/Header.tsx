@@ -36,7 +36,12 @@ const Header = ({ isAdmin }: HeaderProps) => {
           </Link>
         ) : (
           <Link
-            onClick={() => signIn("google")}
+            onClick={() => {
+              {
+                signIn("google");
+                document.cookie = "redirected_via=customer";
+              }
+            }}
             className="bg-white text-primaryTem2 px-8 py-2 rounded-full"
             href=""
           >

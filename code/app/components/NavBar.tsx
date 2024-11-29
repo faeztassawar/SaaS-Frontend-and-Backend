@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logos from "@/app/images/downloadlogo.png";
 import Image from "next/image";
 import { TfiMenu } from "react-icons/tfi";
@@ -6,7 +6,22 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 const NavBar = () => {
-  const { status } = useSession();
+  const { data, status } = useSession();
+  const [check, setCheck] = useState();
+  //console.log(data);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `http://localhost:3000/api/session/${data?.user?.email}`
+      );
+      const jsonData = await response.json();
+      setCheck(jsonData);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
       <div className="relative">
@@ -35,11 +50,26 @@ const NavBar = () => {
         >
           Contact
         </Link>
-        <div className="px-5 py-3 bg-white text-black rounded-full">
-          {status === "authenticated" ? (
-            <h1 onClick={() => signOut()}>Logout</h1>
+        <div className="">
+          {JSON.stringify(check, null, 2) && status == "authenticated" ? (
+            <h1
+              className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
+              onClick={() => signOut()}
+            >
+              Logout
+            </h1>
           ) : (
-            <h1 onClick={() => signIn("google")}>Login</h1>
+            <h1
+              className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
+              onClick={() => {
+                {
+                  signIn("google");
+                  document.cookie = "redirected_via=owner";
+                }
+              }}
+            >
+              Login
+            </h1>
           )}
         </div>
       </div>
