@@ -8,19 +8,27 @@ import { signIn, signOut, useSession } from "next-auth/react";
 const NavBar = () => {
   const { data, status } = useSession();
   const [check, setCheck] = useState();
+  const [allowed, setAllowed] = useState(false);
   //console.log(data);
+  console.log("DATA:", data?.user?.email);
+  console.log("STATUS:", status);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `http://localhost:3000/api/session/${data?.user?.email}`
-      );
+      const email = data?.user?.email;
+      console.log("CLIENT EMAIL: ", email);
+      const response = await fetch(`/api/session/${email}`);
       const jsonData = await response.json();
       setCheck(jsonData);
+      console.log("AFTER FETCHED EMAIL: ", email);
+      console.log("AFTER FETCHED: ", check);
+      if (check != null || check != undefined) {
+        setAllowed(true);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [status]);
 
   return (
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
@@ -51,7 +59,7 @@ const NavBar = () => {
           Contact
         </Link>
         <div className="">
-          {JSON.stringify(check, null, 2) && status == "authenticated" ? (
+          {allowed && status == "authenticated" ? (
             <h1
               className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
               onClick={() => signOut()}
@@ -61,8 +69,9 @@ const NavBar = () => {
           ) : (
             <h1
               className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
-              onClick={() => {
+              onClick={async () => {
                 {
+                  await signOut({ redirect: false });
                   signIn("google");
                   document.cookie = "redirected_via=owner";
                 }

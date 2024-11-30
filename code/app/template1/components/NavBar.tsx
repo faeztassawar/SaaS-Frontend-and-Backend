@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { TfiMenu } from "react-icons/tfi";
 import { FaRegClock } from "react-icons/fa";
@@ -29,6 +28,7 @@ type NavBarProps = {
 const NavBar = ({ rest_id }: NavBarProps) => {
   const { data, status } = useSession();
   console.log(status);
+  console.log("DATA: ", data?.user);
   const user = "admin";
   // if (status !== "authenticated") {
   //   const router = useRouter();
@@ -120,13 +120,12 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             </DropdownMenuItem>
             <DropdownMenuItem className="hover:cursor-pointer">
               {status === "authenticated" ? (
-                <Link
+                <button
                   onClick={() => signOut()}
-                  href="/template1"
                   className="flex py-2 justify-center text-center font-semibold items-center px-2 rounded-lg font-chillax w-full h-full  hover:bg-black hover:text-white transition duration-200 hover-chevron"
                 >
                   Logout
-                </Link>
+                </button>
               ) : (
                 ""
               )}
@@ -177,16 +176,17 @@ const NavBar = ({ rest_id }: NavBarProps) => {
           Book a Table
         </Link>
       ) : (
-        <Link
-          href="/template1"
+        <button
           onClick={() => {
-            signIn("google");
-            document.cookie = `redirected_via=customer; rest_id=${rest_id}`;
+            {
+              signIn("google");
+              document.cookie = "redirected_via=true";
+            }
           }}
           className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
         >
           Login to Reserve
-        </Link>
+        </button>
       )}
     </div>
   );

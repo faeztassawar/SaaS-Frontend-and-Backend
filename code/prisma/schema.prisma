@@ -57,7 +57,7 @@ model RestaurantOwner {
   id            String  @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   email         String  @unique
-  userId        String
+  userId        String  @unique
   restaurant_id String?
 }
 
@@ -65,7 +65,7 @@ model RestaurantCustomer {
   id            String  @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   email         String  @unique
-  userId        String
+  userId        String  @unique
   restaurant_id String
 }
 
