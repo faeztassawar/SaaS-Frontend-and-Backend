@@ -40,7 +40,7 @@ export const POST = async (req: Request) => {
                 name: body.name,
                 about_us: body.about_us,
                 desc: 'Great ambiance and friendly staff.',
-                cuisine: "Italy",
+                cuisine: "Pakistan",
                 timing: '9am - 9pm',
                 tempModel: body.tempModel,
             }

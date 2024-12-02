@@ -176,17 +176,18 @@ const NavBar = ({ rest_id }: NavBarProps) => {
           Book a Table
         </Link>
       ) : (
-        <button
+        <h1
           onClick={() => {
             {
               signIn("google");
-              document.cookie = "redirected_via=true";
+              document.cookie = "customer=ok; path=/; SameSite=Lax";
+              document.cookie = `rest_id=${rest_id}; path=/; SameSite=Lax`;
             }
           }}
-          className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
+          className="md:text-xl text-white bg-black px-7 py-3 hover:cursor-pointer rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
         >
           Login to Reserve
-        </button>
+        </h1>
       )}
     </div>
   );

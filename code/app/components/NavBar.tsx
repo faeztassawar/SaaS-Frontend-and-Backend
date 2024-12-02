@@ -5,9 +5,16 @@ import { TfiMenu } from "react-icons/tfi";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
+type RestaurantOwner = {
+  id: String | null;
+  name: String | null;
+  email: String | null;
+  userId: String | null;
+  restaurant_id: String | null;
+};
+
 const NavBar = () => {
   const { data, status } = useSession();
-  const [check, setCheck] = useState();
   const [allowed, setAllowed] = useState(false);
   //console.log(data);
   console.log("DATA:", data?.user?.email);
@@ -19,10 +26,11 @@ const NavBar = () => {
       console.log("CLIENT EMAIL: ", email);
       const response = await fetch(`/api/session/${email}`);
       const jsonData = await response.json();
-      setCheck(jsonData);
+      console.log("JSON DATA: ", jsonData);
+      const check = jsonData;
       console.log("AFTER FETCHED EMAIL: ", email);
       console.log("AFTER FETCHED: ", check);
-      if (check != null || check != undefined) {
+      if (check) {
         setAllowed(true);
       }
     };
@@ -71,9 +79,10 @@ const NavBar = () => {
               className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
               onClick={async () => {
                 {
-                  await signOut({ redirect: false });
+                  //await signOut({ redirect: false });
                   signIn("google");
                   document.cookie = "redirected_via=owner";
+                  //document.cookie = "restaurant=rest";
                 }
               }}
             >

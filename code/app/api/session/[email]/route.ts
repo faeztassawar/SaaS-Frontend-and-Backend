@@ -18,8 +18,8 @@ export const GET = async (req: Request, { params }: { params: { email: string } 
             if (check.email == null)
                 check.email = email
         }
-
-        return NextResponse.json(check ?? null)
+        console.log("CHECK OBJECT: ", check)
+        return NextResponse.json(check)
     } catch (err) {
         console.error("Error fetching restaurant:", err);
         return NextResponse.json({ message: "Something went wrong!" }, { status: 500 });

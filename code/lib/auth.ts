@@ -27,15 +27,17 @@ const authOptions: NextAuthOptions = {
             console.log(res)
             const cookiesData = await cookies();
             const redirectedVia = cookiesData.get("redirected_via")?.value
+            const restaurant = cookiesData.get("restaurant")?.value
             const customerCall = cookiesData.get("customer")?.value
             console.log("COOKIES: ", cookiesData)
             cookiesData.delete("redirected_via");
 
             console.log("REDIRECTED VIAAAAAAAAAAAA: ", redirectedVia)
             console.log("CUSTOMER EXSITS: ", customerCall)
+            console.log("RESTAURANT EXSITS: ", restaurant)
 
-            const owner = await prisma.restaurantOwner.findFirst({ where: { userId: res.user.id } })
-            const customer = await prisma.restaurantCustomer.findFirst({ where: { userId: res.user.id } })
+            const owner = await prisma.restaurantOwner.findFirst({ where: { email: res.user.email } })
+            const customer = await prisma.restaurantCustomer.findFirst({ where: { email: res.user.email } })
             if (redirectedVia === 'owner') {
                 console.log("OWNER API IS RUNNING!")
                 if (!owner) {
@@ -54,8 +56,10 @@ const authOptions: NextAuthOptions = {
 
             } else {
                 console.log("CUSTOMER API IS RUNNING!")
+                const rest = cookiesData.get("rest_id")?.value
+
+                console.log(`RESTAURANT: `, rest)
                 if (!customer) {
-                    const rest = cookiesData.get("rest_id")?.value
                     console.log("RESTAURANT AUTH: ", rest)
                     const newCustomer = await prisma.restaurantCustomer.create({
                         data: {
