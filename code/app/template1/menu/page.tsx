@@ -1,12 +1,37 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import bgImage from "@/app/template1/images/menubg 1.png";
 import NavBar from "../components/NavBar";
 import MealCard from "../components/MealCard";
 import Footer from "../components/Footer";
-import Category from "../components/Category";
+import Cats from "../components/Category";
+import { useSession } from "next-auth/react";
+import { Category } from "@prisma/client";
 
-const menupg = () => {
+interface Menu {
+  restaurant_id: string;
+  id: string;
+}
+
+const menupg = ({ id, restaurant_id }: Menu) => {
+  //CATEGORY MASLE
+  const { status } = useSession();
+  let items = [{}];
+  let cats: Category[] = [];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/categories/${id}`);
+      const jsonData = await response.json();
+      console.log("MENU DATA: ", jsonData);
+      cats = jsonData;
+      console.log("CATEGORIES: ", cats);
+    };
+
+    fetchData();
+  }, [status]);
+
   return (
     <div className="md:flex h-screen w-screen bg-[#050505] font-chillax">
       {/* Left Section with Background Image */}
@@ -29,7 +54,7 @@ const menupg = () => {
             </h1>
           </div>
           <div className="hidden md:block scale-75 lg:scale-90 xl:scale-100">
-            <NavBar />
+            <NavBar rest_id={restaurant_id} />
           </div>
         </div>
       </div>
@@ -37,14 +62,11 @@ const menupg = () => {
       {/* Right Section with Menu Items */}
       <div className="md:ml-1/2 h-screen z-10 w-full md:w-1/2 text-2xl flex flex-col gap-4 font-chillax text-white bg-[#010000] overflow-y-auto">
         <div className="flex justify-center gap-12 text-lg sticky top-0 bg-black w-full z-40 p-4"></div>
-
-        <Category cat="Breakfast" />
-        <Category cat="Burgers" />
-        <Category cat="Salad" />
-        <Category cat="Tea" />
-        <Category cat="Dessert" />
+        {cats.map((obj) => (
+          <div>{obj.id}</div>
+        ))}
         <div className="flex items-center justify-center md:hidden">
-          <NavBar />
+          <NavBar rest_id={restaurant_id} />
         </div>
         <div className="m-4">
           <Footer />

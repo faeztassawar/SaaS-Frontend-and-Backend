@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { TfiMenu } from "react-icons/tfi";
 import { FaRegClock } from "react-icons/fa";
@@ -30,6 +31,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
   console.log(status);
   console.log("DATA: ", data?.user);
   const user = "admin";
+  const menuPath = `/restaurants/${rest_id}/menu`;
   // if (status !== "authenticated") {
   //   const router = useRouter();
   //   router.push("/template1");
@@ -159,7 +161,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
         </HoverCard>
       </div>
       <div className="font-chillax mx-5 text-xl hidden md:flex gap-8 text-white">
-        <Link href="/template1/menu">Menu</Link>
+        <Link href={menuPath}>Menu</Link>
         <Link href="/template1/categories" className="hover:cursor-pointer">
           Categories
         </Link>

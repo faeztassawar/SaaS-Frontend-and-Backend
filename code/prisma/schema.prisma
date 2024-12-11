@@ -32,11 +32,25 @@ model Category {
   Items  Item[] // A category can have multiple items
 }
 
+model Restaurant {
+  restaurant_id String  @id @default(auto()) @map("_id") @db.ObjectId
+  owner_email   String  @unique
+  name          String
+  cuisine       String?
+  about_us      String
+  desc          String
+  timing        String
+  tempModel     String
+  Menu          Menu[]
+
+  @@map("restaurants")
+}
+
 model Menu {
   id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  restaurant_id String     @unique @db.ObjectId // One-to-one relationship
-  categories    Category[] // A menu has multiple categories
-  restaurant    Restaurant @relation("RestaurantMenu", fields: [restaurant_id], references: [restaurant_id], onDelete: Cascade)
+  categories    Category[]
+  restaurant    Restaurant @relation(fields: [restaurant_id], references: [restaurant_id])
+  restaurant_id String     @db.ObjectId
 
   @@map("menus")
 }
@@ -69,41 +83,12 @@ model RestaurantCustomer {
   restaurant_id String
 }
 
-model Restaurant {
-  restaurant_id String  @id @default(auto()) @map("_id") @db.ObjectId
-  owner_email   String  @unique
-  name          String
-  cuisine       String?
-  about_us      String
-  desc          String
-  timing        String
-  tempModel     String
-  menu          Menu?   @relation("RestaurantMenu") // A restaurant may have one menu
-
-  @@map("restaurants")
-}
-
 model Template {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   model         String
   name          String
   customerCount Int
 }
-
-// model User {
-//   user_id     String        @id @default(auto()) @map("_id") @db.ObjectId
-//   isOwner     Boolean
-//   isAdmin     Boolean
-//   name        String
-//   hasReserved Boolean?
-//   hasOrder    Boolean?
-//   address     String?
-//   phone       String?
-//   email       String        @unique
-//   reqForRes   Boolean?
-//   Order       Order[]
-//   Reservation Reservation[]
-// }
 
 // model Order {
 //   order_id String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -121,12 +106,6 @@ model Template {
 //   Timing  String
 //   Indoor  Boolean?
 //   Status  Boolean
-// }
-
-// model SaasUser {
-//   id            String  @id @default(auto()) @map("_id") @db.ObjectId
-//   email         String  @unique
-//   PaymentStatus Boolean
 // }
 
 model Account {
