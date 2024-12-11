@@ -24,7 +24,7 @@ const NavBar = () => {
     const fetchData = async () => {
       const email = data?.user?.email;
       console.log("CLIENT EMAIL: ", email);
-      const response = await fetch(`/api/session/${email}`);
+      const response = await fetch(`/api/session/saas/${email}`);
       const jsonData = await response.json();
       console.log("JSON DATA: ", jsonData);
       const check = jsonData;

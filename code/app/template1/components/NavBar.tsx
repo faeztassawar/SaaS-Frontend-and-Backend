@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TfiMenu } from "react-icons/tfi";
 import { FaRegClock } from "react-icons/fa";
 import { GoChevronRight } from "react-icons/go";
@@ -28,14 +28,32 @@ type NavBarProps = {
 
 const NavBar = ({ rest_id }: NavBarProps) => {
   const { data, status } = useSession();
-  console.log(status);
-  console.log("DATA: ", data?.user);
-  const user = "admin";
   const menuPath = `/restaurants/${rest_id}/menu`;
-  // if (status !== "authenticated") {
-  //   const router = useRouter();
-  //   router.push("/template1");
-  // }
+
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const email = data?.user?.email;
+      console.log("CLIENT EMAIL: ", email);
+      const response = await fetch(`/api/session/restaurant/${email}`);
+      const jsonData = await response.json();
+      console.log("JSON DATA: ", jsonData);
+      const check = jsonData;
+      console.log("AFTER FETCHED EMAIL: ", email);
+      console.log("AFTER FETCHED: ", check ?? "");
+      console.log(
+        "AFTER FETCHED CUSTOMER RESTAURANT: ",
+        check.restaurant_id ?? ""
+      );
+      if (check) {
+        setAllowed(true);
+      }
+    };
+
+    fetchData();
+  }, [status]);
+
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
       <div className="text-3xl flex gap-8 items-center text-black font-chillax">
@@ -49,7 +67,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {user == "admin" ? (
+              {status === "authenticated" ? (
                 <DropdownMenuItem className="hover:cursor-pointer">
                   <Link
                     href="/template1/adminDashboard"
@@ -170,7 +188,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
         </Link>
       </div>
 
-      {status === "authenticated" ? (
+      {status === "authenticated" && allowed ? (
         <Link
           href="/template1/reservation"
           className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"

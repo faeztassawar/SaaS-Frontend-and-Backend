@@ -1,19 +1,24 @@
 import { getAuthSession } from "@/lib/auth"
 import prisma from "@/lib/connect"
 import { NextResponse } from "next/server"
+import { cookies } from 'next/headers'
 
 
 export const GET = async (req: Request, { params }: { params: { email: string } }) => {
     try {
-        console.log("API HIT")
+        console.log("RESTAURANT SESSION API HIT")
         const { email } = params;
         console.log("EMAIL: ", email)
-
-        const check = await prisma.restaurantOwner.findFirst({
+        const cookiesData = await cookies();
+        const restaurantId = cookiesData.get("id")?.value
+        cookiesData.delete("id")
+        const check = await prisma.restaurantCustomer.findFirst({
             where: {
-                email
+                email,
+                restaurant_id: restaurantId
             }
         })
+
         if (check) {
             if (check.email == null)
                 check.email = email

@@ -69,6 +69,7 @@ export default function Home({
             {restaurant?.about_us}
           </span>
         </div>
+        {(document.cookie = `id=${restaurant?.restaurant_id}`)}
         <NavBar
           rest_id={restaurant?.restaurant_id ? restaurant?.restaurant_id : ""}
         />
