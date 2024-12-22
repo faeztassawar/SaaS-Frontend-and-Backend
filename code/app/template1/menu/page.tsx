@@ -1,36 +1,42 @@
 "use client";
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import bgImage from "@/app/template1/images/menubg 1.png";
 import NavBar from "../components/NavBar";
-import MealCard from "../components/MealCard";
 import Footer from "../components/Footer";
-import Cats from "../components/Category";
+import CategoryComponent from "../components/Category"; // Correct import
 import { useSession } from "next-auth/react";
 import { Category } from "@prisma/client";
 
-interface Menu {
+interface MenuProps {
   restaurant_id: string;
   id: string;
 }
 
-const menupg = ({ id, restaurant_id }: Menu) => {
-  //CATEGORY MASLE
+const MenuPage = ({ id, restaurant_id }: MenuProps) => {
   const { status } = useSession();
-  let items = [{}];
-  let cats: Category[] = [];
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch Categories
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(`/api/categories/${id}`);
-      const jsonData = await response.json();
-      console.log("MENU DATA: ", jsonData);
-      cats = jsonData;
-      console.log("CATEGORIES: ", cats);
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`/api/categories/${id}`);
+        const jsonData: Category[] = await response.json();
+        setCategories(jsonData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchData();
-  }, [status]);
+    if (status === "authenticated") {
+      fetchCategories();
+    }
+  }, [id, status]);
 
   return (
     <div className="md:flex h-screen w-screen bg-[#050505] font-chillax">
@@ -61,10 +67,27 @@ const menupg = ({ id, restaurant_id }: Menu) => {
 
       {/* Right Section with Menu Items */}
       <div className="md:ml-1/2 h-screen z-10 w-full md:w-1/2 text-2xl flex flex-col gap-4 font-chillax text-white bg-[#010000] overflow-y-auto">
-        <div className="flex justify-center gap-12 text-lg sticky top-0 bg-black w-full z-40 p-4"></div>
-        {cats.map((obj) => (
-          <div>{obj.id}</div>
-        ))}
+        {/* Sticky Header */}
+        <div className="flex justify-center gap-12 text-lg sticky top-0 bg-black w-full z-40 p-4">
+          <h1 className="text-4xl font-bold">Our Categories</h1>
+        </div>
+
+        {/* Categories and Items */}
+        {loading ? (
+          <p className="text-center text-white">Loading categories...</p>
+        ) : categories.length > 0 ? (
+          categories.map((category) => (
+            <CategoryComponent
+              key={category.id}
+              cat_id={category.id}
+              cat_name={category.name}
+            />
+          ))
+        ) : (
+          <p className="text-center text-white">No categories available.</p>
+        )}
+
+        {/* Footer */}
         <div className="flex items-center justify-center md:hidden">
           <NavBar rest_id={restaurant_id} />
         </div>
@@ -76,4 +99,4 @@ const menupg = ({ id, restaurant_id }: Menu) => {
   );
 };
 
-export default menupg;
+export default MenuPage;

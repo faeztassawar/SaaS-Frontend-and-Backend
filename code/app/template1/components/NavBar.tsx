@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { TfiMenu } from "react-icons/tfi";
 import { FaRegClock } from "react-icons/fa";
 import { GoChevronRight } from "react-icons/go";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -20,39 +19,38 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { stat } from "fs";
 
 type NavBarProps = {
-  rest_id: string | any;
+  rest_id: string;
 };
 
 const NavBar = ({ rest_id }: NavBarProps) => {
   const { data, status } = useSession();
   const menuPath = `/restaurants/${rest_id}/menu`;
-
   const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const email = data?.user?.email;
-      console.log("CLIENT EMAIL: ", email);
-      const response = await fetch(`/api/session/restaurant/${email}`);
-      const jsonData = await response.json();
-      console.log("JSON DATA: ", jsonData);
-      const check = jsonData;
-      console.log("AFTER FETCHED EMAIL: ", email);
-      console.log("AFTER FETCHED: ", check ?? "");
-      console.log(
-        "AFTER FETCHED CUSTOMER RESTAURANT: ",
-        check.restaurant_id ?? ""
-      );
-      if (check) {
-        setAllowed(true);
+      if (!email) return;
+
+      try {
+        const response = await fetch(`/api/session/restaurant/${email}`);
+        const jsonData = await response.json();
+        const check = jsonData?.restaurant_id;
+
+        if (check) {
+          setAllowed(true);
+        }
+      } catch (error) {
+        console.error("Error fetching session data:", error);
       }
     };
 
-    fetchData();
-  }, [status]);
+    if (status === "authenticated") {
+      fetchData();
+    }
+  }, [status, data]);
 
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
@@ -68,17 +66,28 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {status === "authenticated" ? (
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  <Link
-                    href="/template1/adminDashboard"
-                    className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
-                  >
-                    Dashboard
-                    <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
-                  </Link>
-                </DropdownMenuItem>
+                <>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/template1/adminDashboard"
+                      className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
+                    >
+                      Dashboard
+                      <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/template1/reservation"
+                      className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
+                    >
+                      Reservation
+                      <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
+                    </Link>
+                  </DropdownMenuItem>
+                </>
               ) : (
-                <DropdownMenuItem className="hover:cursor-pointer">
+                <DropdownMenuItem>
                   <Link
                     href="/template1/editProfile"
                     className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
@@ -88,28 +97,14 @@ const NavBar = ({ rest_id }: NavBarProps) => {
                   </Link>
                 </DropdownMenuItem>
               )}
-              {status === "authenticated" ? (
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  <Link
-                    href="/template1/reservation"
-                    className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
-                  >
-                    Reservation
-                    <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
-                  </Link>
-                </DropdownMenuItem>
-              ) : (
-                ""
-              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-
             <DropdownMenuLabel className="bg-[rgb(193,151,98)] px-2 rounded-lg font-chillax">
               Menu
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:cursor-pointer">
+              <DropdownMenuItem>
                 <Link
                   href="/template1/categories"
                   className="flex items-center justify-between px-2 rounded-lg font-chillax w-full h-full  hover:bg-gray-300 transition duration-200 hover-chevron"
@@ -118,7 +113,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
                   <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
+              <DropdownMenuItem>
                 <Link
                   href="/template1/menu"
                   className="flex items-center justify-between px-2 rounded-lg font-chillax w-full h-full  hover:bg-gray-300 transition duration-200 hover-chevron"
@@ -129,7 +124,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="hover:cursor-pointer">
+            <DropdownMenuItem>
               <Link
                 href="/template1"
                 className="flex items-center justify-between px-2 rounded-lg font-chillax w-full h-full  hover:bg-gray-300 transition duration-200 hover-chevron"
@@ -138,16 +133,14 @@ const NavBar = ({ rest_id }: NavBarProps) => {
                 <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:cursor-pointer">
-              {status === "authenticated" ? (
+            <DropdownMenuItem>
+              {status === "authenticated" && (
                 <button
                   onClick={() => signOut()}
                   className="flex py-2 justify-center text-center font-semibold items-center px-2 rounded-lg font-chillax w-full h-full  hover:bg-black hover:text-white transition duration-200 hover-chevron"
                 >
                   Logout
                 </button>
-              ) : (
-                ""
               )}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -198,11 +191,9 @@ const NavBar = ({ rest_id }: NavBarProps) => {
       ) : (
         <h1
           onClick={() => {
-            {
-              signIn("google");
-              document.cookie = "customer=ok; path=/; SameSite=Lax";
-              document.cookie = `rest_id=${rest_id}; path=/; SameSite=Lax`;
-            }
+            signIn("google");
+            document.cookie = "customer=ok; path=/; SameSite=Lax";
+            document.cookie = `rest_id=${rest_id}; path=/; SameSite=Lax`;
           }}
           className="md:text-xl text-white bg-black px-7 py-3 hover:cursor-pointer rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
         >

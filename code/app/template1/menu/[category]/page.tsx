@@ -1,28 +1,34 @@
 import React from "react";
-import Image from "next/image";
-import bgImage from "@/app/template1/images/menubg 1.png";
+import Image, { StaticImageData } from "next/image";
 import NavBar from "../../components/NavBar";
 import MealCard from "../../components/MealCard";
 import Footer from "../../components/Footer";
-import food from "@/app/template1/images/Soup.png";
 import burger from "@/app/template1/images/burger.png";
 import pancake from "@/app/template1/images/pancakes.png";
 import salad from "@/app/template1/images/salad.png";
 import chai from "@/app/template1/images/chai.png";
-import honey from "@/app/template1/images/honey.png";
 
-const Page = ({ params }: any) => {
+interface MenuProps {
+  restaurant_id: string;
+  id: string;
+}
+
+const Page = ({ params }: { params: { category: string } }, {restaurant_id}: MenuProps) => {
   let bg = pancake;
   const { category } = params;
-  if (category == "Breakfast") {
-    bg = pancake;
-  } else if (category == "Burgers") {
-    bg = burger;
-  } else if (category == "Salad") {
-    bg = salad;
-  } else if (category == "Tea") {
-    bg = chai;
+
+  // Map categories to background images dynamically
+  const categoryBackgrounds: { [key: string]: StaticImageData } = {
+    Breakfast: pancake,
+    Burgers: burger,
+    Salad: salad,
+    Tea: chai,
+  };
+
+  if (category in categoryBackgrounds) {
+    bg = categoryBackgrounds[category];
   }
+
   return (
     <div className="md:flex h-screen w-screen bg-[#050505] font-chillax">
       {/* Left Section with Background Image */}
@@ -31,7 +37,7 @@ const Page = ({ params }: any) => {
           className="absolute z-0 top-0 left-0 object-cover brightness-[25%]"
           src={bg}
           fill
-          alt="Background"
+          alt={`${category} Background`}
         />
         <div className="flex z-10 gap-12 items-center h-full flex-col justify-between py-10">
           <h1 className="text-white text-xl md:text-4xl">lezzetli.</h1>
@@ -44,7 +50,7 @@ const Page = ({ params }: any) => {
             </h1>
           </div>
           <div className="hidden md:block scale-75 lg:scale-90 xl:scale-100">
-            <NavBar />
+            <NavBar rest_id={restaurant_id}/>
           </div>
         </div>
       </div>
@@ -65,26 +71,30 @@ const Page = ({ params }: any) => {
             Drinks
           </span>
         </div>
+        {/* Dynamic Meal Cards */}
         <MealCard
-          img={food}
           name="Tomato Soup"
           desc="This creamy soup is comforting, with a rich flavor profile."
           price="4.6"
         />
         <MealCard
-          img={food}
-          name="Sandwich"
-          desc="This creamy soup is comforting, with a rich flavor profile."
-          price="4.6"
+          name="Beef Burger"
+          desc="Juicy beef patty topped with fresh lettuce and tomatoes."
+          price="8.5"
         />
         <MealCard
-          img={food}
-          name="Tomato Soup"
-          desc="This creamy soup is comforting, with a rich flavor profile."
-          price="4.6"
+          name="Caesar Salad"
+          desc="Crispy romaine lettuce with a creamy Caesar dressing."
+          price="6.3"
         />
+        <MealCard
+          name="Masala Tea"
+          desc="Aromatic tea infused with Indian spices."
+          price="2.5"
+        />
+
         <div className="flex items-center justify-center md:hidden">
-          <NavBar />
+          <NavBar rest_id={restaurant_id}/>
         </div>
         <div className="m-4">
           <Footer />
