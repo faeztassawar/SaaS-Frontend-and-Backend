@@ -38,7 +38,7 @@ const ProfilePage = () => {
           setLoading(false); // Stop loading once data is fetched
         }
       } else {
-        setLoading(false); // Stop loading if not authenticated
+        setLoading(false); 
       }
     };
 
