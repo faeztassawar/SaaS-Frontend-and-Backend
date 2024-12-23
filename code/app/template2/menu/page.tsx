@@ -3,46 +3,97 @@
 import Header from "../components/Header";
 import MenuItem from "../components/MenuItem";
 import SectionHeader from "../components/SectionHeader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import ItemModal from "../components/ItemModal";
 import Footer from "../components/Footer";
-import Image from "next/image";
-import Salad1Img from "@/app/template2/images/salad1.png";
-import Salad2Img from "@/app/template2/images/salad2.png";
+import { Category } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 interface MenuItemType {
+  id: string;
   name: string;
   desc: string;
   price: string;
+  category_id: string;
 }
 
-export default function menuPage() {
-  const [cartMessage, setCartMessage] = useState("");
+interface Restaurant {
+  restaurant_id: string;
+  name: string;
+  about_us: string;
+  cuisine: string;
+  desc: string;
+  phone: string;
+}
+
+export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
+  useEffect(() => {
+    if (restaurant?.restaurant_id) {
+      document.cookie = `id=${restaurant.restaurant_id}`;
+    }
+  }, [restaurant?.restaurant_id]);
+
+  const { status } = useSession();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [itemsByCategory, setItemsByCategory] = useState<
+    Record<string, MenuItemType[]>
+  >({});
+  const [loading, setLoading] = useState(true);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
+
+  // Fetch Categories and Items
+  useEffect(() => {
+    const fetchCategoriesAndItems = async () => {
+      try {
+        // Fetch categories
+        const categoryResponse = await fetch(
+          `/api/categories/${restaurant?.restaurant_id}`
+        );
+        if (!categoryResponse.ok) throw new Error("Failed to fetch categories");
+        const categoryData: Category[] = await categoryResponse.json();
+        setCategories(categoryData);
+
+        // Fetch items for each category
+        const itemsPromises = categoryData.map(async (category) => {
+          const itemResponse = await fetch(`/api/item/${category.id}`);
+          if (!itemResponse.ok)
+            throw new Error(
+              `Failed to fetch items for category ${category.id}`
+            );
+          const itemData: MenuItemType[] = await itemResponse.json();
+          return { categoryId: category.id, items: itemData };
+        });
+
+        const itemsData = await Promise.all(itemsPromises);
+
+        // Group items by category
+        const groupedItems: Record<string, MenuItemType[]> = {};
+        itemsData.forEach(({ categoryId, items }) => {
+          groupedItems[categoryId] = items;
+        });
+
+        setItemsByCategory(groupedItems);
+      } catch (error) {
+        console.error("Error fetching categories or items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (status === "authenticated") {
+      fetchCategoriesAndItems();
+    }
+  }, [restaurant?.restaurant_id, status]);
 
   const handleAddToCart = (itemName: string) => {
     toast.success(`${itemName} has been added to the cart`, {
       position: "bottom-right",
       autoClose: 3000,
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
-        </svg>
-      ),
     });
   };
 
@@ -56,115 +107,49 @@ export default function menuPage() {
     setSelectedItem(null);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen">
-      <div className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}>
-        {cartMessage && <p className="text-green-500">{cartMessage}</p>}
-        <Header isAdmin={true} />
-        
-        <div className="hidden lg:block bg-gray-50 fixed left-0 top-1/2 transform -translate-y-1/2 z-10">
-          <Image priority src={Salad1Img} width={109} height={189} alt="salad" />
-        </div>
-        <div className="hidden lg:block fixed right-0 top-1/2 transform -translate-y-1/2 z-10">
-          <Image priority src={Salad2Img} width={107} height={195} alt="salad" />
-        </div>
+      <div
+        className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}
+      >
+        <Header
+          rest_id={restaurant?.restaurant_id || ""}
+          rest_name={restaurant?.name || ""}
+        />
 
+        {/* Menu Sections */}
         <section className="mt-8">
-          <div className="text-center">
-            <SectionHeader mainHeader="Pizza" subHeader="" />
+          {categories.map((category) => (
+            <div key={category.id} className="mb-12">
+              {/* Section Header */}
+              <SectionHeader
+                mainHeader={category.name}
+                subHeader=""
+              />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4 mb-10">
-              <MenuItem
-                name="Malai Boti Pizza"
-                desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit."
-                price="$12"
-                onClick={() =>
-                  handleItemClick({
-                    name: "Malai Boti Pizza",
-                    desc: "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
-                    price: "$12",
-                  })
-                }
-                onAddToCart={handleAddToCart}
-              />
-              <MenuItem
-                name="Malai Boti Pizza"
-                desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit."
-                price="$12"
-                onClick={() =>
-                  handleItemClick({
-                    name: "Malai Boti Pizza",
-                    desc: "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
-                    price: "$12",
-                  })
-                }
-                onAddToCart={handleAddToCart}
-              />
-              <MenuItem
-                name="Malai Boti Pizza"
-                desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit."
-                price="$12"
-                onClick={() =>
-                  handleItemClick({
-                    name: "Malai Boti Pizza",
-                    desc: "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
-                    price: "$12",
-                  })
-                }
-                onAddToCart={handleAddToCart}
-              />
+              {/* Items in the Category */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
+                {itemsByCategory[category.id]?.map((item) => (
+                  <MenuItem
+                    key={item.id}
+                    name={item.name}
+                    desc={item.desc}
+                    price={item.price}
+                    onClick={() => handleItemClick(item)}
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </div>
             </div>
-
-            <SectionHeader mainHeader="Pasta" subHeader="" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4 mb-10">
-              <MenuItem
-                name="Malai Boti Pizza"
-                desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit."
-                price="$12"
-                onClick={() =>
-                  handleItemClick({
-                    name: "Malai Boti Pizza",
-                    desc: "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
-                    price: "$12",
-                  })
-                }
-                onAddToCart={handleAddToCart}
-              />
-              <MenuItem
-                name="Malai Boti Pizza"
-                desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit."
-                price="$12"
-                onClick={() =>
-                  handleItemClick({
-                    name: "Malai Boti Pizza",
-                    desc: "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
-                    price: "$12",
-                  })
-                }
-                onAddToCart={handleAddToCart}
-              />
-            </div>
-
-            <SectionHeader mainHeader="Dessert" subHeader="" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4 mb-10">
-              <MenuItem
-                name="Malai Boti Pizza"
-                desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit."
-                price="$12"
-                onClick={() =>
-                  handleItemClick({
-                    name: "Malai Boti Pizza",
-                    desc: "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
-                    price: "$12",
-                  })
-                }
-                onAddToCart={handleAddToCart}
-              />
-            </div>
-          </div>
+          ))}
         </section>
       </div>
 
+      {/* Item Modal */}
       {isModalOpen && selectedItem && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40" />

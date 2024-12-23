@@ -4,9 +4,7 @@ import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import NavBar from "@/app/components/NavBar";
 import { TiUser } from "react-icons/ti";
-import { IoRestaurantOutline } from "react-icons/io5";
 import { FaCircleUser } from "react-icons/fa6";
-import { GoMail } from "react-icons/go";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

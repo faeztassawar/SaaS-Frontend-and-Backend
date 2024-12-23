@@ -35,6 +35,7 @@ const Details = () => {
         about_us: "We serve delicious Food",
         desc: "Great ambiance and friendly staff.",
         timing: "9am - 9pm",
+        phone: "0333 5896242",
         tempModel: template,
         menu_id: "674a1329dbec3ac862e10deb",
       }),

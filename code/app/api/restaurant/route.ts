@@ -24,6 +24,7 @@ export const POST = async (req: Request) => {
                 desc: 'Great ambiance and friendly staff.',
                 cuisine: "Pakistan",
                 timing: '9am - 9pm',
+                phone: body.phone,
                 tempModel: body.tempModel,
             }
         })
