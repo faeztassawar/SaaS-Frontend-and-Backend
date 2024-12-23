@@ -138,7 +138,7 @@ const ProfilePage = () => {
                       <div>
                         <div className="flex justify-between bg-[#1f1f1f] py-4 px-4 transition-colors hover:bg-[#3f3f3f]">
                           <div className="px-3 basis-1/2 text-center text-xl font-semibold">
-                            {restaurantData?.name}
+                            {restaurantData?.name }
                           </div>
                           <div className="px-3 basis-1/2 text-center text-xl font-semibold">
                             {restaurantData?.cuisine}
