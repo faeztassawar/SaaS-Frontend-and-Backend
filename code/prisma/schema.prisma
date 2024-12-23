@@ -81,6 +81,7 @@ model RestaurantCustomer {
   email         String  @unique
   userId        String  @unique
   restaurant_id String
+  isAdmin       Boolean
 }
 
 model Template {

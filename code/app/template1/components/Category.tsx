@@ -34,7 +34,7 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
   return (
     <div className="mb-8">
       {/* Category Title */}
-      <h1 className="text-4xl font-bold font-rose text-[#e5a23d] px-8 py-4">
+      <h1 className="text-7xl font-bold font-rose text-[#e5a23d] px-8 py-4">
         {cat_name}
       </h1>
 
@@ -42,7 +42,7 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
       {loading ? (
         <p className="text-center text-white">Loading items...</p>
       ) : items.length > 0 ? (
-        <div className="flex">
+        <div className="flex flex-col px-4">
           {items.map((item) => (
             <MealCard
               key={item.id}
@@ -53,7 +53,9 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-white">No items available in this category.</p>
+        <p className="text-center text-white">
+          No items available in this category.
+        </p>
       )}
     </div>
   );

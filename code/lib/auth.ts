@@ -45,7 +45,8 @@ const authOptions: NextAuthOptions = {
                         data: {
                             userId: res.user.id,
                             restaurant_id: '',
-                            email: res.user.email as string
+                            email: res.user.email as string,
+                            name: res.user.name as string
                         }
                     })
                     console.log("Created new Owner", newOwner)
@@ -65,7 +66,8 @@ const authOptions: NextAuthOptions = {
                         data: {
                             userId: res.user.id,
                             restaurant_id: rest as string,
-                            email: res.user.email as string
+                            email: res.user.email as string,
+                            name: res.user.name as string
                         }
                     })
                     cookiesData.delete("rest_id");

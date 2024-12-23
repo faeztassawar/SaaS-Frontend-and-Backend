@@ -28,6 +28,26 @@ export const POST = async (req: Request) => {
             }
         })
 
+        const user = await prisma.restaurantOwner.findUnique({
+            where: {
+                email: body.owner_email
+            },
+        })
+        if (user?.restaurant_id == '') {
+            const profile = await prisma.restaurantOwner.update({
+                where: {
+                    email: body.owner_email
+                },
+                data: {
+                    restaurant_id: restaurant.restaurant_id
+                }
+            })
+        } else {
+            console.log("This user already has a restaurant")
+            return new NextResponse(JSON.stringify({ message: "Already!" }), { status: 500, statusText: "Already!" })
+        }
+
+
         // Fetch the categories that should be assigned to the new menu
         const fetchedCats = await prisma.category.findMany({
             where: {

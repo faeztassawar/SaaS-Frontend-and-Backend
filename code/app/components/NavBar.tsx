@@ -54,18 +54,17 @@ const NavBar = () => {
         <TfiMenu />
       </div>
       <div className="sm:flex gap-6 px-4 items-center hidden">
-        <Link
-          href=""
-          className="text-white text-opacity-60  hover:text-opacity-100"
-        >
-          About Us
-        </Link>
-        <Link
-          href=""
-          className="text-white text-opacity-60 hover:text-opacity-100"
-        >
-          Contact
-        </Link>
+        {status === "authenticated" ? (
+          <Link
+            href="/Profile"
+            className="text-white text-opacity-60 hover:text-opacity-100"
+          >
+            Profile
+          </Link>
+        ) : (
+          ""
+        )}
+
         <div className="">
           {allowed && status == "authenticated" ? (
             <h1

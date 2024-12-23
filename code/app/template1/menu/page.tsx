@@ -69,7 +69,7 @@ const MenuPage = ({ id, restaurant_id }: MenuProps) => {
       <div className="md:ml-1/2 h-screen z-10 w-full md:w-1/2 text-2xl flex flex-col gap-4 font-chillax text-white bg-[#010000] overflow-y-auto">
         {/* Sticky Header */}
         <div className="flex justify-center gap-12 text-lg sticky top-0 bg-black w-full z-40 p-4">
-          <h1 className="text-4xl font-bold">Our Categories</h1>
+          <h1 className="text-4xl py-8 font-bold">Our Categories</h1>
         </div>
 
         {/* Categories and Items */}

@@ -45,6 +45,9 @@ const Details = () => {
       console.log(data);
       console.log("success");
       router.push(`/restaurants/${data.restaurant_id}`);
+    } else if (res?.statusText === "Already!") {
+      console.log("This user already has a restaurant");
+      router.push("/");
     }
   };
 
