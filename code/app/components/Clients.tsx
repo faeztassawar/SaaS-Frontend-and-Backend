@@ -51,11 +51,35 @@ const Clients = () => {
     setExpandedRow(expandedRow === index ? null : index);
   };
 
-  const deleteUser = (index: number) => {
-    const updatedClients = clients.filter((_, i) => i !== index);
-    setClients(updatedClients);
-    if (expandedRow === index) setExpandedRow(null);
+  const deleteUser = async (index: number) => {
+    const userEmail = clients[index].Email; 
+    try {
+      const response = await fetch('/api/restaurantowner', 
+      {
+        method: 'DELETE',
+        body: JSON.stringify({ email: userEmail }), // Sending email  in the request body
+      });
+  
+      if (response.ok) {
+        console.log('User deleted successfully');
+
+        //GPT --TO SHOW CHANGE IN FRONTEND 
+/*slice(0, index): Takes all items before the specified index.
+slice(index + 1): Takes all items after the specified index.
+Combines them with the spread operator (...) to form a new array without the item at index.*/
+        setClients((prevClients) => [
+          ...prevClients.slice(0, index), 
+          ...prevClients.slice(index + 1)
+        ]);
+        
+      } else {
+        console.error('Failed to delete user:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
   };
+  
 
   const getPaymentStatus = (NextPaymentDate: string) => {
     const today = new Date();
