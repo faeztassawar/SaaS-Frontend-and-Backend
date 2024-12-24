@@ -55,17 +55,25 @@ export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
           `/api/categories/${restaurant?.restaurant_id}`
         );
         if (!categoryResponse.ok) throw new Error("Failed to fetch categories");
+
         const categoryData: Category[] = await categoryResponse.json();
         setCategories(categoryData);
+        console.log("TEMPLATE 2 CATEGORIES:", categoryData);
 
         // Fetch items for each category
         const itemsPromises = categoryData.map(async (category) => {
           const itemResponse = await fetch(`/api/item/${category.id}`);
-          if (!itemResponse.ok)
+          if (!itemResponse.ok) {
             throw new Error(
               `Failed to fetch items for category ${category.id}`
             );
+          }
+
           const itemData: MenuItemType[] = await itemResponse.json();
+          console.log("Fetched items:", {
+            categoryId: category.id,
+            items: itemData,
+          });
           return { categoryId: category.id, items: itemData };
         });
 
@@ -126,10 +134,7 @@ export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
           {categories.map((category) => (
             <div key={category.id} className="mb-12">
               {/* Section Header */}
-              <SectionHeader
-                mainHeader={category.name}
-                subHeader=""
-              />
+              <SectionHeader mainHeader={category.name} subHeader="" />
 
               {/* Items in the Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">

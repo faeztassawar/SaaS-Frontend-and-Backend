@@ -16,7 +16,7 @@ const loadTemplate = async (templateId: string) => {
   return dynamic(() => import("@/app/page"));
 };
 
-const page = async ({ params }: any) => {
+const page = async ({ params }: never) => {
   const { restaurant_id } = params;
 
   // Fetch restaurant data

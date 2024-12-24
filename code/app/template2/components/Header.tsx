@@ -1,4 +1,5 @@
 "use client";
+
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -11,20 +12,27 @@ interface HeaderProps {
 
 const Header = ({ rest_id, rest_name }: HeaderProps) => {
   const { data, status } = useSession();
-  const menuPath = `/restaurants/${rest_id}/menu`;
   const [allowed, setAllowed] = useState(false);
 
+  // Dynamic paths based on `rest_id`
+  const homePath = `/restaurants/${rest_id}`;
+  const menuPath = `/restaurants/${rest_id}/menu`;
+  const dashboardPath = `/restaurants/${rest_id}/adminDashboard`;
+  const profilePath = `/restaurants/${rest_id}/editProfile`;
+  const cartPath = `/restaurants/${rest_id}/Cart`;
+
+  // Fetch session data and check permissions
   useEffect(() => {
-    const fetchData = async () => {
-      const email = data?.user?.email;
-      if (!email) return;
-
+    const fetchSessionData = async () => {
       try {
-        const response = await fetch(`/api/session/restaurant/${email}`);
-        const jsonData = await response.json();
-        const check = jsonData?.restaurant_id;
+        const email = data?.user?.email;
+        if (!email) return;
 
-        if (check) {
+        const response = await fetch(`/api/session/restaurant/${email}`);
+        if (!response.ok) throw new Error("Failed to fetch session data");
+
+        const jsonData = await response.json();
+        if (jsonData?.restaurant_id) {
           setAllowed(true);
         }
       } catch (error) {
@@ -33,7 +41,7 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
     };
 
     if (status === "authenticated") {
-      fetchData();
+      fetchSessionData();
     }
   }, [status, data]);
 
@@ -46,14 +54,14 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
 
       {/* Navigation Menu */}
       <nav className="flex gap-8 text-white font-bold items-center">
-        <Link href="/template2">Home</Link>
+        <Link href={homePath}>Home</Link>
         <Link href={menuPath}>Menu</Link>
-        <Link href="/template2/">About</Link>
+        <Link href={homePath}>About</Link>
 
         {status === "authenticated" && allowed ? (
-          <Link href="/template2/adminDashboard">Dashboard</Link>
+          <Link href={dashboardPath}>Dashboard</Link>
         ) : (
-          <Link href="/template2/editProfile">Profile</Link>
+          <Link href={profilePath}>Profile</Link>
         )}
 
         {/* Authentication Buttons */}
@@ -78,7 +86,7 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
 
         {/* Shopping Cart Icon */}
         <div className="text-white">
-          <Link href="/template2/Cart">
+          <Link href={cartPath}>
             <MdOutlineShoppingCart size={25} />
           </Link>
         </div>
