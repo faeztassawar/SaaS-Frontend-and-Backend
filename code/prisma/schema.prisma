@@ -83,6 +83,7 @@ model RestaurantCustomer {
   userId        String  @unique
   restaurant_id String
   isAdmin       Boolean
+  isOwner       Boolean 
 }
 
 model Template {

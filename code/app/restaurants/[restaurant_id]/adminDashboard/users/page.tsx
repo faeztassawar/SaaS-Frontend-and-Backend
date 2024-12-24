@@ -1,0 +1,47 @@
+import dynamic from "next/dynamic";
+
+const getData = async (restaurant_id: string) => {
+  const res = await fetch(
+    `http://localhost:3000/api/restaurant/${restaurant_id}`
+  );
+  if (!res.ok) {
+    throw new Error("Failed!");
+  }
+  return res.json();
+};
+
+const getUsers = async (restaurant_id: string) => {
+  const res = await fetch(
+    `http://localhost:3000/api/restaurantUsers/${restaurant_id}`
+  );
+  if (!res.ok) {
+    throw new Error("Failed!");
+  }
+  return res.json();
+};
+
+const loadTemplate = async (templateId: string) => {
+  if (templateId === "1")
+    return dynamic(() => import("@/app/template1/adminDashboard/users/page"));
+  return dynamic(() => import("@/app/page"));
+};
+
+const page = async ({ params }: never) => {
+  const { restaurant_id } = params;
+  console.log(
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: ",
+    restaurant_id
+  );
+  // Fetch restaurant data
+  const restaurant = await getData(restaurant_id);
+
+  const restaurantUsers = await getUsers(restaurant_id);
+
+  // Dynamically load the template
+  const Template = await loadTemplate(restaurant?.tempModel);
+  console.log("USers are: ", restaurantUsers);
+  // Pass the restaurant object to the template
+  return <Template users={restaurantUsers} />;
+};
+
+export default page;

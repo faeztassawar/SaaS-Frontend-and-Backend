@@ -4,7 +4,9 @@ import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import NavBar from "@/app/components/NavBar";
 import { TiUser } from "react-icons/ti";
+import { IoRestaurantOutline } from "react-icons/io5";
 import { FaCircleUser } from "react-icons/fa6";
+import { GoMail } from "react-icons/go";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -136,7 +138,7 @@ const ProfilePage = () => {
                       <div>
                         <div className="flex justify-between bg-[#1f1f1f] py-4 px-4 transition-colors hover:bg-[#3f3f3f]">
                           <div className="px-3 basis-1/2 text-center text-xl font-semibold">
-                            {restaurantData?.name }
+                            {restaurantData?.name}
                           </div>
                           <div className="px-3 basis-1/2 text-center text-xl font-semibold">
                             {restaurantData?.cuisine}

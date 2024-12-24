@@ -1,10 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DReservation from "../components/DReservation";
 import DInfoCard from "../components/DInfoCard";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-const AdminDashboard = () => {
+type AdminDashboardProps = {
+  restaurant_id: string;
+};
+
+const AdminDashboard = ({ restaurant_id }: AdminDashboardProps) => {
+  const [userRecord, setUserRecord] = useState();
   const reserveCards = [
     {
       name: "Joe",
@@ -26,8 +33,33 @@ const AdminDashboard = () => {
     },
   ];
 
+  const { data, status } = useSession();
+  const router = useRouter();
+
+  if (status !== "authenticated") {
+    router.push(`/restaurants/${restaurant_id}`);
+  }
   const [pendingCards, setPendingCards] = useState(reserveCards);
   const [accResCards, setAccResCards] = useState(reserveCards);
+  console.log("HAHAHHA! NANANA");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch(`/api/session/restaurant/${data?.user?.email}`);
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log("DAtaAA: ", data);
+        setUserRecord(data);
+      } else {
+        console.log("ERROR BARBYY!!");
+        router.push(`/restaurants/${restaurant_id}`);
+      }
+
+      fetchUser();
+      console.log("HAHAHAHHA!");
+    };
+  }, [userRecord]);
 
   return (
     <div className="flex flex-col p-4 min-h-screen bg-[#0f172a]">

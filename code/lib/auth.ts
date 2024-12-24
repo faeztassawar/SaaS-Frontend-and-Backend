@@ -67,7 +67,9 @@ const authOptions: NextAuthOptions = {
                             userId: res.user.id,
                             restaurant_id: rest as string,
                             email: res.user.email as string,
-                            name: res.user.name as string
+                            name: res.user.name as string,
+                            isAdmin: false,
+                            isOwner: false
                         }
                     })
                     cookiesData.delete("rest_id");

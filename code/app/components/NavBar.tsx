@@ -54,7 +54,19 @@ const NavBar = () => {
         <TfiMenu />
       </div>
       <div className="sm:flex gap-6 px-4 items-center hidden">
-        {status === "authenticated" ? (
+        {status === "authenticated" &&
+        data.user?.email === "dinedesign.4@gmail.com" ? (
+          <Link
+            href="/AdminDashboard"
+            className="text-white text-opacity-60 hover:text-opacity-100"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          ""
+        )}
+        {status === "authenticated" &&
+        data.user?.email !== "dinedesign.4@gmail.com" ? (
           <Link
             href="/Profile"
             className="text-white text-opacity-60 hover:text-opacity-100"

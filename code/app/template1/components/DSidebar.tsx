@@ -8,42 +8,46 @@ import {
   MdOutlineSettings,
 } from "react-icons/md";
 
-const menuItems = [
-  {
-    title: "Pages",
-    list: [
-      {
-        title: "Dashboard",
-        path: "/template1/adminDashboard",
-        icon: <MdDashboard />,
-      },
-      {
-        title: "Users",
-        path: "/template1/adminDashboard/users",
-        icon: <MdSupervisedUserCircle />,
-      },
-      {
-        title: "Products",
-        path: "/template1/adminDashboard/products",
-        icon: <MdShoppingBag />,
-      },
-    ],
-  },
+type sidebarprops = {
+  restaurant_id: string;
+};
 
-  {
-    title: "User",
-    list: [
-      {
-        title: "Settings",
-        path: "/template1/adminDashboard/settings",
-        icon: <MdOutlineSettings />,
-      },
-      { title: "Log out", path: "/logout", icon: <CiLogout /> }, // Adjusted logout path
-    ],
-  },
-];
+const Sidebar = ({ restaurant_id }: sidebarprops) => {
+  const menuItems = [
+    {
+      title: "Pages",
+      list: [
+        {
+          title: "Dashboard",
+          path: `/restaurants/${restaurant_id}/adminDashboard`,
+          icon: <MdDashboard />,
+        },
+        {
+          title: "Users",
+          path: `/restaurants/${restaurant_id}/adminDashboard/users`,
+          icon: <MdSupervisedUserCircle />,
+        },
+        {
+          title: "Products",
+          path: `/restaurants/${restaurant_id}/adminDashboard/products`,
+          icon: <MdShoppingBag />,
+        },
+      ],
+    },
 
-const Sidebar = () => {
+    {
+      title: "User",
+      list: [
+        {
+          title: "Settings",
+          path: `/restaurants/${restaurant_id}/adminDashboard/settings`,
+          icon: <MdOutlineSettings />,
+        },
+        { title: "Log out", path: "/logout", icon: <CiLogout /> }, // Adjusted logout path
+      ],
+    },
+  ];
+
   return (
     <div className="sticky top-10 p-4">
       {/* User Info Section */}
