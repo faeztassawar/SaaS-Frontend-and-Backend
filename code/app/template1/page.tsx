@@ -16,6 +16,7 @@ export default function Home({
 }: {
   restaurant?: Restaurant | undefined;
 }) {
+  document.cookie = `id=${restaurant?.restaurant_id}`;
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       <Image
@@ -69,7 +70,7 @@ export default function Home({
             {restaurant?.about_us}
           </span>
         </div>
-        {(document.cookie = `id=${restaurant?.restaurant_id}`)}
+
         <NavBar
           rest_id={restaurant?.restaurant_id ? restaurant?.restaurant_id : ""}
         />

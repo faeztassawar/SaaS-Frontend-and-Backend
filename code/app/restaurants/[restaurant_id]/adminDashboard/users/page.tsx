@@ -1,3 +1,4 @@
+import prisma from "@/lib/connect";
 import dynamic from "next/dynamic";
 
 const getData = async (restaurant_id: string) => {
@@ -11,13 +12,12 @@ const getData = async (restaurant_id: string) => {
 };
 
 const getUsers = async (restaurant_id: string) => {
-  const res = await fetch(
-    `http://localhost:3000/api/restaurantUsers/${restaurant_id}`
-  );
-  if (!res.ok) {
-    throw new Error("Failed!");
-  }
-  return res.json();
+  const res = await prisma.restaurantCustomer.findMany({
+    where: {
+      restaurant_id: restaurant_id,
+    },
+  });
+  return res;
 };
 
 const loadTemplate = async (templateId: string) => {
@@ -35,13 +35,13 @@ const page = async ({ params }: never) => {
   // Fetch restaurant data
   const restaurant = await getData(restaurant_id);
 
-  const restaurantUsers = await getUsers(restaurant_id);
+  const RestaurantUsers = await getUsers(restaurant_id);
 
   // Dynamically load the template
   const Template = await loadTemplate(restaurant?.tempModel);
-  console.log("USers are: ", restaurantUsers);
+  console.log("USers are: ", RestaurantUsers);
   // Pass the restaurant object to the template
-  return <Template users={restaurantUsers} />;
+  return <Template users={RestaurantUsers} />;
 };
 
 export default page;

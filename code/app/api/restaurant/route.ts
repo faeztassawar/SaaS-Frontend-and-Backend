@@ -34,6 +34,7 @@ export const POST = async (req: Request) => {
                 email: body.owner_email
             },
         })
+
         if (user?.restaurant_id == '') {
             const profile = await prisma.restaurantOwner.update({
                 where: {

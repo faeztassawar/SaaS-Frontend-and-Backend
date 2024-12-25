@@ -65,13 +65,30 @@ const authOptions: NextAuthOptions = {
                     const newCustomer = await prisma.restaurantCustomer.create({
                         data: {
                             userId: res.user.id,
-                            restaurant_id: rest as string,
                             email: res.user.email as string,
                             name: res.user.name as string,
                             isAdmin: false,
-                            isOwner: false
+                            isOwner: false,
+                            Restaurant: {
+                                connect: { restaurant_id: rest },
+                            }
                         }
                     })
+                    const restaurant = await prisma.restaurant.findUnique({
+                        where: {
+                            restaurant_id: rest
+                        }
+                    })
+                    if (restaurant?.owner_email === newCustomer.email) {
+                        const newCustomerUpdated = await prisma.restaurantCustomer.update({
+                            where: {
+                                email: newCustomer.email
+                            }, data: {
+                                isOwner: true,
+                                isAdmin: true
+                            }
+                        })
+                    }
                     cookiesData.delete("rest_id");
                     console.log("Created new Customer", newCustomer)
                     console.log("USER ORIGINAL:", res.user)

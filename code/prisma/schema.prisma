@@ -33,8 +33,8 @@ model Category {
 }
 
 model Restaurant {
-  restaurant_id String  @id @default(auto()) @map("_id") @db.ObjectId
-  owner_email   String  @unique
+  restaurant_id String               @id @default(auto()) @map("_id") @db.ObjectId
+  owner_email   String               @unique
   name          String
   cuisine       String?
   about_us      String
@@ -43,8 +43,20 @@ model Restaurant {
   phone         String?
   tempModel     String
   Menu          Menu[]
+  Customers     RestaurantCustomer[]
 
   @@map("restaurants")
+}
+
+model RestaurantCustomer {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String      @unique
+  userId        String      @unique
+  isAdmin       Boolean
+  isOwner       Boolean
+  Restaurant    Restaurant? @relation(fields: [restaurant_id], references: [restaurant_id])
+  restaurant_id String?
 }
 
 model Menu {
@@ -74,16 +86,6 @@ model RestaurantOwner {
   email         String  @unique
   userId        String  @unique
   restaurant_id String?
-}
-
-model RestaurantCustomer {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String  @unique
-  userId        String  @unique
-  restaurant_id String
-  isAdmin       Boolean
-  isOwner       Boolean 
 }
 
 model Template {
