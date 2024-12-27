@@ -66,7 +66,8 @@ const NavBar = () => {
           ""
         )}
         {status === "authenticated" &&
-        data.user?.email !== "dinedesign.4@gmail.com" ? (
+        data.user?.email !== "dinedesign.4@gmail.com" &&
+        allowed ? (
           <Link
             href="/Profile"
             className="text-white text-opacity-60 hover:text-opacity-100"

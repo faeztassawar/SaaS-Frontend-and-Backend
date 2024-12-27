@@ -28,11 +28,6 @@ const loadTemplate = async (templateId: string) => {
 
 const page = async ({ params }: never) => {
   const { restaurant_id } = params;
-  console.log(
-    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: ",
-    restaurant_id
-  );
-  // Fetch restaurant data
   const restaurant = await getData(restaurant_id);
 
   const RestaurantUsers = await getUsers(restaurant_id);

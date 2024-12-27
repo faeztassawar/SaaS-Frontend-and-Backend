@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { IoRemove } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type userProps = {
   users: RestaurantCustomer[];
@@ -31,6 +33,27 @@ const handleAdmin = async (item: RestaurantCustomer) => {
 };
 
 const UsersPage = ({ users }: userProps) => {
+  const { data, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const email = data?.user?.email;
+      console.log("CLIENT EMAIL: ", email);
+      const response = await fetch(`/api/session/restaurant/${email}`);
+      const jsonData = await response.json();
+      console.log("JSON DATA: ", jsonData);
+      const check = jsonData;
+      console.log("AFTER FETCHED EMAIL: ", email);
+      console.log("AFTER FETCHED: ", check);
+      if (!check.isOwner) {
+        router.push(`/restaurants/${check.restaurant_id}`);
+      }
+    };
+
+    fetchData();
+  }, [status]);
+
   console.log("USERSS BABYY!!!!", users);
   return (
     <div className="p-5">
@@ -70,25 +93,48 @@ const UsersPage = ({ users }: userProps) => {
                       View
                     </button>
                   </Link> */}
-                  <button
-                    onClick={() => {
-                      handleDelete(item);
-                    }}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                  >
-                    Delete
-                  </button>
+                  {!item.isOwner ? (
+                    <button
+                      onClick={async () => {
+                        await handleDelete(item);
+                        router.refresh();
+                      }}
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    >
+                      Delete
+                    </button>
+                  ) : (
+                    <div>OWNER</div>
+                  )}
                 </div>
               </td>
               <div className="flex items-center justify-center">
-                {!item.isAdmin ? (
+                {!item.isAdmin && !item.isOwner ? (
                   <button
-                    onClick={() => {
-                      handleAdmin(item);
+                    onClick={async () => {
+                      document.cookie = "admin=true;path=/; SameSite=Lax";
+                      await handleAdmin(item);
+                      router.refresh();
                     }}
-                    className="inline-flex justify-end bg-green-600 px-5 py-2 rounded"
+                    className="mt-3 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
                   >
                     Make Admin
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="flex items-center justify-center">
+                {item.isAdmin && !item.isOwner ? (
+                  <button
+                    onClick={async () => {
+                      document.cookie = "admin=false;path=/; SameSite=Lax";
+                      await handleAdmin(item);
+                      router.refresh();
+                    }}
+                    className="mt-3 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                  >
+                    Remove Admin
                   </button>
                 ) : (
                   ""

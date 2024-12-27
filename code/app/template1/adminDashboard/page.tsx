@@ -48,18 +48,21 @@ const AdminDashboard = ({ restaurant_id }: AdminDashboardProps) => {
       const res = await fetch(`/api/session/restaurant/${data?.user?.email}`);
 
       if (res.ok) {
-        const data = await res.json();
+        const user = await res.json();
         console.log("DAtaAA: ", data);
-        setUserRecord(data);
+        if (!user.isAdmin) {
+          router.push(`/restaurants/${restaurant_id}`);
+        }
+        setUserRecord(user);
       } else {
         console.log("ERROR BARBYY!!");
         router.push(`/restaurants/${restaurant_id}`);
       }
-
-      fetchUser();
-      console.log("HAHAHAHHA!");
     };
-  }, [userRecord]);
+
+    fetchUser();
+    console.log("HAHAHAHHA!");
+  }, [status]);
 
   return (
     <div className="flex flex-col p-4 min-h-screen bg-[#0f172a]">

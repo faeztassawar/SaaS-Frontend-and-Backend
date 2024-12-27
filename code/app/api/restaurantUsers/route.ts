@@ -1,4 +1,5 @@
 import prisma from "@/lib/connect"
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server"
 
 
@@ -21,6 +22,9 @@ export const DELETE = async (req: Request) => {
     }
 };
 export const POST = async (req: Request) => {
+    const cookiesData = await cookies()
+    const adminValue = cookiesData.get("admin")?.value
+    console.log("ADMIN VALUE: ", adminValue)
     try {
         const body = await req.json()
 
@@ -29,11 +33,11 @@ export const POST = async (req: Request) => {
                 restaurant_id: body.restaurant_id,
                 id: body.id
             }, data: {
-                isAdmin: true
+                isAdmin: adminValue == "true" ? true : false
             }
         })
-
-        console.log("User Deleted ", customer)
+        cookiesData.delete("admin")
+        console.log("User Updated ", customer)
         return NextResponse.json(customer)
     } catch (err) {
         console.error("Error fetching restaurant:", err);

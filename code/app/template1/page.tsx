@@ -3,6 +3,7 @@
 import Image from "next/image";
 import bgImage from "@/app/template1/images/Landing.png";
 import NavBar from "./components/NavBar";
+import { useSession } from "next-auth/react";
 
 interface Restaurant {
   restaurant_id: string;
@@ -16,7 +17,12 @@ export default function Home({
 }: {
   restaurant?: Restaurant | undefined;
 }) {
-  document.cookie = `id=${restaurant?.restaurant_id}`;
+  const { data, status } = useSession();
+  console.log("EMAIL: ", data?.user?.email);
+  if (typeof window !== "undefined") {
+    document.cookie = `id=${restaurant?.restaurant_id};path=/; SameSite=Lax `;
+  }
+
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       <Image
