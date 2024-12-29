@@ -30,7 +30,7 @@ const page = ({ restaurant }: settingProps) => {
     if (res.ok) {
       const data = await res.json();
       console.log("Now: ", data);
-     // setNameChange(data.name);
+      setNameChange(data.name);
     }
     router.refresh();
   };
