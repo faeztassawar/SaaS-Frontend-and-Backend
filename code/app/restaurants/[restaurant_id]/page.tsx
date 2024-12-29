@@ -16,16 +16,17 @@ const loadTemplate = async (templateId: string) => {
   return dynamic(() => import("@/app/page"));
 };
 
-const page = async ({ params }: never) => {
+const page = async ({ params }: any) => {
   const { restaurant_id } = params;
 
   // Fetch restaurant data
   const restaurant = await getData(restaurant_id);
-
+  console.log("OKOKOKOK", restaurant);
   // Dynamically load the template
   const Template = await loadTemplate(restaurant?.tempModel);
 
   // Pass the restaurant object to the template
+
   return <Template restaurant={restaurant} />;
 };
 

@@ -10,7 +10,7 @@ const Navbar = () => {
       <div className="text-white font-bold capitalize">
         {pathname.split("/").pop()}
       </div>
-      <div className="flex items-center gap-5">
+      {/* <div className="flex items-center gap-5">
         <div className="flex items-center gap-2 bg-gray-700 p-2 rounded-lg">
           <MdSearch />
           <input
@@ -19,7 +19,7 @@ const Navbar = () => {
             className="bg-transparent border-none text-white focus:outline-none"
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

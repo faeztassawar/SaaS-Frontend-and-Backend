@@ -59,7 +59,7 @@ const ProfilePage = () => {
         const data = await res.json();
         setRestaurantData(data);
         console.log("RESTAURANT FETCHED: ", restaurantData);
-        setLink(`/restaurants/${restaurantData.restaurant_id}`);
+        setLink(`/restaurants/${restaurantData?.restaurant_id}`);
       } else {
         console.log("NO RESTAURANT!");
       }

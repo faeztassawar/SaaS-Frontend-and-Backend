@@ -28,7 +28,7 @@ const page = async ({ params }: never) => {
   const Template = await loadTemplate(restaurant?.tempModel);
 
   // Pass the restaurant object to the template
-  return <Template />;
+  return <Template restaurant={restaurant} />;
 };
 
 export default page;

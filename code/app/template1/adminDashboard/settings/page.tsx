@@ -1,7 +1,38 @@
-import React from "react";
+"use client";
+import { Restaurant } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-const page = () => {
-  const menu = "lezzetli.";
+type settingProps = {
+  restaurant: Restaurant;
+};
+
+const page = ({ restaurant }: settingProps) => {
+  const router = useRouter();
+  const [nameChange, setNameChange] = useState(restaurant.name);
+  const [descChange, setDescChange] = useState(restaurant.desc);
+  const [aboutUsChange, setAboutUsChange] = useState(restaurant.about_us);
+  
+  const handleChange = async () => {
+    console.log("Updating");
+    const res = await fetch(
+      `http://localhost:3000/api/restaurant/${restaurant.restaurant_id}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          name: nameChange,
+          about_us: aboutUsChange,
+          desc: descChange,
+        }),
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      console.log("Now: ", data);
+    }
+    router.refresh();
+  };
+  const name = "lezzetli.";
   const timings = [
     {
       day: "Monday",
@@ -26,10 +57,16 @@ const page = () => {
           Change Restaurant Name:{" "}
         </h1>
         <input
+          onChange={(e) => setNameChange(e.target.value)}
           className="w-[30%] border border-gray-800 px-5 py-3 rounded-full bg-[#2f4880]"
-          placeholder={menu}
+          placeholder={restaurant.name}
         />
-        <button className="my-3 px-5 py-3 bg-[#1c9cea] text-white font-semibold rounded-full">
+        <button
+          onClick={async () => {
+            await handleChange();
+          }}
+          className="my-3 px-5 py-3 bg-[#1c9cea] text-white font-semibold rounded-full"
+        >
           Confirm
         </button>
       </div>

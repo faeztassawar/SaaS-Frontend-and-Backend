@@ -4,25 +4,19 @@ import Image from "next/image";
 import bgImage from "@/app/template1/images/Landing.png";
 import NavBar from "./components/NavBar";
 import { useSession } from "next-auth/react";
+import { Restaurant } from "@prisma/client";
 
-interface Restaurant {
-  restaurant_id: string;
-  name: string;
-  about_us: string;
-  cuisine: string;
-}
+type RestaurantProps = {
+  restaurant: Restaurant;
+};
 
-export default function Home({
-  restaurant,
-}: {
-  restaurant?: Restaurant | undefined;
-}) {
+export default function Home({ restaurant }: RestaurantProps) {
   const { data, status } = useSession();
   console.log("EMAIL: ", data?.user?.email);
   if (typeof window !== "undefined") {
     document.cookie = `id=${restaurant?.restaurant_id};path=/; SameSite=Lax `;
   }
-
+  console.log("RESTAURANT: ", restaurant);
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       <Image
@@ -53,7 +47,7 @@ export default function Home({
               animationDelay: "0.2s",
             }}
           >
-            The pure taste of
+            The pure of
           </h2>
           <h1
             className="text-6xl md:text-9xl font-[900] font-chillax"

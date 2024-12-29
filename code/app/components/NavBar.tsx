@@ -4,6 +4,8 @@ import Image from "next/image";
 import { TfiMenu } from "react-icons/tfi";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type RestaurantOwner = {
   id: String | null;
@@ -14,6 +16,8 @@ type RestaurantOwner = {
 };
 
 const NavBar = () => {
+  const router = useRouter();
+
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
   //console.log(data);
@@ -37,7 +41,6 @@ const NavBar = () => {
 
     fetchData();
   }, [status]);
-
   return (
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
       <div className="relative">
@@ -82,7 +85,9 @@ const NavBar = () => {
           {allowed && status == "authenticated" ? (
             <h1
               className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
-              onClick={() => signOut()}
+              onClick={() => {
+                signOut();
+              }}
             >
               Logout
             </h1>
