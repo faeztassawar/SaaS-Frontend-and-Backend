@@ -9,9 +9,10 @@ type settingProps = {
 
 const page = ({ restaurant }: settingProps) => {
   const router = useRouter();
-  const [nameChange, setNameChange] = useState(restaurant.name);
-  const [descChange, setDescChange] = useState(restaurant.desc);
-  const [aboutUsChange, setAboutUsChange] = useState(restaurant.about_us);
+  //const [nameChange, setNameChange] = useState(restaurant.name);
+  const [nameChange, setNameChange] = useState(restaurant?.name || "");
+  const [descChange, setDescChange] = useState(restaurant?.desc||"");
+  const [aboutUsChange, setAboutUsChange] = useState(restaurant?.about_us ||"");
   
   const handleChange = async () => {
     console.log("Updating");
@@ -29,6 +30,7 @@ const page = ({ restaurant }: settingProps) => {
     if (res.ok) {
       const data = await res.json();
       console.log("Now: ", data);
+     // setNameChange(data.name);
     }
     router.refresh();
   };
@@ -59,7 +61,7 @@ const page = ({ restaurant }: settingProps) => {
         <input
           onChange={(e) => setNameChange(e.target.value)}
           className="w-[30%] border border-gray-800 px-5 py-3 rounded-full bg-[#2f4880]"
-          placeholder={restaurant.name}
+          placeholder={restaurant?.name ||""}
         />
         <button
           onClick={async () => {

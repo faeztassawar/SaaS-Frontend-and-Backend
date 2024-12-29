@@ -5,7 +5,7 @@ const getData = async (restaurant_id: string) => {
     `http://localhost:3000/api/restaurant/${restaurant_id}`
   );
   if (!res.ok) {
-    throw new Error("Failed!");
+   // throw new Error("Failed!");
   }
   return res.json();
 };
