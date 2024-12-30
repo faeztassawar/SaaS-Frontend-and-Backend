@@ -5,18 +5,34 @@ import bgImage from "@/app/template1/images/Landing.png";
 import NavBar from "./components/NavBar";
 import { useSession } from "next-auth/react";
 import { Restaurant } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 type RestaurantProps = {
-  restaurant: Restaurant;
+  restaurant_id: string;
 };
 
-export default function Home({ restaurant }: RestaurantProps) {
+export default function Home({ restaurant_id }: RestaurantProps) {
+  const [restaurantData, setRestaurantData] = useState<Restaurant>();
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      console.log("USER PROFILE RESTAURANT ID: ", restaurant_id);
+      const res = await fetch(`/api/restaurant/${restaurant_id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setRestaurantData(data);
+        console.log("RESTAURANT FETCHED: ", restaurantData);
+      } else {
+        console.log("NO RESTAURANT!");
+      }
+    };
+    fetchRestaurant();
+  });
   const { data, status } = useSession();
   console.log("EMAIL: ", data?.user?.email);
   if (typeof window !== "undefined") {
-    document.cookie = `id=${restaurant?.restaurant_id};path=/; SameSite=Lax `;
+    document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;
   }
-  console.log("RESTAURANT: ", restaurant);
+  console.log("RESTAURANT: ", restaurant_id);
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       <Image
@@ -36,7 +52,7 @@ export default function Home({ restaurant }: RestaurantProps) {
             animationDelay: "0s",
           }}
         >
-          {restaurant?.name ?? "-"}
+          {restaurantData?.name ?? "-"}
         </h1>
         <div className="text-white flex gap-2 md:gap-7 flex-col justify-between items-center">
           <h2
@@ -57,7 +73,7 @@ export default function Home({ restaurant }: RestaurantProps) {
               animationDelay: "0.4s",
             }}
           >
-            {restaurant?.cuisine}
+            {restaurantData?.cuisine}
           </h1>
           <span
             className="font-chillax flex flex-wrap w-[60%] md:w-[75%] text-xl md:text-3xl text-center mx-5"
@@ -67,12 +83,14 @@ export default function Home({ restaurant }: RestaurantProps) {
               animationDelay: "0.6s",
             }}
           >
-            {restaurant?.about_us}
+            {restaurantData?.about_us}
           </span>
         </div>
 
         <NavBar
-          rest_id={restaurant?.restaurant_id ? restaurant?.restaurant_id : ""}
+          rest_id={
+            restaurantData?.restaurant_id ? restaurantData?.restaurant_id : ""
+          }
         />
       </div>
       <style jsx>{`
