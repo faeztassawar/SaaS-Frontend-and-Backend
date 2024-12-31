@@ -64,7 +64,7 @@ export default function Home({ restaurant_id }: RestaurantProps) {
               animationDelay: "0.2s",
             }}
           >
-            The pure of
+            The pure taste of
           </h2>
           <h1
             className="text-6xl md:text-9xl font-[900] font-chillax"
