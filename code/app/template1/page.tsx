@@ -12,6 +12,8 @@ type RestaurantProps = {
 };
 
 export default function Home({ restaurant_id }: RestaurantProps) {
+  const { data, status } = useSession();
+
   const [restaurantData, setRestaurantData] = useState<Restaurant>();
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -26,8 +28,7 @@ export default function Home({ restaurant_id }: RestaurantProps) {
       }
     };
     fetchRestaurant();
-  });
-  const { data, status } = useSession();
+  }, [status]);
   console.log("EMAIL: ", data?.user?.email);
   if (typeof window !== "undefined") {
     document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;
@@ -63,7 +64,7 @@ export default function Home({ restaurant_id }: RestaurantProps) {
               animationDelay: "0.2s",
             }}
           >
-            The pure of
+            The pure taste of
           </h2>
           <h1
             className="text-6xl md:text-9xl font-[900] font-chillax"
@@ -76,14 +77,14 @@ export default function Home({ restaurant_id }: RestaurantProps) {
             {restaurantData?.cuisine}
           </h1>
           <span
-            className="font-chillax flex flex-wrap w-[60%] md:w-[75%] text-xl md:text-3xl text-center mx-5"
+            className="font-chillax  flex-wrap w-[60%] md:w-[75%] text-xl md:text-3xl text-center mx-5"
             style={{
               opacity: 0,
               animation: "fadeIn 1s forwards",
               animationDelay: "0.6s",
             }}
           >
-            {restaurantData?.about_us}
+            {restaurantData?.desc}
           </span>
         </div>
 
