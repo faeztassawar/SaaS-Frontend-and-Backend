@@ -103,15 +103,19 @@ model Template {
 //   Status   Boolean
 // }
 
-// model Reservation {
-//   res_id  String   @id @default(auto()) @map("_id") @db.ObjectId
-//   u_id    User     @relation(fields: [user_id], references: [user_id])
-//   user_id String   @db.ObjectId
-//   date    DateTime
-//   Timing  String
-//   Indoor  Boolean?
-//   Status  Boolean
-// }
+model Reservation {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  restaurant_id String
+  email         String
+  name          String
+  guestsCount   Int
+  date          DateTime
+  time          String
+  status        String
+  
+
+  @@map("reservation")
+}
 
 model Account {
   id                String  @id @default(cuid()) @map("_id")
