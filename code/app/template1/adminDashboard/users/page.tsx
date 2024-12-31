@@ -35,6 +35,7 @@ const handleAdmin = async (item: RestaurantCustomer) => {
 const UsersPage = ({ users }: userProps) => {
   const { data, status } = useSession();
   const router = useRouter();
+  document.cookie = `id=${users[0].restaurant_id}; path=/; SamSite=Lax`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,14 +58,6 @@ const UsersPage = ({ users }: userProps) => {
   console.log("USERSS BABYY!!!!", users);
   return (
     <div className="p-5">
-      <div className="flex justify-between items-center mb-5">
-        <DSearch placeholder="Search for a user...." />
-        <Link href="/template1/adminDashboard/users/add">
-          <button className="px-4 py-2 bg-[#1c9cea] text-white rounded-lg hover:bg-blue-700 transition">
-            Add new
-          </button>
-        </Link>
-      </div>
       <table className="w-full bg-[#172340] rounded-xl border-gray-700  shadow-md">
         <thead className="">
           <tr>

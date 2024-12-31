@@ -96,7 +96,7 @@ const NavBar = () => {
               className="hover:cursor-pointer px-5 py-3 bg-white text-black rounded-full"
               onClick={async () => {
                 {
-                  //await signOut({ redirect: false });
+                  await signOut({ redirect: false });
                   signIn("google");
                   document.cookie = "redirected_via=owner";
                   //document.cookie = "restaurant=rest";

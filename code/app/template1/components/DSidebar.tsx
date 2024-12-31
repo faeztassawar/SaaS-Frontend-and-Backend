@@ -1,3 +1,4 @@
+"use client";
 import Dsidelink from "@/app/template1/components/Dsidelink";
 import { FaCircleUser } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
@@ -7,6 +8,10 @@ import {
   MdShoppingBag,
   MdOutlineSettings,
 } from "react-icons/md";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { RestaurantCustomer } from "@prisma/client";
 
 type sidebarprops = {
   restaurant_id: string;
@@ -47,6 +52,26 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
       ],
     },
   ];
+  const { data, status } = useSession();
+  const router = useRouter();
+  document.cookie = `id=${restaurant_id}; path=/; SamSite=Lax`;
+  const [user, setUser] = useState<RestaurantCustomer>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const email = data?.user?.email;
+      console.log("CLIENT EMAIL: ", email);
+      const response = await fetch(`/api/session/restaurant/${email}`);
+      const jsonData = await response.json();
+      console.log("JSON DATA: ", jsonData);
+      const check = jsonData;
+      console.log("AFTER FETCHED EMAIL: ", email);
+      console.log("AFTER FETCHED: ", check);
+      setUser(check);
+    };
+
+    fetchData();
+  }, [status]);
 
   return (
     <div className="sticky top-10 p-4">
@@ -54,8 +79,10 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
       <div className="flex items-center gap-4 mb-6">
         <FaCircleUser className="text-xl text-gray-400" />
         <div className="flex flex-col">
-          <span className="font-medium text-white">Aroob</span>
-          <span className="text-sm text-gray-400">Administrator</span>
+          <span className="font-medium text-white">{user?.name}</span>
+          <span className="text-sm text-gray-400">
+            {user?.isOwner ? <>Owner</> : <>Administrator</>}
+          </span>
         </div>
       </div>
 

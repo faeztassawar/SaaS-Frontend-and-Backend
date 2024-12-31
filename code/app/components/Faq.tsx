@@ -12,8 +12,7 @@ const items = [
   },
   {
     question: "Can I buy multiple templates?",
-    answer:
-      "Yes. Some restaurants can have a variety of menu items, so if they want, they can get both types of templates.",
+    answer: "No, you can create only one account against an email.",
   },
   {
     question: "Is my data secure?",

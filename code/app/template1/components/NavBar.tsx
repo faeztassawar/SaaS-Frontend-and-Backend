@@ -19,6 +19,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { RestaurantCustomer } from "@prisma/client";
 
 type NavBarProps = {
   rest_id: string;
@@ -27,30 +28,30 @@ type NavBarProps = {
 const NavBar = ({ rest_id }: NavBarProps) => {
   const { data, status } = useSession();
   const menuPath = `/restaurants/${rest_id}/menu`;
+  const dashPath = `/restaurants/${rest_id}/adminDashboard`;
   const [allowed, setAllowed] = useState(false);
+  const [user, setUser] = useState<RestaurantCustomer>();
+  //document.cookie = `id=${rest_id};path=/;SamSite=Lax;`;
 
   useEffect(() => {
     const fetchData = async () => {
       const email = data?.user?.email;
       if (!email) return;
-
       try {
         const response = await fetch(`/api/session/restaurant/${email}`);
         const jsonData = await response.json();
-        const check = jsonData?.restaurant_id;
-
-        if (check) {
+        setUser(jsonData);
+        console.log("DATA:", jsonData);
+        if (jsonData) {
           setAllowed(true);
         }
       } catch (error) {
         console.error("Error fetching session data:", error);
       }
     };
-
-    if (status === "authenticated") {
-      fetchData();
-    }
-  }, [status, data]);
+    fetchData();
+  }, [status]);
+  console.log("Owner:", user);
 
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
@@ -65,14 +66,26 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {status === "authenticated" ? (
+              {status === "authenticated" && user?.isAdmin ? (
                 <>
                   <DropdownMenuItem>
                     <Link
-                      href="/template1/adminDashboard"
+                      href={dashPath}
                       className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
                     >
                       Dashboard
+                      <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/template1/editProfile"
+                      className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
+                    >
+                      Profile
                       <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
                     </Link>
                   </DropdownMenuItem>
@@ -86,16 +99,6 @@ const NavBar = ({ rest_id }: NavBarProps) => {
                     </Link>
                   </DropdownMenuItem>
                 </>
-              ) : (
-                <DropdownMenuItem>
-                  <Link
-                    href="/template1/editProfile"
-                    className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
-                  >
-                    Profile
-                    <GoChevronRight className="ml-2 transition-transform duration-200 transform hover:translate-x-1 hover:opacity-100 animate-chevron" />
-                  </Link>
-                </DropdownMenuItem>
               )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

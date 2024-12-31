@@ -28,12 +28,26 @@ export const POST = async (req: Request) => {
                 tempModel: body.tempModel,
             }
         })
-
         const user = await prisma.restaurantOwner.findUnique({
             where: {
                 email: body.owner_email
             },
         })
+
+        const ownerProfile = await prisma.restaurantCustomer.create({
+            data: {
+                email: body.owner_email,
+                name: user?.name,
+                userId: user?.userId as string,
+                Restaurant: {
+                    connect: { restaurant_id: restaurant.restaurant_id },
+                },
+                isAdmin: true,
+                isOwner: true
+            }
+        })
+
+
 
         if (user?.restaurant_id == '') {
             const profile = await prisma.restaurantOwner.update({
