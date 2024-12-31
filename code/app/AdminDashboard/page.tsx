@@ -14,10 +14,10 @@ const page = () => {
   const router = useRouter();
   const [details, setDetails] = useState(true);
   if (
-    status !== "authenticated" ||
-    data.user?.email !== "dinedesign.4@gmail.com"
+    status !== "authenticated" //||
+    //data.user?.email !== "dinedesign.4@gmail.com"
   ) {
-    router.push("/");
+    //router.push("/");
   }
 
   return (

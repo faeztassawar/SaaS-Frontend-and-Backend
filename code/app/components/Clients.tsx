@@ -26,7 +26,7 @@ const Clients = () => {
           const formattedClients = data.map((owner: any) => ({
             Name: owner.name || "N/A",
             Email: owner.email,
-            Template: "N/A", 
+            Template: owner.template ||"N/A", 
             RestaurantId: owner.restaurant_id || "N/A",
             LastPaymentDate: "N/A", 
             NextPaymentDate: "N/A", 
