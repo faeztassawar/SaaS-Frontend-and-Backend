@@ -120,7 +120,8 @@ const ProfilePage = () => {
                       Add Payment Method
                     </button>
                   </div>
-                </div>
+                </div> 
+                
                 {userProfile?.restaurant_id ? (
                   <div className="flex flex-col gap-10 w-full">
                     <h1 className="text-4xl font-bold">Your Restaurant</h1>
