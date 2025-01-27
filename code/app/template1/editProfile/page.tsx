@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import bgImage from "@/app/template1/images/Profile.png";
 import { FaCircleUser } from "react-icons/fa6";
@@ -8,20 +8,46 @@ import { Target } from "lucide-react";
 import NavBar from "../components/NavBar";
 import Link from "next/link";
 
+// Function to fetch user profile data from API
+const fetchUserProfile = async () => {
+  const response = await fetch("/restaurant/userProfile");
+  if (response.ok) {
+    return response.json(); // assuming the API returns a JSON object with user data
+  } else {
+    console.error("Failed to fetch user profile");
+    return null;
+  }
+};
+
 const EditProfile = () => {
-  const [firstName, setFirstName] = useState("Talha");
-  const [lastName, setLastName] = useState("Bilal");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [editFirstName, setEditFirstName] = useState(false);
   const [editLastName, setEditLastName] = useState(false);
-  const [bookings, setBookings] = useState([1]);
+  const [bookings, setBookings] = useState<number[]>([]);
+  
+  // Fetch user profile data from API
+  useEffect(() => {
+    const getUserData = async () => {
+      const data = await fetchUserProfile();
+      if (data) {
+        setFirstName(data.firstName); // Assume API response contains firstName
+        setLastName(data.lastName);   // Assume API response contains lastName
+        setEmail(data.email);         // Assume API response contains email
+        setBookings(data.bookings);   // Assume API response contains bookings array
+      }
+    };
+    getUserData();
+  }, []); // Empty dependency array ensures the data is fetched once on mount
 
   const handleFirstName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(e.target.value);
   };
+  
   const handleLastName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLastName(e.target.value);
   };
-  const email = "bsef21m515@pucit.edu.pk";
 
   return (
     <div className="relative h-screen w-screen overflow-y-auto">
@@ -53,6 +79,7 @@ const EditProfile = () => {
                     className="p-2 mt-2 mx-5 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
                     type="text"
                     placeholder="Enter your First name"
+                    value={firstName}
                   />
                   <button
                     className="bg-[#1f1f1f] rounded-full px-3 py-2"
@@ -63,9 +90,7 @@ const EditProfile = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-between px-5">
-                  <div className="mt-4 px-2 text-2xl font-[500]">
-                    {firstName}
-                  </div>
+                  <div className="mt-4 px-2 text-2xl font-[500]">{firstName}</div>
                   <CiEdit
                     onClick={() => setEditFirstName(true)}
                     className="text-3xl text-[#F18608] cursor-pointer"
@@ -83,6 +108,7 @@ const EditProfile = () => {
                     className="p-2 mt-2 mx-5 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
                     type="text"
                     placeholder="Enter your Last name"
+                    value={lastName}
                   />
                   <button
                     className="bg-[#1f1f1f] rounded-full px-3 py-2"
@@ -93,9 +119,7 @@ const EditProfile = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-between px-5">
-                  <div className="mt-4 px-2 text-2xl font-[500]">
-                    {lastName}
-                  </div>
+                  <div className="mt-4 px-2 text-2xl font-[500]">{lastName}</div>
                   <CiEdit
                     onClick={() => setEditLastName(true)}
                     className="text-3xl text-[#F18608] cursor-pointer"
@@ -114,7 +138,7 @@ const EditProfile = () => {
             {bookings.length != 0 ? (
               <div className="p-2 bg-[#1f1f1f] rounded flex-col justify-between items-center border border-[#333]">
                 {bookings.map((item, index) => (
-                  <div className=" px-5 my-2 flex items-center justify-between">
+                  <div className=" px-5 my-2 flex items-center justify-between" key={index}>
                     <div>Table Number {item}</div>
                     <h1>Date</h1>
                     <h1>Timing</h1>
@@ -137,139 +161,6 @@ const EditProfile = () => {
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="relative h-screen w-screen font-chillax">
-  //     {/* Background Image */}
-  //     <Image
-  //       className="absolute top-0 left-0 object-cover w-full h-full brightness-[25%] z-0" // Added z-index to ensure layering
-  //       src={bgImage}
-  //       fill
-  //       alt="Background"
-  //     />
-
-  //     {/* Profile and Form Layout */}
-  //     <div className="relative flex items-start justify-center h-full z-10 p-10">
-  //       {/* Profile Icon */}
-  //       <div className="flex flex-col items-center pr-8">
-  //         <FaCircleUser size={120} color="grey" className="mb-4" />
-  //         <CiEdit className="text-[#F18608] cursor-pointer" size={24} />
-  //       </div>
-
-  //       {/* Form Section */}
-  //       <div className="bg-[#101010]/90 text-white flex flex-col p-10 rounded-xl w-[60%] max-w-4xl shadow-lg">
-  //         {/* Personal Information Header */}
-  //         <div className="text-[#E8B97C] font-semibold flex justify-between mb-4 text-5xl font-rose">
-  //           <h2>
-  //           Personal Information
-  //           </h2>
-
-  //           <Link href="/template1" className="
-  //           text-3xl
-  //           ">X</Link>
-  //         </div>
-
-  //         <div className="flex flex-col gap-6">
-  //           {/* First Name and Last Name */}
-  //           <div className="flex justify-between">
-  //             <div className="flex flex-col">
-  //             <label className="block mb-2 text-2xl font-[900]">
-  //               First Name
-  //             </label>
-  //             <div className="relative">
-  //               {editFirstName == true ? (
-  //                 <div
-  //                   className="flex gap-2
-  //                 "
-  //                 >
-  //                   <input
-  //                     onChange={handleFirstName}
-  //                     className="p-2 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
-  //                     type="text"
-  //                     placeholder="Enter your first name"
-  //                   />
-  //                   <button
-  //                     className="bg-[#1f1f1f] rounded-full px-3 py-2"
-  //                     onClick={() => setEditFirstName(false)}
-  //                   >
-  //                     Save
-  //                   </button>
-  //                 </div>
-  //               ) : (
-  //                 <div>
-  //                   <div className="mt-4 text-2xl font-[500]">{firstName}</div>
-  //                   <CiEdit
-  //                     onClick={() => setEditFirstName(true)}
-  //                     className="absolute top-3 right-3 text-[#F18608] cursor-pointer"
-  //                     size={18}
-  //                   />
-  //                 </div>
-  //               )}
-  //             </div>
-  //             <div className="flex flex-col">
-  //             <label className="block mb-2 text-2xl font-[900]">
-  //               Last Name
-  //             </label>
-  //             <div className="relative">
-  //               {editLastName == true ? (
-  //                 <div className="flex gap-2">
-  //                   <input
-  //                     onChange={handleLastName}
-  //                     className="p-2 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
-  //                     type="text"
-  //                     placeholder="Enter your last name"
-  //                   />
-  //                   <button
-  //                     className="bg-[#1f1f1f] rounded-full px-3 py-2"
-  //                     onClick={() => setEditLastName(false)}
-  //                   >
-  //                     Save
-  //                   </button>
-  //                 </div>
-  //               ) : (
-  //                 <div>
-  //                   <div className="mt-4 text-2xl font-[500]">{lastName}</div>
-  //                   <CiEdit
-  //                     onClick={() => setEditLastName(true)}
-  //                     className="absolute top-3 right-3 text-[#F18608] cursor-pointer"
-  //                     size={18}
-  //                   />
-  //                 </div>
-  //               )}
-  //             </div>
-
-  //             </div>
-  //           </div>
-  //           <div>
-
-  //             </div>
-  //           </div>
-  //           {/* Email and Contact */}
-  //           <div className="flex flex-col my-4">
-  //             <label className="block mb-2 text-3xl py-5">Email</label>
-  //             <div className="relative text-xl">{email}</div>
-  //           </div>
-
-  //           {/* Bookings */}
-  //           <div className="col-span-2">
-  //             <label className="block text-3xl py-4">Your Bookings</label>
-  //             {bookings.length != 0 ? (
-  //               <div className="p-2 bg-[#1f1f1f] rounded flex-col justify-between items-center border border-[#333]">
-  //                 {bookings.map((item, index) => (
-  //                   <div className="my-2">
-  //                     <div>Booking Number {item}</div>
-  //                   </div>
-  //                 ))}
-  //               </div>
-  //             ) : (
-  //               <div className="text-center font-[500] text-2xl">You have no bookings</div>
-  //             )}
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default EditProfile;
