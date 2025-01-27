@@ -74,7 +74,7 @@ model Menu {
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   createdAt     DateTime  @default(now())
@@ -107,7 +107,7 @@ model Template {
 // }
 
 model Reservation {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
   restaurant_id String
   email         String
   name          String
@@ -115,7 +115,7 @@ model Reservation {
   date          DateTime
   time          String
   status        String
-  customerId    String       @db.ObjectId
+  customerId    String             @db.ObjectId
   Customer      RestaurantCustomer @relation(fields: [customerId], references: [id])
 
   @@map("reservation")

@@ -27,11 +27,11 @@ const authOptions: NextAuthOptions = {
             await prisma.session.deleteMany({
                 where: { userId: res.user.id },
             });
-            if (res.profile.email !== res.user.email) {
+            if (res.profile?.email !== res.user.email) {
                 console.log("Updating user email in database.");
                 await prisma.user.update({
                     where: { id: res.user.id },
-                    data: { email: res.profile.email },
+                    data: { email: res.profile?.email },
                 });
             }
 

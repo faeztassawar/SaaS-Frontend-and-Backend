@@ -33,8 +33,8 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
           icon: <MdSupervisedUserCircle />,
         },
         {
-          title: "Products",
-          path: `/restaurants/${restaurant_id}/adminDashboard/products`,
+          title: "Menu",
+          path: `/restaurants/${restaurant_id}/adminDashboard/Menu`,
           icon: <MdShoppingBag />,
         },
       ],
