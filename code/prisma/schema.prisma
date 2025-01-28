@@ -49,19 +49,17 @@ model Restaurant {
 }
 
 model RestaurantCustomer {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String        @unique
-  userId        String        @unique
-  isAdmin       Boolean
-  isOwner       Boolean
-  Restaurant    Restaurant?   @relation(fields: [restaurant_id], references: [restaurant_id])
-<<<<<<< HEAD
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String?
+  email      String      @unique
+  userId     String      @unique
+  isAdmin    Boolean
+  isOwner    Boolean
+  Restaurant Restaurant? @relation(fields: [restaurant_id], references: [restaurant_id])
+
   restaurant_id String? @db.ObjectId
-=======
-  restaurant_id String?       @db.ObjectId
->>>>>>> 97b58886476dc70756627d20c02391ede40023b0
-  Reservations  Reservation[] // Add this line for the relation
+
+  Reservations Reservation[] // Add this line for the relation
 
   @@map("restaurantCustomer")
 }
@@ -104,21 +102,16 @@ model RestaurantOwner {
   userId        String  @unique
   restaurant_id String? @db.ObjectId
 
-  
-  
   customerId String? @unique // Stripe customer ID, this will be important when we need to delete the subscription
 
   Subscription Subscription?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Subscription {
-  id     String             @id @default(cuid()) @map("_id")
-  userId String             @unique
-  template   Templates
-  period SubscriptionPeriod
+  id       String             @id @default(cuid()) @map("_id")
+  userId   String             @unique
+  template Templates
+  period   SubscriptionPeriod
 
   startDate DateTime @default(now())
   endDate   DateTime

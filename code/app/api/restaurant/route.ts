@@ -20,7 +20,7 @@ export const POST = async (req: Request) => {
             },
         })
 
-        if (user?.restaurant_id !== '') {
+        if (user?.restaurant_id) {
             console.log("This user already has a restaurant")
             return new NextResponse(JSON.stringify({ message: "Already!" }), { status: 500, statusText: "Already!" })
         }
