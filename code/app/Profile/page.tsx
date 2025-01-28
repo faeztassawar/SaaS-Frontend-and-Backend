@@ -27,8 +27,6 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (status === "authenticated" && session?.user?.email) {
-        const email = "aroobhamid123@gmail.com";
-        console.log("Email hahahaha: ", email);
         console.log("Fetching URL:", `/api/session/saas/${session.user.email}`);
 
         try {
@@ -120,15 +118,15 @@ const ProfilePage = () => {
                       Add Payment Method
                     </button>
                   </div>
-                </div> 
-                
+                </div>
+
                 {userProfile?.restaurant_id ? (
                   <div className="flex flex-col gap-10 w-full">
                     <h1 className="text-4xl font-bold">Your Restaurant</h1>
                     <div className="flex flex-col w-full overflow-hidden">
                       <div>
                         <div className="flex justify-center bg-[#2f2f2f] text-lg font-semibold py-3 px-4 rounded-t-lg">
-                        <div className="basis-1/2 text-center text-xl py-4 px-3">
+                          <div className="basis-1/2 text-center text-xl py-4 px-3">
                             Restaurant ID
                           </div>
                           <div className="basis-1/2 text-center text-xl py-4 px-3">
@@ -141,7 +139,7 @@ const ProfilePage = () => {
                       </div>
                       <div>
                         <div className="flex justify-between bg-[#1f1f1f] py-4 px-4 transition-colors hover:bg-[#3f3f3f]">
-                        <div className="px-3 basis-1/2 text-center text-xl font-semibold">
+                          <div className="px-3 basis-1/2 text-center text-xl font-semibold">
                             {restaurantData?.restaurant_id}
                           </div>
                           <div className="px-3 basis-1/2 text-center text-xl font-semibold">
@@ -150,7 +148,6 @@ const ProfilePage = () => {
                           <div className="px-3 basis-1/2 text-center text-xl font-semibold">
                             {restaurantData?.cuisine}
                           </div>
-                          
                         </div>
                       </div>
                       <div>

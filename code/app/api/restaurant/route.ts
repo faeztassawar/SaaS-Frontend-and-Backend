@@ -29,7 +29,7 @@ export const POST = async (req: Request) => {
         // Create the restaurant first (without the menu)
         const restaurant = await prisma.restaurant.create({
             data: {
-                owner_email: body.owner_email,
+                owner_email: body.owner_email as string,
                 name: body.name,
                 about_us: body.about_us,
                 desc: 'Great ambiance and friendly staff.',

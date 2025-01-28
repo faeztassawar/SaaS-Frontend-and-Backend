@@ -28,7 +28,9 @@ const getCategories = async (menu_id: string) => {
 
 const loadTemplate = async (templateId: string) => {
   if (templateId === "1")
-    return dynamic(() => import("@/app/template1/adminDashboard/Menu/page"));
+    return dynamic(
+      () => import("@/app/template1/adminDashboard/categories/page")
+    );
   return dynamic(() => import("@/app/page"));
 };
 
