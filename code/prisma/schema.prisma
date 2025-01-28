@@ -56,7 +56,11 @@ model RestaurantCustomer {
   isAdmin       Boolean
   isOwner       Boolean
   Restaurant    Restaurant?   @relation(fields: [restaurant_id], references: [restaurant_id])
+<<<<<<< HEAD
+  restaurant_id String? @db.ObjectId
+=======
   restaurant_id String?       @db.ObjectId
+>>>>>>> 97b58886476dc70756627d20c02391ede40023b0
   Reservations  Reservation[] // Add this line for the relation
 
   @@map("restaurantCustomer")
@@ -98,9 +102,9 @@ model RestaurantOwner {
   name          String?
   email         String  @unique
   userId        String  @unique
-  restaurant_id String?
+  restaurant_id String? @db.ObjectId
 
-  template       Templates
+  
   
   customerId String? @unique // Stripe customer ID, this will be important when we need to delete the subscription
 
