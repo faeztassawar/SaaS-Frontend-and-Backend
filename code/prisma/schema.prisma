@@ -56,7 +56,7 @@ model RestaurantCustomer {
   isAdmin       Boolean
   isOwner       Boolean
   Restaurant    Restaurant?   @relation(fields: [restaurant_id], references: [restaurant_id])
-  restaurant_id String?
+  restaurant_id String?       @db.ObjectId
   Reservations  Reservation[] // Add this line for the relation
 
   @@map("restaurantCustomer")

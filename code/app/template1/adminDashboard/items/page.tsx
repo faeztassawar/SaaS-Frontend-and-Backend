@@ -1,16 +1,16 @@
 import DSearch from "@/app/template1/components/DSearch";
 import noproduct from "@/app/template1/images/noproduct.jpg";
-import { Category } from "@prisma/client";
+import { Category, Item } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-type MenuItemProps = {
-  categories: Category[];
+type ItemProps = {
+  items: Item[];
 };
 
-const MenuSettings = ({ categories }: MenuItemProps) => {
-  console.log("Categories: ", categories);
+const CategoriesPage = ({ items }: ItemProps) => {
+  console.log("Items: ", items);
   return (
     <div className="p-5">
       <div className="flex justify-between items-center mb-5">
@@ -29,11 +29,11 @@ const MenuSettings = ({ categories }: MenuItemProps) => {
         border-gray-600"
         >
           <div className="flex items-center justify-center">
-            <td className=" py-7 text-2xl font-bold px-4 ">CATEGORIES</td>
+            <td className=" py-7 text-2xl font-bold px-4 ">Items</td>
           </div>
         </thead>
         <tbody>
-          {categories.map((item) => (
+          {items.map((item) => (
             <tr className="flex justify-between rounded-xl my-2 hover:bg-[#283d6f]">
               <td
                 className="
@@ -61,4 +61,4 @@ const MenuSettings = ({ categories }: MenuItemProps) => {
   );
 };
 
-export default MenuSettings;
+export default CategoriesPage;
