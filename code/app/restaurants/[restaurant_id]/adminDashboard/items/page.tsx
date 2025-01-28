@@ -51,10 +51,14 @@ const page = async ({ params }: never) => {
   const cats = await getCategories(menu.id);
   console.log("CATS: ", cats);
   const Template = await loadTemplate(restaurant?.tempModel);
-
-  let items: Item[] = cats.map((item: Category) => getItems(item.id));
+  const itemsPromises = cats.map(async (cat: Category) => {
+    const items = await getItems(cat.id);
+    return items;
+  });
+  const items = (await Promise.all(itemsPromises)).flat();
+  console.log("ITEMSSSS: ", items);
   // Pass the restaurant object to the template
-  return <Template items={items} />;
+  return <Template restaurantId={restaurant_id} menuId={menu.id} />;
 };
 
 export default page;

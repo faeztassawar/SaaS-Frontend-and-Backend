@@ -38,6 +38,8 @@ const MenuPage = ({ id, restaurant_id }: MenuProps) => {
     }
   }, [id, status]);
 
+  console.log("CATS and Items: ", categories);
+
   return (
     <div className="md:flex h-screen w-screen bg-[#050505] font-chillax">
       {/* Left Section with Background Image */}
@@ -75,7 +77,7 @@ const MenuPage = ({ id, restaurant_id }: MenuProps) => {
         {/* Categories and Items */}
         {loading ? (
           <p className="text-center text-white">Loading categories...</p>
-        ) : categories.length > 0 ? (
+        ) : (
           categories.map((category) => (
             <CategoryComponent
               key={category.id}
@@ -83,8 +85,6 @@ const MenuPage = ({ id, restaurant_id }: MenuProps) => {
               cat_name={category.name}
             />
           ))
-        ) : (
-          <p className="text-center text-white">No categories available.</p>
         )}
 
         {/* Footer */}

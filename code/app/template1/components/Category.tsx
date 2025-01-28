@@ -16,7 +16,7 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/item/${cat_id}`); // API endpoint for fetching items by category
+        const response = await fetch(`/api/items/${cat_id}`); // API endpoint for fetching items by category
         const jsonData: Item[] = await response.json();
         setItems(jsonData);
       } catch (error) {
@@ -30,7 +30,7 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
       fetchData();
     }
   }, [cat_id, status]);
-
+  console.log("Items for ", cat_name, ": ", items);
   return (
     <div className="mb-8">
       {/* Category Title */}
@@ -49,6 +49,7 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
               name={item.name}
               desc={item.desc}
               price={item.price.toString()}
+              img={item.image ?? ""}
             />
           ))}
         </div>

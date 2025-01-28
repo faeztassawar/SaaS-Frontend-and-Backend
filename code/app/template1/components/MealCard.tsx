@@ -1,14 +1,15 @@
 import React from "react";
 import Image from "next/image";
-import food from "@/app/template1/images/Soup.png"
+import food from "@/app/template1/images/Soup.png";
 
 type MealCardProps = {
   name: string; // Changed "String" to "string" for consistency with TypeScript conventions
   desc: string;
   price: number | string;
+  img: string;
 };
 
-const MealCard = ({ name, desc, price }: MealCardProps) => {
+const MealCard = ({ name, desc, price, img }: MealCardProps) => {
   return (
     <div className="flex flex-col items-start py-4 px-8 w-full">
       <div className="flex w-full items-center gap-4 font-chillax">
@@ -16,7 +17,7 @@ const MealCard = ({ name, desc, price }: MealCardProps) => {
         <div className="relative w-24 h-24">
           <Image
             className="rounded-lg object-cover"
-            src={food}
+            src={img ? img : food}
             fill
             alt={`${name} image`} // Dynamically set alt text for better accessibility
           />

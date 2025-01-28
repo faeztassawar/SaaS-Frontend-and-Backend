@@ -16,10 +16,11 @@ const getMenu = async (restaurant_id: string) => {
   }
   return res.json();
 };
+
 const loadTemplate = async (templateId: string) => {
   if (templateId === "1")
     return dynamic(
-      () => import("@/app/template1/adminDashboard/categories/add/page")
+      () => import("@/app/template1/adminDashboard/items/add/page")
     );
   return dynamic(() => import("@/app/page"));
 };
@@ -29,10 +30,10 @@ const page = async ({ params }: never) => {
 
   // Fetch restaurant data
   const restaurant = await getData(restaurant_id);
-
+  const menu = await getMenu(restaurant_id);
   // Dynamically load the template
   const Template = await loadTemplate(restaurant?.tempModel);
-  const menu = await getMenu(restaurant_id);
+
   // Pass the restaurant object to the template
   return <Template menuId={menu.id} />;
 };
