@@ -3,14 +3,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Check } from "lucide-react";
 import PaymentLink from "./PaymentLink";
 
-enum PopularPlanType {
-	NO = 0,
-	YES = 1,
+enum TemplateType {
+	CLASSIC = 0,
+	FASTFOOD = 1,
 }
 
 interface PricingProps {
 	title: string;
-	popular: PopularPlanType;
+	template: TemplateType;
 	price: number;
 	description: string;
 	buttonText: string;
@@ -23,7 +23,7 @@ interface PricingProps {
 const pricingList: PricingProps[] = [
 	{
 		title: "Free",
-		popular: 0,
+		template: 0,
 		price: 0,
 		description: "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
 		buttonText: "Get Started",
@@ -33,7 +33,7 @@ const pricingList: PricingProps[] = [
 	},
 	{
 		title: "Premium",
-		popular: 1,
+		template: 1,
 		price: 10,
 		description: "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
 		buttonText: "Buy Now",
@@ -44,7 +44,7 @@ const pricingList: PricingProps[] = [
 	},
 	{
 		title: "Enterprise",
-		popular: 0,
+		template: 0,
 		price: 99,
 		description: "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
 		buttonText: "Buy Now",
@@ -74,7 +74,7 @@ export const Pricing = () => {
 					<Card
 						key={pricing.title}
 						className={
-							pricing.popular === PopularPlanType.YES
+							pricing.template === TemplateType.FASTFOOD
 								? "drop-shadow-xl shadow-black/10 dark:shadow-white/10"
 								: ""
 						}
@@ -82,7 +82,7 @@ export const Pricing = () => {
 						<CardHeader>
 							<CardTitle className='flex item-center justify-between'>
 								{pricing.title}
-								{pricing.popular === PopularPlanType.YES ? (
+								{pricing.template === TemplateType.FASTFOOD ? (
 									<Badge variant='secondary' className='text-sm text-primary'>
 										Most popular
 									</Badge>

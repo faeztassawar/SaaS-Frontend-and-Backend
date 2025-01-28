@@ -56,7 +56,6 @@ const authOptions: NextAuthOptions = {
                     const newOwner = await prisma.restaurantOwner.create({
                         data: {
                             userId: res.user.id,
-                            restaurant_id: '',
                             email: res.user.email as string,
                             name: res.user.name as string
                         }
