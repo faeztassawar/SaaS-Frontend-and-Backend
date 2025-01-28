@@ -27,8 +27,15 @@ type NavBarProps = {
 
 const NavBar = ({ rest_id }: NavBarProps) => {
   const { data, status } = useSession();
+
+  const home = `/restaurants/${rest_id}`;
   const menuPath = `/restaurants/${rest_id}/menu`;
   const dashPath = `/restaurants/${rest_id}/adminDashboard`;
+  const catPath = `/restaurants/${rest_id}/categories`;
+  const resPath = `/restaurants/${rest_id}/reservation`;
+  const editProfilePath = `/restaurants/${rest_id}/editProfile`;
+  const aboutPath = `/restaurants/${rest_id}/aboutUs`;
+
   const [allowed, setAllowed] = useState(false);
   const [user, setUser] = useState<RestaurantCustomer>();
   //document.cookie = `id=${rest_id};path=/;SamSite=Lax;`;
@@ -82,7 +89,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
                 <>
                   <DropdownMenuItem>
                     <Link
-                      href="/template1/editProfile"
+                      href={editProfilePath}
                       className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
                     >
                       Profile
@@ -91,7 +98,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link
-                      href="/template1/reservation"
+                      href={resPath}
                       className="flex items-center justify-between font-chillax w-full h-full px-2 rounded-lg  hover:bg-gray-300 transition duration-200 hover-chevron"
                     >
                       Reservation
@@ -109,7 +116,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Link
-                  href="/template1/categories"
+                  href={catPath}
                   className="flex items-center justify-between px-2 rounded-lg font-chillax w-full h-full  hover:bg-gray-300 transition duration-200 hover-chevron"
                 >
                   Categories
@@ -118,7 +125,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link
-                  href="/template1/menu"
+                  href={menuPath}
                   className="flex items-center justify-between px-2 rounded-lg font-chillax w-full h-full  hover:bg-gray-300 transition duration-200 hover-chevron"
                 >
                   All Items
@@ -129,7 +136,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link
-                href="/template1"
+                href={home}
                 className="flex items-center justify-between px-2 rounded-lg font-chillax w-full h-full  hover:bg-gray-300 transition duration-200 hover-chevron"
               >
                 Home
@@ -176,17 +183,17 @@ const NavBar = ({ rest_id }: NavBarProps) => {
       </div>
       <div className="font-chillax mx-5 text-xl hidden md:flex gap-8 text-white">
         <Link href={menuPath}>Menu</Link>
-        <Link href="/template1/categories" className="hover:cursor-pointer">
+        <Link href={catPath} className="hover:cursor-pointer">
           Categories
         </Link>
-        <Link href="/template1/aboutUs" className="hover:cursor-pointer">
+        <Link href={aboutPath} className="hover:cursor-pointer">
           About Us
         </Link>
       </div>
 
       {status === "authenticated" && allowed ? (
         <Link
-          href="/template1/reservation"
+          href={resPath}
           className="md:text-xl text-white bg-black px-7 py-3 rounded-full transition-transform  hover:scale-105 font-chillax text-sm"
         >
           Book a Table

@@ -4,11 +4,11 @@ import React from "react";
 
 type CategoriesCardProp = {
   name: string;
-  desc: string;
+  // desc: string;
   img: string | StaticImport;
 };
 
-const Categories = ({ name, desc, img }: CategoriesCardProp) => {
+const Categories = ({ name, img }: CategoriesCardProp) => {
   return (
     <div className="group hover:cursor-pointer flex relative h-screen w-full md:w-[33vw] overflow-hidden bg-neutral-200">
       <Image
@@ -22,9 +22,9 @@ const Categories = ({ name, desc, img }: CategoriesCardProp) => {
         <h1 className="text-7xl md:text-4xl xl:text-7xl font-rose text-[#face8d]">
           {name}
         </h1>
-        <h1 className="text-6xl md:text-4xl xl:text-6xl font-[900] text-white flex-wrap">
+        {/* <h1 className="text-6xl md:text-4xl xl:text-6xl font-[900] text-white flex-wrap">
           {desc}
-        </h1>
+        </h1> */}
       </div>
     </div>
   );
