@@ -19,30 +19,16 @@ interface MenuItemType {
   category_id: string;
 }
 
-interface Restaurant {
+interface MenuProps {
+  id: string;
   restaurant_id: string;
-  name: string;
-  about_us: string;
-  cuisine: string;
-  desc: string;
-  phone: string;
 }
 
-export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
-  useEffect(() => {
-    if (restaurant?.restaurant_id) {
-      document.cookie = `id=${restaurant.restaurant_id}`;
-    }
-  }, [restaurant?.restaurant_id]);
-
+export default function MenuPage({ id, restaurant_id }: MenuProps) {
   const { status } = useSession();
-
   const [categories, setCategories] = useState<Category[]>([]);
-  const [itemsByCategory, setItemsByCategory] = useState<
-    Record<string, MenuItemType[]>
-  >({});
+  const [itemsByCategory, setItemsByCategory] = useState<Record<string, MenuItemType[]>>({});
   const [loading, setLoading] = useState(true);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
 
@@ -51,29 +37,19 @@ export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
     const fetchCategoriesAndItems = async () => {
       try {
         // Fetch categories
-        const categoryResponse = await fetch(
-          `/api/categories/${restaurant?.restaurant_id}`
-        );
+        const categoryResponse = await fetch(`/api/categories/${id}`);
         if (!categoryResponse.ok) throw new Error("Failed to fetch categories");
 
         const categoryData: Category[] = await categoryResponse.json();
         setCategories(categoryData);
-        console.log("TEMPLATE 2 CATEGORIES:", categoryData);
 
         // Fetch items for each category
         const itemsPromises = categoryData.map(async (category) => {
-          const itemResponse = await fetch(`/api/item/${category.id}`);
+          const itemResponse = await fetch(`/api/items/${category.id}`);
           if (!itemResponse.ok) {
-            throw new Error(
-              `Failed to fetch items for category ${category.id}`
-            );
+            throw new Error(`Failed to fetch items for category ${category.id}`);
           }
-
           const itemData: MenuItemType[] = await itemResponse.json();
-          console.log("Fetched items:", {
-            categoryId: category.id,
-            items: itemData,
-          });
           return { categoryId: category.id, items: itemData };
         });
 
@@ -96,7 +72,7 @@ export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
     if (status === "authenticated") {
       fetchCategoriesAndItems();
     }
-  }, [restaurant?.restaurant_id, status]);
+  }, [id, status]);
 
   const handleAddToCart = (itemName: string) => {
     toast.success(`${itemName} has been added to the cart`, {
@@ -121,22 +97,14 @@ export default function MenuPage({ restaurant }: { restaurant?: Restaurant }) {
 
   return (
     <div className="min-h-screen">
-      <div
-        className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}
-      >
-        <Header
-          rest_id={restaurant?.restaurant_id || ""}
-          rest_name={restaurant?.name || ""}
-        />
+      <div className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}>
+        <Header rest_id={restaurant_id} rest_name="Restaurant Menu" />
 
         {/* Menu Sections */}
         <section className="mt-8">
           {categories.map((category) => (
             <div key={category.id} className="mb-12">
-              {/* Section Header */}
               <SectionHeader mainHeader={category.name} subHeader="" />
-
-              {/* Items in the Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
                 {itemsByCategory[category.id]?.map((item) => (
                   <MenuItem
