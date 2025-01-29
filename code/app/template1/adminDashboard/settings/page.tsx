@@ -1,8 +1,11 @@
 "use client";
+
 import { Restaurant } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+
 
 type settingProps = {
   restaurant_id: string;

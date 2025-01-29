@@ -5,10 +5,7 @@ import Header from "@/app/template2/components/Header";
 import Footer from "@/app/template2/components/Footer";
 import UserTabs from "@/app/template2/components/UserTabs";
 import MenuItemForm from "@/app/template2/components/MenuItemForm";
-import { CgPlayButton } from "react-icons/cg";
-import Link from "next/link";
-import { FaAngleRight } from "react-icons/fa";
-import SectionHeader from "../../components/SectionHeader";
+import SectionHeader from "../../../components/SectionHeader";
 
 interface MenuItem {
   image: string;

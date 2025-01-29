@@ -1,11 +1,7 @@
 "use client";
-import DSearch from "@/app/template1/components/DSearch";
-import noavatar from "@/app/template1/images/noavatar.png";
+
 import { RestaurantCustomer } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect } from "react";
-import { IoRemove } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
