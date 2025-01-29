@@ -108,7 +108,7 @@ const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
     });
   };
   const pathName = `/restaurants/${restaurantId}/adminDashboard/categories/add`;
-
+  //check
   return (
     <div className="p-5">
       <div className="flex justify-between items-center mb-5">
