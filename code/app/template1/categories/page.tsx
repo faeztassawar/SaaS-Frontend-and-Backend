@@ -79,7 +79,7 @@ const HorizontalScrollCarousel = ({ id, restaurant_id}: MenuProps) => {
             categories.map((category) => (
               <Link key={category.id} href="">
                 <CategoryCard
-                  img={category.image || "/template1/images/noproduct.jpg"}
+                  img={category.image || "@/app/template1/images/react.png"}
                   name={category.name}
                 />
               </Link>
