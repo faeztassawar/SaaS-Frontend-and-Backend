@@ -104,7 +104,7 @@ const EditProfile = () => {
     <div className="relative h-screen w-screen overflow-y-auto">
       <div className="relative z-10 flex items-center justify-center h-screen w-screen">
         <div className="text-white bg-[#101010]/90 w-[90%] flex flex-col gap-5">
-          {/* Your existing JSX here */}
+          
           <div className="flex items-center justify-between font-rose m-5 p-5 text-[#E8B97C]">
             <h1 className="text-6xl">Personal Information</h1>
             <h1 className="text-6xl">
@@ -113,7 +113,7 @@ const EditProfile = () => {
           </div>
           
           <div className="flex flex-col md:flex-row justify-between gap-2">
-            {/* First Name Section */}
+           
             <div className="basis-1/2 m-4 flex flex-col font-chillax">
               <h1 className="px-6 text-3xl font-[900]">First Name</h1>
               {editFirstName ? (
@@ -144,7 +144,7 @@ const EditProfile = () => {
               )}
             </div>
 
-            {/* Last Name Section */}
+          
             <div className="basis-1/2 m-4 flex flex-col font-chillax">
               {/* Same structure as First Name section */}
             </div>
