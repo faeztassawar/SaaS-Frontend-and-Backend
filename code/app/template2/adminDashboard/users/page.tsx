@@ -31,7 +31,7 @@ export default function UserPage() {
     <div className="flex flex-col min-h-screen">
       <Header isAdmin={true} />
       <div className="text-center mt-8 mb-12">
-        <UserTabs isAdmin={true} />
+        <UserTabs isAdmin={true} rest_id={""} />
       </div>
       <div className="items-center justify-center mt-6 w-full max-w-2xl mx-auto">
         <div className="shadow-2xl rounded-lg p-5 bg-gray-100">

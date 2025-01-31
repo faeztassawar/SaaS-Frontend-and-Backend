@@ -4,9 +4,17 @@ import { usePathname } from "next/navigation";
 
 interface UserTabsProps {
   isAdmin: boolean;
+  rest_id: string;
 }
 
-export default function UserTabs({ isAdmin }: UserTabsProps) {
+export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
+  
+  const menuPath = `/restaurants/${rest_id}/menu`;
+  const dashPath = `/restaurants/${rest_id}/adminDashboard`;
+  const userpath = `/restaurants/${rest_id}/adminDashboard/users`;
+  const resPath = `/restaurants/${rest_id}/reservation`;
+  const editProfilePath = `/restaurants/${rest_id}/editProfile`;
+  const aboutPath = `/restaurants/${rest_id}/aboutUs`;
   const path = usePathname();
 
   return (
@@ -17,7 +25,7 @@ export default function UserTabs({ isAdmin }: UserTabsProps) {
             ? "bg-[#800000] text-white rounded-full px-3 py-2"
             : "bg-[#9f8881] text-white rounded-full px-3 py-2"
         }
-        href="/template2/editProfile"
+        href={editProfilePath}
       >
         Profile
       </Link>
