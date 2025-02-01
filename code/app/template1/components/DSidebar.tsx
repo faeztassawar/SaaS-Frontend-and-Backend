@@ -44,7 +44,6 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
         },
       ],
     },
-
     {
       title: "User",
       list: [
@@ -53,30 +52,45 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
           path: `/restaurants/${restaurant_id}/adminDashboard/settings`,
           icon: <MdOutlineSettings />,
         },
-        { title: "Log out", path: "/logout", icon: <CiLogout /> }, // Adjusted logout path
+        { title: "Log out", path: "/logout", icon: <CiLogout /> },
       ],
     },
   ];
+  
   const { data, status } = useSession();
   const router = useRouter();
-  document.cookie = `id=${restaurant_id}; path=/; SamSite=Lax`;
   const [user, setUser] = useState<RestaurantCustomer>();
 
   useEffect(() => {
+    // Set cookie after component mounts
+    document.cookie = `id=${restaurant_id}; path=/; SameSite=Lax`;
+  }, [restaurant_id]);
+
+  useEffect(() => {
     const fetchData = async () => {
-      const email = data?.user?.email;
-      console.log("CLIENT EMAIL: ", email);
-      const response = await fetch(`/api/session/restaurant/${email}`);
-      const jsonData = await response.json();
-      console.log("JSON DATA: ", jsonData);
-      const check = jsonData;
-      console.log("AFTER FETCHED EMAIL: ", email);
-      console.log("AFTER FETCHED: ", check);
-      setUser(check);
+      try {
+        const email = data?.user?.email;
+        if (!email) return;
+
+        console.log("CLIENT EMAIL: ", email);
+        const response = await fetch(`/api/session/restaurant/${email}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        
+        const jsonData = await response.json();
+        console.log("JSON DATA: ", jsonData);
+        setUser(jsonData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     };
 
-    fetchData();
-  }, [status]);
+    if (status === "authenticated") {
+      fetchData();
+    }
+  }, [status, data?.user?.email]);
 
   return (
     <div className="sticky top-10 p-4">

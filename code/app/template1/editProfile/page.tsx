@@ -4,10 +4,12 @@ import { useSession } from "next-auth/react";
 import { CiEdit } from "react-icons/ci";
 import Link from "next/link";
 
+// Define the type for a booking
 interface Booking {
   id: string;
   date: string;
   time: string;
+  status: string; // Add status to the booking type
 }
 
 const fetchUserProfile = async (email: string) => {
@@ -40,8 +42,8 @@ const EditProfile = () => {
   const [email, setEmail] = useState<string>("");
   const [editFirstName, setEditFirstName] = useState<boolean>(false);
   const [editLastName, setEditLastName] = useState<boolean>(false);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [bookings, setBookings] = useState<Booking[]>([]); // Specify the state type as Booking[]
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -52,7 +54,7 @@ const EditProfile = () => {
 
           setFirstName(data.firstName || "");
           setLastName(data.lastName || "");
-          setBookings(data.bookings || []);
+          setBookings(data.bookings || []); // Ensure the bookings data has the correct structure
         } catch (error) {
           console.error("Error loading profile:", error);
         } finally {
@@ -68,18 +70,17 @@ const EditProfile = () => {
     try {
       const response = await fetch("/api/updateCustomer", {
         method: "POST",
-        
         body: JSON.stringify({
-          email, 
+          email,
           type,
           value,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to update customer name");
       }
-  
+
       // Update the local state
       if (type === "firstName") {
         setFirstName(value);
@@ -92,23 +93,31 @@ const EditProfile = () => {
       console.error(`Error updating ${type}:`, error);
     }
   };
-  
 
-  /*const handleCancelBooking = async (bookingId: string) => {
+  const handleCancelBooking = async (bookingId: string) => {
+    const isConfirmed = window.confirm(
+      "Are You Sure You Want To Delete This Reservation?"
+    );
+
+    if (!isConfirmed) return;
+
     try {
       const response = await fetch('/api/cancelReservation', {
         method: 'POST',
-       
         body: JSON.stringify({ bookingId }),
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.ok) {
-        setBookings(bookings.filter(booking => booking.id !== bookingId));
+        // Remove the cancelled booking from the state
+        setBookings(bookings.filter((booking) => booking.id !== bookingId));
+      } else {
+        console.error('Failed to cancel booking');
       }
     } catch (error) {
       console.error("Error cancelling booking:", error);
     }
-  }; */
+  };
 
   if (status === "loading" || isLoading) {
     return <div className="text-white text-center">Loading...</div>;
@@ -131,7 +140,7 @@ const EditProfile = () => {
               {editFirstName ? (
                 <div className="flex items-center mt-4 gap-2">
                   <input
-                    onChange={(e) => setFirstName(e.target.value)} // Use setFirstName to update state
+                    onChange={(e) => setFirstName(e.target.value)}
                     className="p-2 mt-2 mx-5 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
                     type="text"
                     placeholder="Enter your First name"
@@ -163,7 +172,7 @@ const EditProfile = () => {
               {editLastName ? (
                 <div className="flex items-center mt-4 gap-2">
                   <input
-                    onChange={(e) => setLastName(e.target.value)} // Update lastName state
+                    onChange={(e) => setLastName(e.target.value)}
                     className="p-2 mt-2 mx-5 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
                     type="text"
                     placeholder="Enter your Last name"
@@ -189,10 +198,6 @@ const EditProfile = () => {
                 </div>
               )}
             </div>
-
-            <div className="basis-1/2 m-4 flex flex-col font-chillax">
-              {/* Same structure as First Name section */}
-            </div>
           </div>
 
           <div className="flex my-10 flex-col mx-5 gap-5 font-chillax">
@@ -211,11 +216,28 @@ const EditProfile = () => {
                   >
                     <h1>{item.date}</h1>
                     <h1>{item.time}</h1>
+
+                    <span
+                      className={`${
+                      item.status === 'DECLINED'
+                      ? 'text-red-500' // Red color for Rejected
+                      : item.status === 'PENDING'
+                      ? 'text-yellow-500' // Yellow color for Pending
+                      : item.status === 'ACCEPTED'
+                      ? 'text-green-500' // Green color for other statuses
+                      : 'text-green-500'
+                      }`}
+                      >
+                      {item.status}
+                    </span>
+
+                    {/* Cancel button */}
                     <button
-                      // onClick={() => handleCancelBooking(item.id)}
+                      onClick={() => handleCancelBooking(item.id)}
                       className="px-5 py-2 bg-red-800 rounded-xl"
+                      disabled={isLoading} // Disable the button while loading
                     >
-                      Cancel
+                      {isLoading ? 'Cancelling...' : 'Cancel'}
                     </button>
                   </div>
                 ))}

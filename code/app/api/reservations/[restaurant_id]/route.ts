@@ -1,24 +1,101 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/connect";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+type RouteParams = {
+  params: {
+    restaurant_id: string;
+  };
+};
+
+export async function GET(req: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = params;
-    const body = await req.json();
-    const { status } = body;
+    const { restaurant_id } = params as { restaurant_id: string };
+    console.log("HEEREEEEE! : ", restaurant_id);
 
-    const updatedReservation = await prisma.reservation.update({
-      where: { id },
-      data: { status },
+    if (!restaurant_id) {
+      return NextResponse.json(
+        { message: "Restaurant ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Optional: Validate if restaurant_id is a valid ObjectId
+    if (restaurant_id.length !== 24) {
+      return NextResponse.json(
+        { message: "Invalid restaurant ID format" },
+        { status: 400 }
+      );
+    }
+
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { restaurant_id },
     });
 
-    return NextResponse.json(updatedReservation);
-  } catch (error) {
-    console.error("Error updating reservation:", error);
-    return NextResponse.json({ error: "Error updating reservation" }, { status: 500 });
+    console.log("NOW FETCHING: ", restaurant);
+
+    if (!restaurant) {
+      return NextResponse.json(
+        { message: "Restaurant not found!" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(restaurant);
+  } catch (err) {
+    console.error("Error fetching restaurant:", err);
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
   }
 }
 
+export async function POST(req: NextRequest, { params }: RouteParams) {
+  try {
+    const { restaurant_id } = params as { restaurant_id: string };
+    console.log("HEEREEEEE! : ", restaurant_id);
+
+    if (!restaurant_id) {
+      return NextResponse.json(
+        { message: "Restaurant ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const body = await req.json();
+    
+    // Optional: Validate if restaurant_id is a valid ObjectId
+    if (restaurant_id.length !== 24) {
+      return NextResponse.json(
+        { message: "Invalid restaurant ID format" },
+        { status: 400 }
+      );
+    }
+
+    const restaurant = await prisma.restaurant.update({
+      where: { restaurant_id },
+      data: {
+        name: body.name,
+        about_us: body.about_us,
+        desc: body.desc,
+      },
+    });
+
+    console.log("RESTAURANT UPDATED!", restaurant);
+
+    if (!restaurant) {
+      return NextResponse.json(
+        { message: "Restaurant not found!" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(restaurant);
+  } catch (err) {
+    console.error("Error updating restaurant:", err);
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
+  }
+}
