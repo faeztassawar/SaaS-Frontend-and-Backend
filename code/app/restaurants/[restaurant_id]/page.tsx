@@ -21,7 +21,6 @@ const page = async ({ params }: any) => {
 
   // Fetch restaurant data
   const restaurant = await getData(restaurant_id);
-  
   console.log("OKOKOKOK", restaurant);
   // Dynamically load the template
   const Template = await loadTemplate(restaurant?.tempModel);
