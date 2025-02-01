@@ -36,7 +36,6 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
           ...formData,
           restaurant_id,
           email: session.user?.email,
-          userId: session.user?.userId, // Change this line
           guestsCount: Number(formData.guestsCount),
           date: new Date(formData.date).toISOString(),
         }),
