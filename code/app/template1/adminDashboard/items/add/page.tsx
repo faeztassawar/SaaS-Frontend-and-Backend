@@ -28,6 +28,8 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
     if (res.ok) {
       const data = await res.json();
       console.log("Now: ", data);
+    } else {
+      console.log("ERROR!");
     }
   };
   const fetchCategories = async () => {
@@ -47,7 +49,10 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
 
   return (
     <div className="p-5 rounded-lg bg-[#172340] mt-5">
-      <form className="flex flex-wrap justify-between">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="flex flex-wrap justify-between"
+      >
         <input
           type="text"
           placeholder="Title"

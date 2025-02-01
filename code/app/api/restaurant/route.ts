@@ -66,23 +66,19 @@ export const POST = async (req: Request) => {
 
 
         // Fetch the categories that should be assigned to the new menu
-        const fetchedCats = await prisma.category.findMany({
-            where: {
-                menuId: body.menuId
-            }
-        })
+        // const fetchedCats = await prisma.category.findMany({
+        //     where: {
+        //         menuId: body.menuId
+        //     }
+        // })
 
 
-        console.log("DUMMY CATS FETCHED: ", fetchedCats)
+        // console.log("DUMMY CATS FETCHED: ", fetchedCats)
 
         // Create a new menu for the restaurant
         const menu = await prisma.menu.create({
             data: {
                 restaurant_id: restaurant.restaurant_id,
-                // Use connect to associate the existing categories with the new menu
-                categories: {
-                    connect: fetchedCats.map(cat => ({ id: cat.id })) // assuming `id` is the unique identifier for categories
-                }
             }
         })
 
@@ -98,20 +94,27 @@ export const POST = async (req: Request) => {
             }
         })
 
-        const menuCreated = await prisma.menu.findFirst({
-            where: {
-                restaurant_id: updatedRestaurant.restaurant_id
+        const addCategory = await prisma.category.create({
+            data: {
+                menuId: menu.id,
+                name: "Starters",
             }
         })
 
-        const catsCreated = await prisma.category.findFirst({
-            where: {
-                menuId: menuCreated?.id
-            }
-        })
+        // const menuCreated = await prisma.menu.findFirst({
+        //     where: {
+        //         restaurant_id: updatedRestaurant.restaurant_id
+        //     }
+        // })
 
-        console.log("NEW MENU ADDED: ", menuCreated)
-        console.log("NEW CATEGORIS ADDED: ", catsCreated)
+        // const catsCreated = await prisma.category.findFirst({
+        //     where: {
+        //         menuId: menuCreated?.id
+        //     }
+        // })
+
+        // console.log("NEW MENU ADDED: ", menuCreated)
+        // console.log("NEW CATEGORIS ADDED: ", catsCreated)
 
         // Return the created restaurant data with the associated menu
         return new NextResponse(JSON.stringify(updatedRestaurant))

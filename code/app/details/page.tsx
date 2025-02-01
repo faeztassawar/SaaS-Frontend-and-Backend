@@ -37,7 +37,6 @@ const Details = () => {
         timing: "9am - 9pm",
         phone: "0333 5896242",
         tempModel: template,
-        menu_id: "677a533f3589737190f5af62",
       }),
     });
 

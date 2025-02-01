@@ -54,17 +54,28 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
 
       if (categoriesRes.ok) {
         const categoriesData = await categoriesRes.json();
+        console.log("Categories Data:", categoriesData);
         setCategories(categoriesData);
 
         const itemsPromises = categoriesData.map(async (cat: Category) => {
           const itemsRes = await fetch(
             `http://localhost:3000/api/items/${cat.id}`
           );
-          return itemsRes.ok ? itemsRes.json() : [];
+          if (itemsRes.ok) {
+            const itemsData = await itemsRes.json();
+            console.log(`Items for Category ${cat.id}:`, itemsData);
+            return itemsData;
+          } else {
+            console.error(`Failed to fetch items for category ${cat.id}`);
+            return [];
+          }
         });
 
         const allItems = (await Promise.all(itemsPromises)).flat();
+        console.log("All Items:", allItems);
         setItemsList(allItems);
+      } else {
+        console.error("Failed to fetch categories");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -120,6 +131,8 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
       }
     });
   };
+  console.log("ITems: ", itemsList);
+  console.log("Cats: ", categories);
   const pathName = `/restaurants/${restaurantId}/adminDashboard/items/add`;
   return (
     <div className="p-5">

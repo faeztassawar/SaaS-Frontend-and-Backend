@@ -2,10 +2,8 @@
 
 import { Restaurant } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-
 
 type settingProps = {
   restaurant_id: string;
@@ -15,7 +13,7 @@ const page = ({ restaurant_id }: settingProps) => {
   const { data, status } = useSession();
   const [restaurantData, setRestaurantData] = useState<Restaurant>();
   const [dialogVisible, setDialogVisible] = useState(false); // Dialog visibility state
-
+  const router = useRouter();
   useEffect(() => {
     const fetchRestaurant = async () => {
       console.log("USER PROFILE RESTAURANT ID: ", restaurant_id);
@@ -30,8 +28,7 @@ const page = ({ restaurant_id }: settingProps) => {
     };
     fetchRestaurant();
   }, [status]);
-
-  const router = useRouter();
+  
   const [nameChange, setNameChange] = useState(restaurantData?.name || "");
   const [descChange, setDescChange] = useState(restaurantData?.desc || "");
   const [aboutUsChange, setAboutUsChange] = useState(
