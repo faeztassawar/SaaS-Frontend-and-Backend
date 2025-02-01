@@ -1,117 +1,126 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { CiEdit } from "react-icons/ci";
-import Link from "next/link";
+"use client"
+import { useState, useEffect } from "react"
+import { useSession } from "next-auth/react"
+import { CiEdit } from "react-icons/ci"
+import Link from "next/link"
 
 interface Booking {
-  id: string;
-  date: string;
-  time: string;
+  id: string
+  date: string
+  time: string
+  status: string
 }
 
 const fetchUserProfile = async (email: string) => {
   try {
-    console.log("EMAILLLLLLLLLLLLLLLLLL", email);
+    console.log("EMAILLLLLLLLLLLLLLLLLL", email)
     const response = await fetch("/api/customerReservation", {
       method: "POST",
       body: JSON.stringify({ email }),
-    });
+    })
 
     if (!response.ok) {
-      console.log("EMAILLLLLLLLLLLLLLLLLL no");
-      throw new Error(`Error: ${response.statusText}`);
+      console.log("EMAILLLLLLLLLLLLLLLLLL no")
+      throw new Error(`Error: ${response.statusText}`)
     }
 
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    console.error("Error fetching profile:", error);
-    return { firstName: "", lastName: "", bookings: [] };
+    console.error("Error fetching profile:", error)
+    return { firstName: "", lastName: "", bookings: [] }
   }
-};
+}
 
 const EditProfile = () => {
   const { data: session, status } = useSession({
     required: true,
-  });
+  })
 
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [editFirstName, setEditFirstName] = useState<boolean>(false);
-  const [editLastName, setEditLastName] = useState<boolean>(false);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [firstName, setFirstName] = useState<string>("")
+  const [lastName, setLastName] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
+  const [editFirstName, setEditFirstName] = useState<boolean>(false)
+  const [editLastName, setEditLastName] = useState<boolean>(false)
+  const [bookings, setBookings] = useState<Booking[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const getUserData = async () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
-          setEmail(session.user.email);
-          const data = await fetchUserProfile(session.user.email);
+          setEmail(session.user.email)
+          const data = await fetchUserProfile(session.user.email)
 
-          setFirstName(data.firstName || "");
-          setLastName(data.lastName || "");
-          setBookings(data.bookings || []);
+          setFirstName(data.firstName || "")
+          setLastName(data.lastName || "")
+          setBookings(data.bookings || [])
         } catch (error) {
-          console.error("Error loading profile:", error);
+          console.error("Error loading profile:", error)
         } finally {
-          setIsLoading(false);
+          setIsLoading(false)
         }
       }
-    };
+    }
 
-    getUserData();
-  }, [session, status]);
+    getUserData()
+  }, [session, status])
 
   const handleUpdateName = async (type: "firstName" | "lastName", value: string) => {
     try {
       const response = await fetch("/api/updateCustomer", {
         method: "POST",
-        
         body: JSON.stringify({
-          email, 
+          email,
           type,
           value,
         }),
-      });
-  
+      })
+
       if (!response.ok) {
-        throw new Error("Failed to update customer name");
+        throw new Error("Failed to update customer name")
       }
-  
+
       // Update the local state
       if (type === "firstName") {
-        setFirstName(value);
-        setEditFirstName(false);
+        setFirstName(value)
+        setEditFirstName(false)
       } else {
-        setLastName(value);
-        setEditLastName(false);
+        setLastName(value)
+        setEditLastName(false)
       }
     } catch (error) {
-      console.error(`Error updating ${type}:`, error);
+      console.error(`Error updating ${type}:`, error)
     }
-  };
-  
+  }
 
-  /*const handleCancelBooking = async (bookingId: string) => {
+  const handleCancelBooking = async (bookingId: string) => {
     try {
-      const response = await fetch('/api/cancelReservation', {
-        method: 'POST',
-       
-        body: JSON.stringify({ bookingId }),
-      });
+      const response = await fetch("/api/reservations", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: bookingId, status: "CANCELED" }),
+      })
 
       if (response.ok) {
-        setBookings(bookings.filter(booking => booking.id !== bookingId));
+        const updatedReservation = await response.json()
+        // Update the local state to reflect the cancellation
+        setBookings(
+          bookings.map((booking) => (booking.id === bookingId ? { ...booking, status: "CANCELED" } : booking)),
+        )
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to cancel booking")
       }
     } catch (error) {
-      console.error("Error cancelling booking:", error);
+      console.error("Error cancelling booking:", error)
+      // You might want to show an error message to the user here
     }
-  }; */
+  }
 
   if (status === "loading" || isLoading) {
-    return <div className="text-white text-center">Loading...</div>;
+    return <div className="text-white text-center">Loading...</div>
   }
 
   return (
@@ -131,7 +140,7 @@ const EditProfile = () => {
               {editFirstName ? (
                 <div className="flex items-center mt-4 gap-2">
                   <input
-                    onChange={(e) => setFirstName(e.target.value)} // Use setFirstName to update state
+                    onChange={(e) => setFirstName(e.target.value)}
                     className="p-2 mt-2 mx-5 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
                     type="text"
                     placeholder="Enter your First name"
@@ -146,9 +155,7 @@ const EditProfile = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-between px-5">
-                  <div className="mt-4 px-2 text-2xl font-[500]">
-                    {firstName}
-                  </div>
+                  <div className="mt-4 px-2 text-2xl font-[500]">{firstName}</div>
                   <CiEdit
                     onClick={() => setEditFirstName(true)}
                     className="text-3xl text-[#F18608] cursor-pointer"
@@ -163,7 +170,7 @@ const EditProfile = () => {
               {editLastName ? (
                 <div className="flex items-center mt-4 gap-2">
                   <input
-                    onChange={(e) => setLastName(e.target.value)} // Update lastName state
+                    onChange={(e) => setLastName(e.target.value)}
                     className="p-2 mt-2 mx-5 w-full rounded bg-[#1f1f1f] text-white border border-[#333] focus:outline-none"
                     type="text"
                     placeholder="Enter your Last name"
@@ -178,9 +185,7 @@ const EditProfile = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-between px-5">
-                  <div className="mt-4 px-2 text-2xl font-[500]">
-                    {lastName}
-                  </div>
+                  <div className="mt-4 px-2 text-2xl font-[500]">{lastName}</div>
                   <CiEdit
                     onClick={() => setEditLastName(true)}
                     className="text-3xl text-[#F18608] cursor-pointer"
@@ -190,9 +195,7 @@ const EditProfile = () => {
               )}
             </div>
 
-            <div className="basis-1/2 m-4 flex flex-col font-chillax">
-              {/* Same structure as First Name section */}
-            </div>
+            <div className="basis-1/2 m-4 flex flex-col font-chillax">{/* Same structure as First Name section */}</div>
           </div>
 
           <div className="flex my-10 flex-col mx-5 gap-5 font-chillax">
@@ -205,31 +208,30 @@ const EditProfile = () => {
             {bookings.length > 0 ? (
               <div className="p-2 bg-[#1f1f1f] rounded flex-col justify-between items-center border border-[#333]">
                 {bookings.map((item) => (
-                  <div
-                    className="px-5 my-2 flex items-center justify-between"
-                    key={item.id}
-                  >
+                  <div className="px-5 my-2 flex items-center justify-between" key={item.id}>
                     <h1>{item.date}</h1>
                     <h1>{item.time}</h1>
                     <button
-                      // onClick={() => handleCancelBooking(item.id)}
-                      className="px-5 py-2 bg-red-800 rounded-xl"
+                      onClick={() => handleCancelBooking(item.id)}
+                      className={`px-5 py-2 rounded-xl ${
+                        item.status === "CANCELED" ? "bg-gray-500 cursor-not-allowed" : "bg-red-800 hover:bg-red-700"
+                      }`}
+                      disabled={item.status === "CANCELED"}
                     >
-                      Cancel
+                      {item.status === "CANCELED" ? "Canceled" : "Cancel"}
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center font-[500] text-2xl">
-                You have no bookings
-              </div>
+              <div className="text-center font-[500] text-2xl">You have no bookings</div>
             )}
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EditProfile;
+export default EditProfile
+

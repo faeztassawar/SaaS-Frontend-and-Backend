@@ -44,11 +44,12 @@ const NavBar = ({ rest_id }: NavBarProps) => {
     const fetchData = async () => {
       const email = data?.user?.email;
       if (!email) return;
+  
       try {
         const response = await fetch(`/api/session/restaurant/${email}`);
         const jsonData = await response.json();
         setUser(jsonData);
-        console.log("DATA:", jsonData);
+        console.log("USER DATA:", jsonData);
         if (jsonData) {
           setAllowed(true);
         }
@@ -56,8 +57,12 @@ const NavBar = ({ rest_id }: NavBarProps) => {
         console.error("Error fetching session data:", error);
       }
     };
-    fetchData();
+  
+    if (status === "authenticated") {
+      fetchData();
+    }
   }, [status]);
+  
   console.log("Owner:", user);
 
   return (

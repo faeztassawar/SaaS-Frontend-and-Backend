@@ -35,7 +35,11 @@ const AdminDashboard = () => {
       if (session?.user?.email) {
         try {
           const response = await fetch(`/api/session/restaurant/${session.user.email}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch restaurant ID');
+          }
           const data = await response.json();
+          console.log("Fetched restaurant data:", data);
           setRestaurantId(data.restaurant_id);
         } catch (error) {
           console.error("Error fetching user restaurant ID:", error);
@@ -52,13 +56,14 @@ const AdminDashboard = () => {
     const fetchReservations = async () => {
       if (restaurant_id) {
         try {
+          setIsLoading(true);
           const res = await fetch(`/api/reservations?restaurant_id=${restaurant_id}`);
-          if (res.ok) {
-            const data = await res.json();
-            setReservations(data);
-          } else {
-            console.error("Failed to fetch reservations");
+          if (!res.ok) {
+            throw new Error('Failed to fetch reservations');
           }
+          const data = await res.json();
+          console.log("Fetched reservations:", data);
+          setReservations(data);
         } catch (error) {
           console.error("Error fetching reservations:", error);
         } finally {
@@ -74,18 +79,22 @@ const AdminDashboard = () => {
 
   const handleReservationUpdate = async (reservationId: string, newStatus: string) => {
     try {
-      const res = await fetch(`/api/reservations`, {
+      const res = await fetch('/api/reservations', {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: reservationId, status: newStatus }),
       });
 
-      if (res.ok) {
-        const updatedReservation = await res.json();
-        setReservations(reservations.map(r => (r.id === reservationId ? updatedReservation : r)));
-      } else {
-        console.error("Failed to update reservation status");
+      if (!res.ok) {
+        throw new Error('Failed to update reservation status');
       }
+
+      const updatedReservation = await res.json();
+      setReservations(prevReservations => 
+        prevReservations.map(r => 
+          r.id === reservationId ? updatedReservation : r
+        )
+      );
     } catch (error) {
       console.error("Error updating reservation status:", error);
     }
@@ -100,9 +109,12 @@ const AdminDashboard = () => {
   }).length;
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
-
 
   return (
     <div className="flex flex-col p-4 min-h-screen bg-[#0f172a]">
@@ -119,7 +131,7 @@ const AdminDashboard = () => {
         </h2>
         <div className="bg-[#172340] p-5 rounded-lg flex w-full mt-3">
           <div className="w-full flex flex-col">
-            <div className="flex justify-between mb-4 font-semibold lg:w-[80%] w-full">
+            <div className="flex justify-between mb-4 font-semibold lg:w-[80%] w-full text-gray-200">
               <h1 className="pl-5">Name</h1>
               <h1 className="pl-7">Date</h1>
               <h1 className="pl-10 ml-3">Time</h1>
@@ -127,19 +139,23 @@ const AdminDashboard = () => {
               <h1 className="pl-4">Actions</h1>
             </div>
             <div>
-              {pendingReservations.map((item, index) => (
-                <DReservation
-                  key={item.id}
-                  name={item.name}
-                  date={item.date}
-                  time={item.time}
-                  count={item.guestsCount.toString()}
-                  index={index}
-                  status="p"
-                  onAccept={() => handleReservationUpdate(item.id, "ACCEPTED")}
-                  onDecline={() => handleReservationUpdate(item.id, "DECLINED")}
-                />
-              ))}
+              {pendingReservations.length > 0 ? (
+                pendingReservations.map((item, index) => (
+                  <DReservation
+                    key={item.id}
+                    name={item.name}
+                    date={item.date}
+                    time={item.time}
+                    count={item.guestsCount.toString()}
+                    index={index}
+                    status="p"
+                    onAccept={() => handleReservationUpdate(item.id, "ACCEPTED")}
+                    onDecline={() => handleReservationUpdate(item.id, "DECLINED")}
+                  />
+                ))
+              ) : (
+                <div className="text-center text-gray-400 py-4">No pending reservations</div>
+              )}
             </div>
           </div>
         </div>
@@ -150,24 +166,28 @@ const AdminDashboard = () => {
         </h2>
         <div className="bg-[#172340] p-5 rounded-lg flex w-full mt-3">
           <div className="w-full flex flex-col">
-            <div className="flex justify-between mb-4 font-semibold lg:w-[80%] w-full">
+            <div className="flex justify-between mb-4 font-semibold lg:w-[80%] w-full text-gray-200">
               <h1 className="pl-5">Name</h1>
               <h1 className="pl-7">Date</h1>
               <h1 className="pl-10 ml-3">Time</h1>
               <h1 className="pl-4">Guests</h1>
             </div>
             <div>
-              {acceptedReservations.map((item, index) => (
-                <DReservation
-                  key={item.id}
-                  name={item.name}
-                  date={item.date}
-                  time={item.time}
-                  count={item.guestsCount.toString()}
-                  index={index}
-                  status=""
-                />
-              ))}
+              {acceptedReservations.length > 0 ? (
+                acceptedReservations.map((item, index) => (
+                  <DReservation
+                    key={item.id}
+                    name={item.name}
+                    date={item.date}
+                    time={item.time}
+                    count={item.guestsCount.toString()}
+                    index={index}
+                    status=""
+                  />
+                ))
+              ) : (
+                <div className="text-center text-gray-400 py-4">No accepted reservations</div>
+              )}
             </div>
           </div>
         </div>
@@ -177,4 +197,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
