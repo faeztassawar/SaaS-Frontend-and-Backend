@@ -20,6 +20,7 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
   const dashboardPath = `/restaurants/${rest_id}/adminDashboard/users`;
   const profilePath = `/restaurants/${rest_id}/editProfile`;
   const cartPath = `/restaurants/${rest_id}/Cart`;
+  const aboutPath = `/restaurants/${rest_id}/aboutUs`;
 
   // Fetch session data and check permissions
   useEffect(() => {
@@ -48,7 +49,7 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
   return (
     <header className="flex justify-evenly items-center bg-[#800000] p-8">
       {/* Restaurant Name */}
-      <Link href="/" className="text-white font-semibold text-2xl">
+      <Link href={homePath} className="text-white font-semibold text-2xl">
         {rest_name}
       </Link>
 
@@ -56,7 +57,7 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
       <nav className="flex gap-8 text-white font-bold items-center">
         <Link href={homePath}>Home</Link>
         <Link href={menuPath}>Menu</Link>
-        <Link href={homePath}>About</Link>
+        <Link href={aboutPath}>About</Link>
 
         {status === "authenticated" && allowed ? (
           <Link href={dashboardPath}>Dashboard</Link>

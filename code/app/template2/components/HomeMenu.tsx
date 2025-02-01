@@ -22,7 +22,7 @@ const HomeMenu = () => {
     const fetchMenuItems = async () => {
       try {
         // Fetch menu items (without category filtering)
-        const response = await fetch("/api/item");
+        const response = await fetch("/api/allItems");
         if (!response.ok) throw new Error("Failed to fetch menu items");
 
         const menuData: MenuItemType[] = await response.json();

@@ -1,5 +1,4 @@
 import prisma from "@/lib/connect"
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server"
 
 

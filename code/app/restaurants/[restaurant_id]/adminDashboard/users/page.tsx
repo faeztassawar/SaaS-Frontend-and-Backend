@@ -23,6 +23,8 @@ const getUsers = async (restaurant_id: string) => {
 const loadTemplate = async (templateId: string) => {
   if (templateId === "1")
     return dynamic(() => import("@/app/template1/adminDashboard/users/page"));
+  if (templateId === "2")
+    return dynamic(() => import("@/app/template2/adminDashboard/users/page"));
   return dynamic(() => import("@/app/page"));
 };
 

@@ -98,7 +98,7 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
   return (
     <div className="min-h-screen">
       <div className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}>
-        <Header rest_id={restaurant_id} rest_name="Restaurant Menu" />
+        <Header rest_id={restaurant_id} rest_name="Menu" />
 
         {/* Menu Sections */}
         <section className="mt-8">

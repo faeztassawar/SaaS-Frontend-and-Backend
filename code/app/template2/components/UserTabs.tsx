@@ -9,12 +9,10 @@ interface UserTabsProps {
 
 export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
   
-  const menuPath = `/restaurants/${rest_id}/menu`;
-  const dashPath = `/restaurants/${rest_id}/adminDashboard`;
   const userpath = `/restaurants/${rest_id}/adminDashboard/users`;
-  const resPath = `/restaurants/${rest_id}/reservation`;
   const editProfilePath = `/restaurants/${rest_id}/editProfile`;
-  const aboutPath = `/restaurants/${rest_id}/aboutUs`;
+  const settingsPath = `/restaurants/${rest_id}/adminDashboard/settings`
+
   const path = usePathname();
 
   return (
@@ -65,7 +63,7 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
             Menu Items
           </Link>
           <Link
-            href="/template2/users"
+            href={userpath}
             className={
               path === "/template2/users" ||
               path === "/template2/users/editUser"
@@ -88,7 +86,7 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
           </Link>
 
           <Link
-            href="/template2/Settings"
+            href={settingsPath}
             className={
               path === "/template2/Settings"
                 ? "bg-[#800000] text-white rounded-full px-3 py-2"
