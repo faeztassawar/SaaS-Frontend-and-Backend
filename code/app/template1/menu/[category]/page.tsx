@@ -13,7 +13,10 @@ interface MenuProps {
   id: string;
 }
 
-const Page = ({ params }: { params: { category: string } }, {restaurant_id}: MenuProps) => {
+const Page = (
+  { params }: { params: { category: string } },
+  { restaurant_id }: MenuProps
+) => {
   let bg = pancake;
   const { category } = params;
 
@@ -50,7 +53,7 @@ const Page = ({ params }: { params: { category: string } }, {restaurant_id}: Men
             </h1>
           </div>
           <div className="hidden md:block scale-75 lg:scale-90 xl:scale-100">
-            <NavBar rest_id={restaurant_id}/>
+            <NavBar rest_id={restaurant_id} />
           </div>
         </div>
       </div>
@@ -76,25 +79,29 @@ const Page = ({ params }: { params: { category: string } }, {restaurant_id}: Men
           name="Tomato Soup"
           desc="This creamy soup is comforting, with a rich flavor profile."
           price="4.6"
+          img=""
         />
         <MealCard
           name="Beef Burger"
           desc="Juicy beef patty topped with fresh lettuce and tomatoes."
           price="8.5"
+          img=""
         />
         <MealCard
           name="Caesar Salad"
           desc="Crispy romaine lettuce with a creamy Caesar dressing."
           price="6.3"
+          img=""
         />
         <MealCard
           name="Masala Tea"
           desc="Aromatic tea infused with Indian spices."
           price="2.5"
+          img=""
         />
 
         <div className="flex items-center justify-center md:hidden">
-          <NavBar rest_id={restaurant_id}/>
+          <NavBar rest_id={restaurant_id} />
         </div>
         <div className="m-4">
           <Footer />

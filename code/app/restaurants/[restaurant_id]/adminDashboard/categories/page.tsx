@@ -20,9 +20,6 @@ const getMenu = async (restaurant_id: string) => {
 
 const getCategories = async (menu_id: string) => {
   const res = await fetch(`http://localhost:3000/api/categories/${menu_id}`);
-  if (!res.ok) {
-    throw new Error("Failed!");
-  }
   return res.json();
 };
 

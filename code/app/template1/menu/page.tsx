@@ -79,11 +79,17 @@ const MenuPage = ({ id, restaurant_id }: MenuProps) => {
           <p className="text-center text-white">Loading categories...</p>
         ) : (
           categories.map((category) => (
-            <CategoryComponent
-              key={category.id}
-              cat_id={category.id}
-              cat_name={category.name}
-            />
+            <>
+              {!category.isArchive ? (
+                <CategoryComponent
+                  key={category.id}
+                  cat_id={category.id}
+                  cat_name={category.name}
+                />
+              ) : (
+                <></>
+              )}
+            </>
           ))
         )}
 

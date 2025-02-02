@@ -1,7 +1,8 @@
-'use client'
+"use client";
 
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
+import { format } from "date-fns";
 
 const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
   const { data: session } = useSession();
@@ -18,6 +19,17 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const formattedDate = (date: string) => {
+    date ? format(new Date(date), "dd/MM/yyyy") : "";
+    date.toString();
+    return date;
+  };
+
+  const handleDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = formattedDate(e.target.value);
+    setFormData({ ...formData, [e.target.name]: date });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -27,7 +39,7 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
     }
 
     try {
-      const response = await fetch('/api/reservations', {
+      const response = await fetch("/api/reservations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,14 +49,20 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
           restaurant_id,
           email: session.user?.email,
           guestsCount: Number(formData.guestsCount),
-          date: new Date(formData.date).toISOString(),
+          date: new Date(formData.date),
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
         setSuccessMessage("Reservation request submitted successfully!");
-        setFormData({ name: "", email: "", guestsCount: 2, date: "", time: "" });
+        setFormData({
+          name: "",
+          email: "",
+          guestsCount: 2,
+          date: "",
+          time: "",
+        });
       } else {
         const errorData = await response.json();
         alert(`Failed to submit reservation request: ${errorData.error}`);
@@ -91,7 +109,7 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
             type="date"
             name="date"
             value={formData.date}
-            onChange={handleChange}
+            onChange={handleDate}
             required
           />
         </div>
@@ -114,11 +132,12 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
         BOOK A TABLE
       </button>
       {successMessage && (
-        <p className="w-full text-green-500 text-center mt-4">{successMessage}</p>
+        <p className="w-full text-green-500 text-center mt-4">
+          {successMessage}
+        </p>
       )}
     </form>
   );
 };
 
 export default ReservationForm;
-

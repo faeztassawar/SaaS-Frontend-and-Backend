@@ -18,18 +18,19 @@ model Item {
   name       String   @unique
   desc       String
   price      Float
-  image      String?
+  image      Bytes?
   categoryId String   @db.ObjectId // categoryId should not be nullable
   Category   Category @relation(fields: [categoryId], references: [id])
 }
 
 model Category {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  image  String?
-  Menu   Menu?   @relation(fields: [menuId], references: [id])
-  menuId String? @db.ObjectId
-  Items  Item[] // A category can have multiple items
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  image     Bytes?
+  Menu      Menu?    @relation(fields: [menuId], references: [id])
+  menuId    String?  @db.ObjectId
+  isArchive Boolean?
+  Items     Item[] // A category can have multiple items
 }
 
 model Restaurant {
@@ -138,7 +139,7 @@ model Template {
 // }
 
 model Reservation {
-  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  id            String              @id @default(auto()) @map("_id") @db.ObjectId
   restaurant_id String
   email         String
   name          String
@@ -146,8 +147,8 @@ model Reservation {
   date          DateTime
   time          String
   status        String
-  customerId    String             @db.ObjectId
-  Customer      RestaurantCustomer @relation(fields: [customerId], references: [id])
+  customerId    String?             @db.ObjectId
+  Customer      RestaurantCustomer? @relation(fields: [customerId], references: [id])
 
   @@map("reservation")
 }

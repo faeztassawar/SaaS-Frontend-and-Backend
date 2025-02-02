@@ -52,11 +52,15 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
           path: `/restaurants/${restaurant_id}/adminDashboard/settings`,
           icon: <MdOutlineSettings />,
         },
-        { title: "Log out", path: "/logout", icon: <CiLogout /> },
+        {
+          title: "Home",
+          path: `/restaurants/${restaurant_id}`,
+          icon: <CiLogout />,
+        },
       ],
     },
   ];
-  
+
   const { data, status } = useSession();
   const router = useRouter();
   const [user, setUser] = useState<RestaurantCustomer>();
@@ -74,11 +78,11 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
 
         console.log("CLIENT EMAIL: ", email);
         const response = await fetch(`/api/session/restaurant/${email}`);
-        
+
         if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+          throw new Error("Failed to fetch user data");
         }
-        
+
         const jsonData = await response.json();
         console.log("JSON DATA: ", jsonData);
         setUser(jsonData);

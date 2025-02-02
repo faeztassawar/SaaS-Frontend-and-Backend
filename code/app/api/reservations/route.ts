@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     // Validate all required fields
     if (!restaurant_id || !email || !name || !guestsCount || !date || !time) {
-      console.error("Missing required fields:", { restaurant_id, email, name, guestsCount, date, time});
+      console.error("Missing required fields:", { restaurant_id, email, name, guestsCount, date, time });
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
@@ -63,11 +63,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "restaurant_id or email is required" }, { status: 400 });
     }
 
-    const where = restaurant_id 
-      ? { restaurant_id } 
-      : email 
-      ? { email }
-      : undefined;
+    const where = restaurant_id
+      ? { restaurant_id }
+      : email
+        ? { email }
+        : undefined;
 
     const reservations = await prisma.reservation.findMany({
       where,
@@ -101,5 +101,33 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("Error updating reservation:", error)
     return NextResponse.json({ error: "Error updating reservation" }, { status: 500 })
+  }
+}
+
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const restaurant_id = searchParams.get("restaurant_id");
+    const email = searchParams.get("email");
+
+    if (!restaurant_id && !email) {
+      return NextResponse.json({ error: "restaurant_id or email is required" }, { status: 400 });
+    }
+
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 2025-02-01T00:00:00.000Z
+    const reservations = await prisma.reservation.deleteMany({
+      where: {
+        date: { lt: today }
+      }
+    });
+
+    console.log("Fetched reservations:", reservations);
+    return NextResponse.json(reservations);
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    return NextResponse.json({ error: "Error fetching reservations" }, { status: 500 });
   }
 }

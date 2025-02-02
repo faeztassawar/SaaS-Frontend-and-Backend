@@ -25,24 +25,37 @@ export const DELETE = async (req: Request) => {
 
 export const POST = async (req: Request) => {
     try {
-        const body = await req.json()
+        const formData = await req.formData()
+        const img = formData.get("image") as File;
+        const name = formData.get("name") as string;
+        const desc = formData.get("desc") as string
+        const price = formData.get("price") as string
+        const menuId = formData.get("menu") as string
+        const priceValue = parseInt(price, 10)
+        const buffer = Buffer.from(await img.arrayBuffer());
         console.log("Creating new Item!")
 
         const category = await prisma.category.findFirst({
-            where: { name: body.desc } // Correctly match category by id
+            where: {
+                name: desc,
+                menuId,
+            }
         });
 
         if (!category) {
             return NextResponse.json({ message: "Category not found" }, { status: 404 });
         }
 
+
+
+
         const item = await prisma.item.create({
             data: {
-                name: body.name,
-                desc: body.desc,
-                price: body.price, // Add price field
+                name,
+                desc,
+                price: priceValue, // Add price field
                 categoryId: category.id, // Directly use categoryId
-                image: body.image || null
+                image: buffer
             }
         });
 

@@ -98,6 +98,7 @@ export const POST = async (req: Request) => {
             data: {
                 menuId: menu.id,
                 name: "Starters",
+                isArchive: false
             }
         })
 

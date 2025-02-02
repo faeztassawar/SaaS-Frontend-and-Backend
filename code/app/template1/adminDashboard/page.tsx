@@ -34,12 +34,13 @@ const AdminDashboard = () => {
     const fetchUserRestaurantId = async () => {
       if (session?.user?.email) {
         try {
-          const response = await fetch(`/api/session/restaurant/${session.user.email}`);
+          const response = await fetch(
+            `/api/session/restaurant/${session.user.email}`
+          );
           if (!response.ok) {
-            throw new Error('Failed to fetch restaurant ID');
+            throw new Error("Failed to fetch restaurant ID");
           }
           const data = await response.json();
-          console.log("Fetched restaurant data:", data);
           setRestaurantId(data.restaurant_id);
         } catch (error) {
           console.error("Error fetching user restaurant ID:", error);
@@ -52,17 +53,36 @@ const AdminDashboard = () => {
     }
   }, [session, status]);
 
+  // Function to delete past reservations
+  const deletePastReservations = async (restaurantId: string) => {
+    try {
+      const res = await fetch(
+        `/api/reservations/?restaurant_id=${restaurantId}`,
+        { method: "DELETE" }
+      );
+      if (!res.ok) throw new Error("Failed to delete past reservations");
+      const data = await res.json();
+      console.log("Deleted past reservations:", data.deletedCount);
+    } catch (error) {
+      console.error("Error deleting past reservations:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchReservations = async () => {
       if (restaurant_id) {
         try {
           setIsLoading(true);
-          const res = await fetch(`/api/reservations?restaurant_id=${restaurant_id}`);
-          if (!res.ok) {
-            throw new Error('Failed to fetch reservations');
-          }
+
+          // Delete past reservations before fetching
+          await deletePastReservations(restaurant_id);
+
+          // Fetch updated reservations
+          const res = await fetch(
+            `/api/reservations?restaurant_id=${restaurant_id}`
+          );
+          if (!res.ok) throw new Error("Failed to fetch reservations");
           const data = await res.json();
-          console.log("Fetched reservations:", data);
           setReservations(data);
         } catch (error) {
           console.error("Error fetching reservations:", error);
@@ -76,22 +96,24 @@ const AdminDashboard = () => {
       fetchReservations();
     }
   }, [restaurant_id]);
-
-  const handleReservationUpdate = async (reservationId: string, newStatus: string) => {
+  const handleReservationUpdate = async (
+    reservationId: string,
+    newStatus: string
+  ) => {
     try {
-      const res = await fetch('/api/reservations', {
+      const res = await fetch("/api/reservations", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: reservationId, status: newStatus }),
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update reservation status');
+        throw new Error("Failed to update reservation status");
       }
 
       const updatedReservation = await res.json();
-      setReservations(prevReservations => 
-        prevReservations.map(r => 
+      setReservations((prevReservations) =>
+        prevReservations.map((r) =>
           r.id === reservationId ? updatedReservation : r
         )
       );
@@ -100,10 +122,14 @@ const AdminDashboard = () => {
     }
   };
 
-  const pendingReservations = reservations.filter(r => r.status === "PENDING");
-  const acceptedReservations = reservations.filter(r => r.status === "ACCEPTED");
+  const pendingReservations = reservations.filter(
+    (r) => r.status === "PENDING"
+  );
+  const acceptedReservations = reservations.filter(
+    (r) => r.status === "ACCEPTED"
+  );
 
-  const totalReservationsToday = reservations.filter(r => {
+  const totalReservationsToday = reservations.filter((r) => {
     const today = new Date().toISOString().split("T")[0];
     return r.date.startsWith(today) && r.status === "ACCEPTED";
   }).length;
@@ -120,10 +146,18 @@ const AdminDashboard = () => {
     <div className="flex flex-col p-4 min-h-screen bg-[#0f172a]">
       {/* Reservation Stats Cards */}
       <div className="mt-3 flex w-full justify-between gap-2">
-        <DInfoCard title="Total Reservations Today" stats={totalReservationsToday.toString()} percent="" />
-        <DInfoCard title="Pending Reservations" stats={pendingReservations.length.toString()} percent="" />
+        <DInfoCard
+          title="Total Reservations Today"
+          stats={totalReservationsToday.toString()}
+          percent=""
+        />
+        <DInfoCard
+          title="Pending Reservations"
+          stats={pendingReservations.length.toString()}
+          percent=""
+        />
       </div>
-      
+
       {/* Pending Reservations */}
       <div className="flex-col">
         <h2 className="mb-5 mt-6 font-light text-3xl text-gray-200">
@@ -149,12 +183,18 @@ const AdminDashboard = () => {
                     count={item.guestsCount.toString()}
                     index={index}
                     status="p"
-                    onAccept={() => handleReservationUpdate(item.id, "ACCEPTED")}
-                    onDecline={() => handleReservationUpdate(item.id, "DECLINED")}
+                    onAccept={() =>
+                      handleReservationUpdate(item.id, "ACCEPTED")
+                    }
+                    onDecline={() =>
+                      handleReservationUpdate(item.id, "DECLINED")
+                    }
                   />
                 ))
               ) : (
-                <div className="text-center text-gray-400 py-4">No pending reservations</div>
+                <div className="text-center text-gray-400 py-4">
+                  No pending reservations
+                </div>
               )}
             </div>
           </div>
@@ -186,7 +226,9 @@ const AdminDashboard = () => {
                   />
                 ))
               ) : (
-                <div className="text-center text-gray-400 py-4">No accepted reservations</div>
+                <div className="text-center text-gray-400 py-4">
+                  No accepted reservations
+                </div>
               )}
             </div>
           </div>

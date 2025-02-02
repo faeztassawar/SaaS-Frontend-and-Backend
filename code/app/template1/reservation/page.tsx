@@ -9,6 +9,7 @@ import NavBar from "../components/NavBar";
 import ReservationForm from "../components/ReservationForm";
 import { useSession } from "next-auth/react";
 import ReservationList from "../components/ReservationList";
+import { format } from "date-fns";
 
 interface ReservationPageProps {
   id: string;
@@ -24,7 +25,9 @@ const ReservationPage = ({ id, restaurant_id }: ReservationPageProps) => {
     const fetchUserRestaurantId = async () => {
       if (session?.user?.email) {
         try {
-          const response = await fetch(`/api/session/restaurant/${session.user.email}`);
+          const response = await fetch(
+            `/api/session/restaurant/${session.user.email}`
+          );
           const data = await response.json();
           setUserRestaurantId(data.restaurant_id);
         } catch (error) {
@@ -84,7 +87,9 @@ const ReservationPage = ({ id, restaurant_id }: ReservationPageProps) => {
               </button>
               {showReservations && (
                 <div className="mt-8 bg-[#172340] p-6 rounded-lg">
-                  <h3 className="text-2xl font-[900] mb-4">Your Reservations</h3>
+                  <h3 className="text-2xl font-[900] mb-4">
+                    Your Reservations
+                  </h3>
                   <div className="space-y-4">
                     {session?.user?.email && (
                       <ReservationList email={session.user.email} />

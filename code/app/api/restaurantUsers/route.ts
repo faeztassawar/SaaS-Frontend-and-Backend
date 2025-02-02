@@ -7,6 +7,22 @@ export const DELETE = async (req: Request) => {
     try {
         const body = await req.json()
 
+        const reservations = await prisma.reservation.findMany({
+            where: {
+                customerId: body.id,
+                restaurant_id: body.restaurant_id
+            }
+        })
+
+        reservations.forEach(async (item) => {
+            const res = await prisma.reservation.delete({
+                where: {
+                    id: item.id
+                }
+            })
+        })
+
+
         const customer = await prisma.restaurantCustomer.delete({
             where: {
                 restaurant_id: body.restaurant_id,
