@@ -17,7 +17,7 @@ const Header = ({ rest_id, rest_name }: HeaderProps) => {
   // Dynamic paths based on `rest_id`
   const homePath = `/restaurants/${rest_id}`;
   const menuPath = `/restaurants/${rest_id}/menu`;
-  const dashboardPath = `/restaurants/${rest_id}/adminDashboard/users`;
+  const dashboardPath = `/restaurants/${rest_id}/adminDashboard`;
   const profilePath = `/restaurants/${rest_id}/editProfile`;
   const cartPath = `/restaurants/${rest_id}/Cart`;
   const aboutPath = `/restaurants/${rest_id}/aboutUs`;
