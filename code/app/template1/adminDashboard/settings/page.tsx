@@ -1,87 +1,165 @@
 "use client";
-
 import { Restaurant } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
 
 type settingProps = {
   restaurant_id: string;
 };
 
-const page = ({ restaurant_id }: settingProps) => {
+const Page = ({ restaurant_id }: settingProps) => {
   const { data, status } = useSession();
+  const router = useRouter();
   const [restaurantData, setRestaurantData] = useState<Restaurant>();
-  const [dialogVisible, setDialogVisible] = useState(false); // Dialog visibility state
+  const [nameChange, setNameChange] = useState(restaurantData?.name || "");
+  const [descChange, setDescChange] = useState(restaurantData?.desc || "");
+  const [openTime, setOpenTime] = useState(restaurantData?.opentiming || "");
+  const [closeTime, setCloseTime] = useState(restaurantData?.closetiming || "");
+  const [aboutUsChange, setAboutUsChange] = useState(
+    restaurantData?.about_us || ""
+  );
+  const [cuisineChange, setCuisineChange] = useState(
+    restaurantData?.cuisine || ""
+  );
 
   useEffect(() => {
     const fetchRestaurant = async () => {
-      console.log("USER PROFILE RESTAURANT ID: ", restaurant_id);
       const res = await fetch(`/api/restaurant/${restaurant_id}`);
       if (res.ok) {
         const data = await res.json();
         setRestaurantData(data);
-        console.log("RESTAURANT FETCHED: ", restaurantData);
-      } else {
-        console.log("NO RESTAURANT!");
+        setNameChange(data.name);
+        setDescChange(data.desc);
+        setAboutUsChange(data.about_us);
+        setCuisineChange(data.cuisine);
+        setOpenTime(data.opentime);
+        setCloseTime(data.closetime);
+        console.log(data);
       }
     };
     fetchRestaurant();
-  }, [status]);
+  }, [status, restaurant_id]);
 
-  const router = useRouter();
-  const [nameChange, setNameChange] = useState(restaurantData?.name || "");
-  const [descChange, setDescChange] = useState(restaurantData?.desc || "");
-  const [aboutUsChange, setAboutUsChange] = useState(
-    restaurantData?.about_us || ""
-  );
+  const showSuccessDialog = (message: string) => {
+    Swal.fire({
+      title: "Success!",
+      text: message,
+      icon: "success",
+      background: "#172340",
+      color: "#fff",
+      confirmButtonColor: "#1c9cea",
+      confirmButtonText: "OK",
+      customClass: {
+        popup: "rounded-xl border-gray-600",
+        confirmButton: "rounded-full px-6 py-3",
+      },
+    });
+  };
 
-  const handleChange = async () => {
-    console.log("Updating");
-    const res = await fetch(
-      `http://localhost:3000/api/restaurant/${restaurant_id}`,
-      {
+  const handleNameChange = async () => {
+    try {
+      const res = await fetch(`/api/restaurant/${restaurant_id}`, {
         method: "POST",
         body: JSON.stringify({
-          name: nameChange !== "" ? nameChange : restaurantData?.name,
-          about_us:
-            aboutUsChange !== "" ? aboutUsChange : restaurantData?.about_us,
-          desc: descChange !== "" ? descChange : restaurantData?.desc,
+          name: nameChange || restaurantData?.name,
         }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setNameChange(data.name);
+        showSuccessDialog("Restaurant name updated successfully!");
+        toast.success("Name updated", {
+          position: "top-right",
+          style: {
+            background: "#172340",
+            color: "#fff",
+            border: "1px solid #283d6f",
+            borderRadius: "12px",
+          },
+        });
+      } else {
+        toast.error("Failed to update name", {
+          position: "top-right",
+          style: {
+            background: "#450a0a",
+            color: "#fff",
+            border: "1px solid #7f1d1d",
+            borderRadius: "12px",
+          },
+        });
       }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      console.log("Now: ", data);
-      setNameChange(data.name);
-      setDialogVisible(true); // Show the dialog
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error("Update failed", {
+        position: "top-right",
+        style: {
+          background: "#450a0a",
+          color: "#fff",
+          border: "1px solid #7f1d1d",
+          borderRadius: "12px",
+        },
+      });
     }
     router.refresh();
   };
 
-  const closeDialog = () => {
-    setDialogVisible(false); // Hide the dialog
-  };
+  const handleDetailsChange = async () => {
+    try {
+      const res = await fetch(`/api/restaurant/${restaurant_id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          about_us: aboutUsChange || restaurantData?.about_us,
+          desc: descChange || restaurantData?.desc,
+          cuisine: cuisineChange || restaurantData?.cuisine,
+          opentiming: openTime || restaurantData?.opentiming,
+          closetiming: closeTime || restaurantData?.closetiming,
+        }),
+      });
 
-  const timings = [
-    {
-      day: "Monday",
-      Start: "5PM",
-      End: "11PM",
-    },
-    {
-      day: "Tue - Fri",
-      Start: "4PM",
-      End: "11PM",
-    },
-    {
-      day: "Sat - Sun",
-      Start: "6PM",
-      End: "2AM",
-    },
-  ];
+      if (res.ok) {
+        const data = await res.json();
+        setDescChange(data.desc);
+        setAboutUsChange(data.about_us);
+        setCuisineChange(data.cuisine);
+        showSuccessDialog("Details updated successfully!");
+        toast.success("Details updated", {
+          position: "top-right",
+          style: {
+            background: "#172340",
+            color: "#fff",
+            border: "1px solid #283d6f",
+            borderRadius: "12px",
+          },
+        });
+      } else {
+        toast.error("Failed to update details", {
+          position: "top-right",
+          style: {
+            background: "#450a0a",
+            color: "#fff",
+            border: "1px solid #7f1d1d",
+            borderRadius: "12px",
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error("Update failed", {
+        position: "top-right",
+        style: {
+          background: "#450a0a",
+          color: "#fff",
+          border: "1px solid #7f1d1d",
+          borderRadius: "12px",
+        },
+      });
+    }
+    router.refresh();
+  };
 
   return (
     <div className="flex flex-col gap-10">
@@ -97,8 +175,7 @@ const page = ({ restaurant_id }: settingProps) => {
         />
         <button
           onClick={async () => {
-            await handleChange();
-            router.refresh();
+            await handleNameChange();
           }}
           className="my-3 px-5 py-3 bg-[#1c9cea] text-white font-semibold rounded-full"
         >
@@ -121,10 +198,38 @@ const page = ({ restaurant_id }: settingProps) => {
           className="rounded-xl border border-gray-800 px-5 py-3 bg-[#2f4880]"
           placeholder="Write About Us ( Max 1000 letters )"
         />
+        <input
+          value={cuisineChange}
+          onChange={(e) => setCuisineChange(e.target.value)}
+          className="rounded-xl border border-gray-800 px-5 py-3 bg-[#2f4880]"
+          placeholder="Cuisine"
+        />
+        <div className="flex justify-between gap-10">
+          <div className="basis-1/2 justify-center items-center flex flex-col gap-4">
+            <h1>Opening Time</h1>
+            <input
+              type="time"
+              value={openTime}
+              onChange={(e) => setOpenTime(e.target.value)}
+              className="rounded-xl w-full border border-gray-800 px-5 py-3 bg-[#2f4880]"
+              placeholder="Opening Timing"
+            />
+          </div>
+          <div className="basis-1/2 flex flex-col justify-center items-center gap-4">
+            <h1 className="">Closing Time</h1>
+            <input
+              type="time"
+              value={closeTime}
+              onChange={(e) => setCloseTime(e.target.value)}
+              className="rounded-xl w-full border border-gray-800 px-5 py-3 bg-[#2f4880]"
+              placeholder="Closing Timing"
+            />
+          </div>
+        </div>
         <div className=" mx-8 flex items-center justify-end">
           <button
             onClick={async () => {
-              await handleChange();
+              await handleDetailsChange();
               router.refresh();
             }}
             className="my-3 px-5 py-3 bg-[#1c9cea] text-white font-semibold rounded-full"
@@ -133,29 +238,8 @@ const page = ({ restaurant_id }: settingProps) => {
           </button>
         </div>
       </div>
-
-      {dialogVisible && (
-        <div className="fixed transition-all inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-          <div
-            className="bg-white w-[30%] p-8 rounded-lg shadow-lg relative animate-bounce-in"
-            style={{ transition: "transform 0.3s ease, opacity 0.3s ease" }}
-          >
-            <h2 className="text-2xl font-semibold text-center text-black mb-6">
-              Data is Updated
-            </h2>
-            <div className="flex justify-center">
-              <button
-                onClick={closeDialog}
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 hover:scale-110 transition-transform"
-              >
-                Ok
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default page;
+export default Page;

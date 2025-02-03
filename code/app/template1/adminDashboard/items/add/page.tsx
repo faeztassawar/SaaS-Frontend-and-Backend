@@ -11,23 +11,26 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
   const [itemName, setItemName] = useState<string>();
   const [itemPrice, setItemPrice] = useState<number>();
   const [itemCategory, setItemCategory] = useState<string>();
-  const [itemImg, setItemImage] = useState<string>();
+  const [itemImg, setItemImage] = useState<File>();
   const [categories, setCategories] = useState<Category[]>([]);
   const router = useRouter();
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("name", itemName || "");
+    formData.append("image", itemImg || "");
+    formData.append("price", itemPrice?.toString() || "");
+    formData.append("desc", itemCategory || "");
+    formData.append("menu", menuId || "");
     console.log("Updating");
     const res = await fetch(`http://localhost:3000/api/items`, {
       method: "POST",
-      body: JSON.stringify({
-        name: itemName,
-        desc: itemCategory,
-        price: itemPrice,
-        image: itemImg,
-      }),
+      body: formData,
     });
     if (res.ok) {
       const data = await res.json();
       console.log("Now: ", data);
+    } else {
+      console.log("ERROR!");
     }
   };
   const fetchCategories = async () => {
@@ -47,7 +50,10 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
 
   return (
     <div className="p-5 rounded-lg bg-[#172340] mt-5">
-      <form className="flex flex-wrap justify-between">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="flex flex-wrap justify-between"
+      >
         <input
           type="text"
           placeholder="Title"
@@ -80,7 +86,7 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
           type="file"
           name="image"
           accept="image/*"
-          onChange={(e) => setItemImage(e.target.value)}
+          onChange={(e) => setItemImage(e.target.files?.[0])}
           className="p-4 bg-[#1f273a] text-white border-2 border-gray-700 rounded-md mb-5 w-[45%]"
         />
 

@@ -30,7 +30,7 @@ export default function Home({ restaurant_id }: RestaurantProps) {
         }
       };
       fetchRestaurant();
-    }, [status]);
+    }, [restaurantData, restaurant_id, status]);
     console.log("EMAIL: ", data?.user?.email);
     if (typeof window !== "undefined") {
       document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;

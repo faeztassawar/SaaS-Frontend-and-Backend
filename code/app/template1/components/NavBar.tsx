@@ -19,7 +19,8 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { RestaurantCustomer } from "@prisma/client";
+import { Restaurant, RestaurantCustomer } from "@prisma/client";
+import Cookies from "js-cookie";
 
 type NavBarProps = {
   rest_id: string;
@@ -59,7 +60,8 @@ const NavBar = ({ rest_id }: NavBarProps) => {
     fetchData();
   }, [status]);
   console.log("Owner:", user);
-
+  let ot = Cookies.get("OT");
+  let ct = Cookies.get("CT");
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
       <div className="text-3xl flex gap-8 items-center text-black font-chillax">
@@ -161,22 +163,11 @@ const NavBar = ({ rest_id }: NavBarProps) => {
             <FaRegClock className="hover:cursor-pointer" />
           </HoverCardTrigger>
           <HoverCardContent side="top">
-            <div className="flex flex-col gap-2 font-chillax">
-              <h1 className="text-xl font-bold">Opening Hours</h1>
-              <div className="text-lg">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">Mon</span>
-                  <span>closed</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">Tue - Fri</span>
-                  <span>4pm - 8pm</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">Sat - Sun</span>
-                  <span>5pm - 11pm</span>
-                </div>
-              </div>
+            <div className="flex flex-col gap-2 items-center font-chillax">
+              <h1 className="text-xl font-bold">Opening Time</h1>
+              <h1 className="text-xl font-semibold">{ot}</h1>
+              <h1 className="text-xl font-bold">Closing Time</h1>
+              <h1 className="text-xl font-semibold">{ct}</h1>
             </div>
           </HoverCardContent>
         </HoverCard>

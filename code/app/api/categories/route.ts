@@ -31,22 +31,55 @@ export const DELETE = async (req: Request) => {
 
 export const POST = async (req: Request) => {
     try {
-        const body = await req.json()
         console.log("Creating new Category!")
-
-
+        const formData = await req.formData()
+        const img = formData.get("image") as File;
+        const name = formData.get("name") as string;
+        const menu = formData.get("menuId") as string
+        const buffer = Buffer.from(await img.arrayBuffer());
 
         const cat = await prisma.category.create({
             data: {
-                name: body.name,
-                image: body.image || null,
-                menuId: body.menuId
+                name,
+                image: buffer,
+                isArchive: false,
+                menuId: menu
             }
         });
 
 
         console.log("Category Created ", cat)
         return NextResponse.json(cat)
+    } catch (err) {
+        console.error("Error fetching Item:", err);
+        return NextResponse.json({ message: "Something went wrong!" }, { status: 500 });
+    }
+};
+
+export const PUT = async (req: Request) => {
+    try {
+        const body = await req.json()
+        console.log("Updating Category!")
+
+
+        const cat = await prisma.category.findUnique({
+            where: {
+                menuId: body.menuId,
+                id: body.id
+            }
+        });
+        const catUpdate = await prisma.category.update({
+            where: {
+                menuId: body.menuId,
+                id: body.id
+            }, data: {
+                isArchive: !cat?.isArchive
+            }
+        });
+
+
+        console.log("Category Updated ", catUpdate)
+        return NextResponse.json(catUpdate)
     } catch (err) {
         console.error("Error fetching Item:", err);
         return NextResponse.json({ message: "Something went wrong!" }, { status: 500 });

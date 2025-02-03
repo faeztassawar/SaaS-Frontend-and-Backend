@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar";
 import { useSession } from "next-auth/react";
 import { Restaurant } from "@prisma/client";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 type RestaurantProps = {
   restaurant_id: string;
@@ -33,6 +34,8 @@ export default function Home({ restaurant_id }: RestaurantProps) {
   if (typeof window !== "undefined") {
     document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;
   }
+  Cookies.set("OT", restaurantData?.opentiming || "");
+  Cookies.set("CT", restaurantData?.closetiming || "");
   console.log("RESTAURANT: ", restaurant_id);
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">

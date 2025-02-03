@@ -6,7 +6,9 @@ import Footer from "../../components/Footer";
 import UserTabs from "../../components/UserTabs";
 import { useSession } from "next-auth/react";
 import { Restaurant } from "@prisma/client";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
 
 type settingProps = {
   restaurant_id: string;
@@ -14,80 +16,152 @@ type settingProps = {
 
 const Settings = ({ restaurant_id }: settingProps) => {
   const { data, status } = useSession();
-  const [restaurantData, setRestaurantData] = useState<Restaurant>();
-  const [dialogVisible, setDialogVisible] = useState(false); // Dialog visibility state
-
-  useEffect(() => {
-    const fetchRestaurant = async () => {
-      console.log("USER PROFILE RESTAURANT ID: ", restaurant_id);
-      const res = await fetch(`/api/restaurant/${restaurant_id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setRestaurantData(data);
-        console.log("RESTAURANT FETCHED: ", restaurantData);
-      } else {
-        console.log("NO RESTAURANT!");
-      }
-    };
-    fetchRestaurant();
-  }, [status]);
-
   const router = useRouter();
+  const [restaurantData, setRestaurantData] = useState<Restaurant>();
   const [nameChange, setNameChange] = useState(restaurantData?.name || "");
   const [descChange, setDescChange] = useState(restaurantData?.desc || "");
   const [aboutUsChange, setAboutUsChange] = useState(
     restaurantData?.about_us || ""
   );
+  const [cuisineChange, setCuisineChange] = useState(
+    restaurantData?.cuisine || ""
+  );
 
-  const handleChange = async () => {
-    console.log("Updating");
-    const res = await fetch(
-      `http://localhost:3000/api/restaurant/${restaurant_id}`,
-      {
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      const res = await fetch(`/api/restaurant/${restaurant_id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setRestaurantData(data);
+        setNameChange(data.name);
+        setDescChange(data.desc);
+        setAboutUsChange(data.about_us);
+        setCuisineChange(data.cuisine);
+      }
+    };
+    fetchRestaurant();
+  }, [status, restaurant_id, setNameChange, setDescChange, setAboutUsChange]);
+
+  const showSuccessDialog = (message: string) => {
+    Swal.fire({
+      title: "Success!",
+      text: message,
+      icon: "success",
+      background: "#172340",
+      color: "#fff",
+      confirmButtonColor: "#1c9cea",
+      confirmButtonText: "OK",
+      customClass: {
+        popup: "rounded-xl border-gray-600",
+        confirmButton: "rounded-full px-6 py-3",
+      },
+    });
+  };
+
+  const handleNameChange = async () => {
+    try {
+      const res = await fetch(`/api/restaurant/${restaurant_id}`, {
         method: "POST",
         body: JSON.stringify({
-          name: nameChange !== "" ? nameChange : restaurantData?.name,
-          about_us:
-            aboutUsChange !== "" ? aboutUsChange : restaurantData?.about_us,
-          desc: descChange !== "" ? descChange : restaurantData?.desc,
+          name: nameChange || restaurantData?.name,
         }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setNameChange(data.name);
+        showSuccessDialog("Restaurant name updated successfully!");
+        toast.success("Name updated", {
+          position: "top-right",
+          style: {
+            background: "#172340",
+            color: "#fff",
+            border: "1px solid #283d6f",
+            borderRadius: "12px",
+          },
+        });
+      } else {
+        toast.error("Failed to update name", {
+          position: "top-right",
+          style: {
+            background: "#450a0a",
+            color: "#fff",
+            border: "1px solid #7f1d1d",
+            borderRadius: "12px",
+          },
+        });
       }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      console.log("Now: ", data);
-      setNameChange(data.name);
-      setDialogVisible(true); // Show the dialog
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error("Update failed", {
+        position: "top-right",
+        style: {
+          background: "#450a0a",
+          color: "#fff",
+          border: "1px solid #7f1d1d",
+          borderRadius: "12px",
+        },
+      });
     }
     router.refresh();
   };
 
-  const closeDialog = () => {
-    setDialogVisible(false); // Hide the dialog
-  };
+  const handleDetailsChange = async () => {
+    try {
+      const res = await fetch(`/api/restaurant/${restaurant_id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          about_us: aboutUsChange || restaurantData?.about_us,
+          desc: descChange || restaurantData?.desc,
+          cuisine: cuisineChange || restaurantData?.cuisine,
+        }),
+      });
 
-  const timings = [
-    {
-      day: "Monday",
-      Start: "5PM",
-      End: "11PM",
-    },
-    {
-      day: "Tue - Fri",
-      Start: "4PM",
-      End: "11PM",
-    },
-    {
-      day: "Sat - Sun",
-      Start: "6PM",
-      End: "2AM",
-    },
-  ];
+      if (res.ok) {
+        const data = await res.json();
+        setDescChange(data.desc);
+        setAboutUsChange(data.about_us);
+        setCuisineChange(data.cuisine);
+        showSuccessDialog("Details updated successfully!");
+        toast.success("Details updated", {
+          position: "top-right",
+          style: {
+            background: "#172340",
+            color: "#fff",
+            border: "1px solid #283d6f",
+            borderRadius: "12px",
+          },
+        });
+      } else {
+        toast.error("Failed to update details", {
+          position: "top-right",
+          style: {
+            background: "#450a0a",
+            color: "#fff",
+            border: "1px solid #7f1d1d",
+            borderRadius: "12px",
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error("Update failed", {
+        position: "top-right",
+        style: {
+          background: "#450a0a",
+          color: "#fff",
+          border: "1px solid #7f1d1d",
+          borderRadius: "12px",
+        },
+      });
+    }
+    router.refresh();
+  };
 
   return (
     <div className="flex flex-col gap-8">
       <Header rest_id={restaurant_id} rest_name="Settings" />
-      <UserTabs isAdmin={true} />
+      <UserTabs isAdmin={true} rest_id={restaurant_id} />
 
       <div className="flex w-full max-w-3xl items-center bg-gray-50 rounded-lg px-5 py-4 mx-auto">
         <h1 className="text-2xl px-3 font-semibold">
@@ -101,7 +175,7 @@ const Settings = ({ restaurant_id }: settingProps) => {
         />
         <button
           onClick={async () => {
-            await handleChange();
+            await handleNameChange();
             router.refresh();
           }}
           className="ml-4 px-5 py-3 bg-[#800000] text-white font-semibold rounded-full"
@@ -126,37 +200,22 @@ const Settings = ({ restaurant_id }: settingProps) => {
           className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
           placeholder="Write About Us ( Max 1000 letters )"
         />
+        <input
+          value={cuisineChange}
+          onChange={(e) => setCuisineChange(e.target.value)}
+          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
+          placeholder="Cuisine"
+        />
         <div className="flex justify-end">
           <button
             onClick={async () => {
-              await handleChange();
+              await handleDetailsChange();
               router.refresh();
             }}
             className="my-3 px-5 py-3 bg-[#800000] text-white font-semibold rounded-full"
           >
             Confirm
           </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col w-full max-w-3xl gap-5 bg-[#FDFFF1] px-5 py-4 rounded-lg mx-auto">
-        <h1 className="text-2xl px-3 font-semibold">Timings</h1>
-        <div className="flex flex-col items-center justify-center gap-4">
-          {timings.map((item, index) => (
-            <div key={index} className="flex w-full max-w-xl items-center">
-              <div className="flex w-full justify-between items-center">
-                <h1 className="text-xl">{item.day}</h1>
-                <h1 className="text-xl">
-                  {item.Start} - {item.End}
-                </h1>
-              </div>
-              <div className="flex items-center justify-center ml-4">
-                <button className="px-4 py-2 bg-[#800000] text-white rounded-full">
-                  Edit
-                </button>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 

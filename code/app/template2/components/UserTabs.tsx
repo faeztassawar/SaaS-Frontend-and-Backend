@@ -88,7 +88,7 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
           <Link
             href={settingsPath}
             className={
-              path === "/template2/Settings"
+              path === "/template2/settings"
                 ? "bg-[#800000] text-white rounded-full px-3 py-2"
                 : "bg-[#9f8881] text-white rounded-full px-3 py-2"
             }

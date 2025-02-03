@@ -15,8 +15,10 @@ const loadTemplate = async (templateId: string) => {
     return dynamic(
       () => import("@/app/template1/adminDashboard/settings/page")
     );
-    if (templateId === "2")
-        return dynamic(() => import("@/app/template2/adminDashboard/Settings/page"));
+  if (templateId === "2")
+    return dynamic(
+      () => import("@/app/template2/adminDashboard/settings/page")
+    );
   return dynamic(() => import("@/app/page"));
 };
 

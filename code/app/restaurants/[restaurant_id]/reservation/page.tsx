@@ -12,7 +12,9 @@ const getRest = async (restaurant_id: string) => {
 
 const getReservations = async (restaurant_id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/reservations/${restaurant_id}`);
+    const res = await fetch(
+      `http://localhost:3000/api/reservations/${restaurant_id}`
+    );
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -22,7 +24,6 @@ const getReservations = async (restaurant_id: string) => {
     return null;
   }
 };
-
 
 const loadTemplate = async (templateId: string) => {
   if (templateId === "1")
@@ -41,7 +42,13 @@ const page = async ({ params }: never) => {
   const Template = await loadTemplate(restaurant?.tempModel);
 
   // Pass the restaurant object to the template
-  return <Template id={reservations.id} restaurant_id={reservations.restaurant_id} />;
+  return (
+    <Template
+      id={reservations.id}
+      name={restaurant.name}
+      restaurant_id={reservations.restaurant_id}
+    />
+  );
 };
 
 export default page;

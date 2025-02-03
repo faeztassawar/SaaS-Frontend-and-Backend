@@ -7,21 +7,31 @@ import NavBar from "../components/NavBar";
 import Link from "next/link";
 import { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import Cookies from "js-cookie";
 
 interface MenuProps {
   restaurant_id: string;
   id: string;
+  restaurantName: string;
 }
 
-const Example = ({ id, restaurant_id}: MenuProps) => {
+const Example = ({ id, restaurant_id, restaurantName }: MenuProps) => {
   return (
     <div className="bg-neutral-800">
-      <HorizontalScrollCarousel id={id} restaurant_id={restaurant_id} />
+      <HorizontalScrollCarousel
+        id={id}
+        restaurant_id={restaurant_id}
+        restaurantName={restaurantName}
+      />
     </div>
   );
 };
 
-const HorizontalScrollCarousel = ({ id, restaurant_id}: MenuProps) => {
+const HorizontalScrollCarousel = ({
+  id,
+  restaurant_id,
+  restaurantName,
+}: MenuProps) => {
   const { status } = useSession();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +74,7 @@ const HorizontalScrollCarousel = ({ id, restaurant_id}: MenuProps) => {
     [0, 1],
     isLargeScreen ? ["0%", "-39%"] : ["0%", "0%"]
   );
-
+  const pathName = `/restaurants/${restaurant_id}/menu`;
   return (
     <section
       ref={targetRef}
@@ -76,14 +86,30 @@ const HorizontalScrollCarousel = ({ id, restaurant_id}: MenuProps) => {
           className="flex md:flex-row flex-col md:w-auto w-screen"
         >
           {!loading ? (
-            categories.map((category) => (
-              <Link key={category.id} href="">
-                <CategoryCard
-                  img={category.image || "@/app/template1/images/react.png"}
-                  name={category.name}
-                />
-              </Link>
-            ))
+            categories.map((category) => {
+              let image = category.image;
+
+              // Convert object-like Uint8Array into a valid Base64 string
+              if (image && typeof image === "object" && !("type" in image)) {
+                const byteArray = Object.values(image);
+                image = `data:image/jpeg;base64,${Buffer.from(
+                  byteArray
+                ).toString("base64")}`;
+              }
+              if (!category.isArchive) {
+                return (
+                  <Link
+                    onClick={() => {
+                      Cookies.set("cat", category.id as string);
+                    }}
+                    key={category.id}
+                    href={pathName}
+                  >
+                    <CategoryCard img={image} name={category.name} />
+                  </Link>
+                );
+              }
+            })
           ) : (
             <div className="text-white text-2xl">Loading categories...</div>
           )}
@@ -94,8 +120,8 @@ const HorizontalScrollCarousel = ({ id, restaurant_id}: MenuProps) => {
           </div>
         </div>
         <div className="fixed z-10 top-0 w-screen text-center">
-          <div className="flex items-center justify-center mt-8">
-            <h1 className="text-white text-4xl">lezzetli.</h1>
+          <div className="flex items-center justify-center py-14">
+            <h1 className="text-white text-4xl">{restaurantName}</h1>
           </div>
         </div>
       </div>

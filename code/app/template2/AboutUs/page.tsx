@@ -8,7 +8,7 @@ export default function AboutUs() {
   return (
     <div className="flex flex-col min-h-screen bg-[#FDFFF1]">
       {/* Header Component */}
-      <Header isAdmin={false} rest_id={restaurant_id} />
+      <Header rest_id={restaurant_id} rest_name="About Us" />
 
       {/* Main Content */}
       <main className="flex-grow">

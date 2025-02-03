@@ -43,15 +43,26 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
         <p className="text-center text-white">Loading items...</p>
       ) : items.length > 0 ? (
         <div className="flex flex-col px-4">
-          {items.map((item) => (
-            <MealCard
-              key={item.id}
-              name={item.name}
-              desc={item.desc}
-              price={item.price.toString()}
-              img={item.image ?? ""}
-            />
-          ))}
+          {items.map((item) => {
+            let image = item.image;
+
+            // Convert object-like Uint8Array into a valid Base64 string
+            if (image && typeof image === "object" && !("type" in image)) {
+              const byteArray = Object.values(image);
+              image = `data:image/jpeg;base64,${Buffer.from(byteArray).toString(
+                "base64"
+              )}`;
+            }
+            return (
+              <MealCard
+                key={item.id}
+                name={item.name}
+                desc={item.desc}
+                price={item.price.toString()}
+                img={image}
+              />
+            );
+          })}
         </div>
       ) : (
         <p className="text-center text-white">

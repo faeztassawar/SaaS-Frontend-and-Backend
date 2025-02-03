@@ -6,18 +6,20 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 
 interface HeaderProps {
-  rest_id: string;
-  rest_name: string;
+  rest_id?: string;
+  rest_name?: string;
+  isAdmin?: boolean; // ✅ Add this
 }
 
-const Header = ({ rest_id, rest_name }: HeaderProps) => {
+const Header = ({ rest_id = "", rest_name = "", isAdmin = false }: HeaderProps) => {
+
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
 
   // Dynamic paths based on `rest_id`
   const homePath = `/restaurants/${rest_id}`;
   const menuPath = `/restaurants/${rest_id}/menu`;
-  const dashboardPath = `/restaurants/${rest_id}/adminDashboard/users`;
+  const dashboardPath = `/restaurants/${rest_id}/adminDashboard`;
   const profilePath = `/restaurants/${rest_id}/editProfile`;
   const cartPath = `/restaurants/${rest_id}/Cart`;
   const aboutPath = `/restaurants/${rest_id}/aboutUs`;
