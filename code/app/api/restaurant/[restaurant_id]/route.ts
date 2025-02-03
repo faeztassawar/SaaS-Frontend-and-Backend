@@ -54,7 +54,9 @@ export const POST = async (req: Request, { params }: { params: { restaurant_id: 
                 name: body.name,
                 about_us: body.about_us,
                 desc: body.desc,
-                cuisine: body.cuisine
+                cuisine: body.cuisine,
+                opentiming: body.opentiming,
+                closetiming: body.closetiming
             }
         });
 

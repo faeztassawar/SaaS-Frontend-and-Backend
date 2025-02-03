@@ -34,7 +34,8 @@ export const POST = async (req: Request) => {
                 about_us: body.about_us,
                 desc: 'Great ambiance and friendly staff.',
                 cuisine: "Pakistan",
-                timing: '9am - 9pm',
+                opentiming: '9:00 AM',
+                closetiming: '9:00 PM',
                 phone: body.phone,
                 tempModel: body.tempModel,
             }

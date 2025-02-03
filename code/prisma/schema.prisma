@@ -40,7 +40,8 @@ model Restaurant {
   cuisine       String?
   about_us      String
   desc          String
-  timing        String
+  opentiming    String?
+  closetiming   String?
   phone         String?
   tempModel     String
   Menu          Menu[]

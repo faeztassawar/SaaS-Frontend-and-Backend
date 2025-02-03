@@ -20,6 +20,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.11.1",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.447.0",
     "mongodb": "^6.11.0",
     "next": "^14.2.21",
@@ -38,6 +39,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "20.16.10",
     "@types/react": "18.3.11",
     "@types/react-chartjs-2": "^2.0.2",

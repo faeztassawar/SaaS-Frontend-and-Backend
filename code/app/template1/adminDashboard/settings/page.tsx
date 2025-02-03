@@ -16,6 +16,8 @@ const Page = ({ restaurant_id }: settingProps) => {
   const [restaurantData, setRestaurantData] = useState<Restaurant>();
   const [nameChange, setNameChange] = useState(restaurantData?.name || "");
   const [descChange, setDescChange] = useState(restaurantData?.desc || "");
+  const [openTime, setOpenTime] = useState(restaurantData?.opentiming || "");
+  const [closeTime, setCloseTime] = useState(restaurantData?.closetiming || "");
   const [aboutUsChange, setAboutUsChange] = useState(
     restaurantData?.about_us || ""
   );
@@ -33,6 +35,9 @@ const Page = ({ restaurant_id }: settingProps) => {
         setDescChange(data.desc);
         setAboutUsChange(data.about_us);
         setCuisineChange(data.cuisine);
+        setOpenTime(data.opentime);
+        setCloseTime(data.closetime);
+        console.log(data);
       }
     };
     fetchRestaurant();
@@ -110,6 +115,8 @@ const Page = ({ restaurant_id }: settingProps) => {
           about_us: aboutUsChange || restaurantData?.about_us,
           desc: descChange || restaurantData?.desc,
           cuisine: cuisineChange || restaurantData?.cuisine,
+          opentiming: openTime || restaurantData?.opentiming,
+          closetiming: closeTime || restaurantData?.closetiming,
         }),
       });
 
@@ -197,6 +204,28 @@ const Page = ({ restaurant_id }: settingProps) => {
           className="rounded-xl border border-gray-800 px-5 py-3 bg-[#2f4880]"
           placeholder="Cuisine"
         />
+        <div className="flex justify-between gap-10">
+          <div className="basis-1/2 justify-center items-center flex flex-col gap-4">
+            <h1>Opening Time</h1>
+            <input
+              type="time"
+              value={openTime}
+              onChange={(e) => setOpenTime(e.target.value)}
+              className="rounded-xl w-full border border-gray-800 px-5 py-3 bg-[#2f4880]"
+              placeholder="Opening Timing"
+            />
+          </div>
+          <div className="basis-1/2 flex flex-col justify-center items-center gap-4">
+            <h1 className="">Closing Time</h1>
+            <input
+              type="time"
+              value={closeTime}
+              onChange={(e) => setCloseTime(e.target.value)}
+              className="rounded-xl w-full border border-gray-800 px-5 py-3 bg-[#2f4880]"
+              placeholder="Closing Timing"
+            />
+          </div>
+        </div>
         <div className=" mx-8 flex items-center justify-end">
           <button
             onClick={async () => {

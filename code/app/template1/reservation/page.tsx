@@ -14,9 +14,10 @@ import { format } from "date-fns";
 interface ReservationPageProps {
   id: string;
   restaurant_id: string;
+  name: string;
 }
 
-const ReservationPage = ({ id, restaurant_id }: ReservationPageProps) => {
+const ReservationPage = ({ id, restaurant_id, name }: ReservationPageProps) => {
   const { data: session, status } = useSession();
   const [userRestaurantId, setUserRestaurantId] = useState<string | null>(null);
   const [showReservations, setShowReservations] = useState(false);
@@ -51,9 +52,9 @@ const ReservationPage = ({ id, restaurant_id }: ReservationPageProps) => {
           fill
           alt="Background"
         />
-        <div className="relative z-10 flex items-center h-full flex-col justify-between gap-20 py-10">
+        <div className="relative z-10 flex items-center h-full flex-col justify-between gap-20 py-14">
           <h1 className="text-white text-xl md:text-4xl font-chillax">
-            <Link href={`/restaurants/${restaurant_id}`}>lezzetli.</Link>
+            <Link href={`/restaurants/${restaurant_id}`}>{name}</Link>
           </h1>
           <div className="text-white flex gap-2 flex-col justify-between items-center">
             <h2 className="text-3xl md:text-7xl font-rose text-[#face8d]">
