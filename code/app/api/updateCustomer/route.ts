@@ -6,20 +6,35 @@ export const POST = async (req: Request) => {
     const body = await req.json();
     const { email, type, value } = body;
 
-    
     if (!email || !type || !value) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
-   
-    let updatedData = {};
+    let updatedData: any = {};
+
+    
     if (type === "firstName") {
-      updatedData = { name: `${value} ${value.split(" ")[1] || ""}` }; 
-    } else if (type === "lastName") {
+      updatedData = { name: `${value} ${value.split(" ")[1] || ""}` };
+    }
+   
+    else if (type === "lastName") {
       const firstName = (await prisma.restaurantCustomer.findUnique({ where: { email } }))?.name?.split(" ")[0] || "";
-      updatedData = { name: `${firstName} ${value}` }; 
+      updatedData = { name: `${firstName} ${value}` };
+    }
+   
+    else if (type === "city") {
+      updatedData = { city: value };
+    }
+ 
+    else if (type === "phone") {
+      updatedData = { phone: value };
+    }
+   
+    else if (type === "address") {
+      updatedData = { address: value };
     }
 
+    // Perform the update on the customer record
     const updatedCustomer = await prisma.restaurantCustomer.update({
       where: { email },
       data: updatedData,

@@ -62,6 +62,9 @@ model RestaurantCustomer {
 
   Reservations Reservation[] // Add this line for the relation
 
+  city          String?      // Optional city field
+  address       String?      // Optional address field
+  phoneNumber   String?      // Optional phone number field
   @@map("restaurantCustomer")
 }
 
