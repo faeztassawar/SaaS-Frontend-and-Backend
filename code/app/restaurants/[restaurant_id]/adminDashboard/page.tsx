@@ -48,7 +48,7 @@ const loadTemplate = async (templateId: string) => {
     );
   }
   return dynamic<TemplateProps>(() =>
-    import("@/app/template2/adminDashboard/users/page").then((mod) => mod.default)
+    import("@/app/template2/adminDashboard/page").then((mod) => mod.default)
   );
 };
 
