@@ -1,4 +1,4 @@
-import { Category, Item } from "@prisma/client";
+import { Category } from "@prisma/client";
 import dynamic from "next/dynamic";
 
 const getData = async (restaurant_id: string) => {

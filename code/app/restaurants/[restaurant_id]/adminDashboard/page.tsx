@@ -17,7 +17,9 @@ function ErrorFallback({ error }: { error: Error }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
+        <h2 className="text-2xl font-bold text-red-600 mb-4">
+          Something went wrong
+        </h2>
         <p className="text-gray-600">{error.message}</p>
       </div>
     </div>
@@ -26,14 +28,17 @@ function ErrorFallback({ error }: { error: Error }) {
 
 const getData = async (restaurant_id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/restaurant/${restaurant_id}`, {
-      cache: 'no-store'
-    });
-    
+    const res = await fetch(
+      `http://localhost:3000/api/restaurant/${restaurant_id}`,
+      {
+        cache: "no-store",
+      }
+    );
+
     if (!res.ok) {
       throw new Error("Failed to fetch restaurant data");
     }
-    
+
     return res.json();
   } catch (error) {
     console.error("Error fetching restaurant data:", error);
@@ -52,7 +57,11 @@ const loadTemplate = async (templateId: string) => {
   );
 };
 
-export default async function Page({ params }: { params: { restaurant_id: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: { restaurant_id: string };
+}) {
   try {
     const resolvedParams = await Promise.resolve(params);
     const restaurant_id = resolvedParams.restaurant_id;
