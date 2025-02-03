@@ -9,19 +9,11 @@ interface LayoutProps {
 
 const Layout = ({ children, restaurant_id }: LayoutProps) => {
   return (
-    <div className="flex min-h-screen bg-[#0f172a] text-white">
-      {/* Sidebar with fixed width */}
-      <div className="w-64 bg-[#172340] p-5 min-h-full">
-        <DSidebar restaurant_id={restaurant_id} />
-      </div>
-
-      {/* Content area */}
-      <div className="flex-1 p-5">
-        {/* Navbar fixed at the top */}
-        <DNav />
+  
+    
         <div className="mt-5">{children}</div>
-      </div>
-    </div>
+      
+
   );
 };
 

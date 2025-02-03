@@ -59,7 +59,7 @@ export default async function Layout({ children, params }: PageParams) {
         if (restaurant?.tempModel === "1") {
           return import("@/app/template1/adminDashboard/layout").then(mod => mod.default);
         }
-        return import("@/app/page").then(mod => mod.default);
+        return import("@/app/template2/adminDashboard/layout").then(mod => mod.default);
       },
       {
         loading: () => <LoadingFallback />,
