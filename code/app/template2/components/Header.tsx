@@ -6,11 +6,13 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 
 interface HeaderProps {
-  rest_id: string;
-  rest_name: string;
+  rest_id?: string;
+  rest_name?: string;
+  isAdmin?: boolean; // ✅ Add this
 }
 
-const Header = ({ rest_id, rest_name }: HeaderProps) => {
+const Header = ({ rest_id = "", rest_name = "", isAdmin = false }: HeaderProps) => {
+
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
 

@@ -41,6 +41,7 @@ export const POST = async (req: Request) => {
     const cookiesData = await cookies()
     const adminValue = cookiesData.get("admin")?.value
     console.log("ADMIN VALUE: ", adminValue)
+    console.log(" MAKEEEEEEEEE ADMINNNNN ")
     try {
         const body = await req.json()
 
