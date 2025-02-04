@@ -11,6 +11,7 @@ const getRest = async (restaurant_id: string) => {
 
 const loadTemplate = async (templateId: string) => {
   if (templateId === "1") return dynamic(() => import("@/app/template1/aboutUs/page"))
+  else if (templateId === "2") return dynamic(() => import("@/app/template2/AboutUs/page"))
   return dynamic(() => import("@/app/page"))
 }
 

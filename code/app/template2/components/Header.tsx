@@ -22,7 +22,7 @@ const Header = ({ rest_id = "", rest_name = "", isAdmin = false }: HeaderProps) 
   const dashboardPath = `/restaurants/${rest_id}/adminDashboard`;
   const profilePath = `/restaurants/${rest_id}/editProfile`;
   const cartPath = `/restaurants/${rest_id}/Cart`;
-  const aboutPath = `/restaurants/${rest_id}/aboutUs`;
+  const aboutPath = `/restaurants/${rest_id}/about-us`;
 
   // Fetch session data and check permissions
   useEffect(() => {

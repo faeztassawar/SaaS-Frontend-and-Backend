@@ -45,7 +45,7 @@ const NavBar = () => {
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
       <div className="relative">
         <div className="absolute w-full top-2 bottom-2 bg-blue-500 blur-md"></div>
-        <Link href="/LandingPage">
+        <Link href="/">
           <Image
             src={logos}
             alt=""
