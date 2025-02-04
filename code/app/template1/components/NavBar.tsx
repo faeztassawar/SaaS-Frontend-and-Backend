@@ -35,7 +35,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
   const catPath = `/restaurants/${rest_id}/categories`;
   const resPath = `/restaurants/${rest_id}/reservation`;
   const editProfilePath = `/restaurants/${rest_id}/editProfile`;
-  const aboutPath = `/restaurants/${rest_id}/aboutUs`;
+  const aboutPath = `/restaurants/${rest_id}/about-us`;
 
   const [allowed, setAllowed] = useState(false);
   const [user, setUser] = useState<RestaurantCustomer>();

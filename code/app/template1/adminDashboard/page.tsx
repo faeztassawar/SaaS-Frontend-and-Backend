@@ -5,6 +5,7 @@ import DReservation from "../components/DReservation"
 import DInfoCard from "../components/DInfoCard"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { format } from "date-fns";
 
 type Reservation = {
   id: string
@@ -137,9 +138,11 @@ const AdminDashboard = () => {
   const cancelledReservations = reservations.filter((r) => r.status === "CANCELLED")
 
   const totalReservationsToday = reservations.filter((r) => {
-    const today = new Date().toISOString().split("T")[0]
-    return r.date.startsWith(today) && r.status === "ACCEPTED"
-  }).length
+    const localToday = format(new Date(), "yyyy-MM-dd"); // Convert today to YYYY-MM-DD format
+    const reservationDate = format(new Date(r.date), "yyyy-MM-dd"); // Convert stored date to YYYY-MM-DD
+  
+    return reservationDate === localToday && r.status === "ACCEPTED";
+  }).length;
 
   if (isLoading) {
     return (

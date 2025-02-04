@@ -100,7 +100,7 @@ const EditProfile = () => {
 
   const handleCancelBooking = async (bookingId: string) => {
     const isConfirmed = window.confirm(
-      "Are You Sure You Want To Delete This Reservation?"
+      "Are You Sure You Want To Cancel This Reservation?"
     );
 
     if (!isConfirmed) return;
@@ -221,7 +221,7 @@ const EditProfile = () => {
                     className="px-5 my-2 flex items-center justify-between"
                     key={item.id}
                   >
-                    <h1>{item.date}</h1>
+                    <h1>{new Date(item.date).toLocaleDateString('en-GB')}</h1>
                     <h1>{item.time}</h1>
                     <span
                       className={`${

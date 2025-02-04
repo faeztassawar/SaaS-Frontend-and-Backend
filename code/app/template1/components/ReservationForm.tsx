@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import { format, isBefore, startOfDay } from "date-fns";
+import { format, isBefore, startOfDay, isSameDay } from "date-fns";
 
 const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
   const { data: session } = useSession();
@@ -20,15 +20,19 @@ const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
   };
 
   const handleDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = new Date(e.target.value);
+    const value = e.target.value;
+    // Parse the input value as local date
+    const [year, month, day] = value.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day); // Months are 0-based in JS
+    const selectedDateStart = startOfDay(selectedDate);
     const today = startOfDay(new Date());
-
-    if (isBefore(selectedDate, today)) {
-      alert("Please select a future date.");
+  
+    if (isBefore(selectedDateStart, today)) {
+      alert("Please select today or a future date.");
       return;
     }
-
-    setFormData({ ...formData, date: e.target.value });
+  
+    setFormData({ ...formData, date: value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

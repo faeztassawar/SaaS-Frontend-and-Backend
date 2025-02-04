@@ -1,5 +1,5 @@
 import prisma from "@/lib/connect"
-import { NextResponse } from "next/server"
+import { type NextRequest,NextResponse } from "next/server"
 
 
 export const GET = async (req: Request, { params }: { params: { restaurant_id: string } }) => {
