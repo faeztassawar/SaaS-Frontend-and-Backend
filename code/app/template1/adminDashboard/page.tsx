@@ -66,6 +66,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       if (restaurant_id) {
+      if (restaurant_id) {
         try {
           setIsLoading(true)
           await deletePastReservations(restaurant_id)
