@@ -66,14 +66,13 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       if (restaurant_id) {
-      if (restaurant_id) {
         try {
           setIsLoading(true)
           await deletePastReservations(restaurant_id)
           const res = await fetch(`/api/reservations?restaurant_id=${restaurant_id}`)
           if (!res.ok) throw new Error("Failed to fetch reservations")
           const data = await res.json()
-          console.log("Fetched reservations:", data) // Debug log
+          console.log("Fetched reservations:", data)
           setReservations(Array.isArray(data) ? data : [])
           initialFetchDone.current = true
         } catch (error) {
@@ -89,48 +88,32 @@ const AdminDashboard = () => {
 
   const handleReservationUpdate = async (reservationId: string, newStatus: string) => {
     try {
-      // Optimistic update
       setReservations((prevReservations) =>
         prevReservations.map((r) => (r.id === reservationId ? { ...r, status: newStatus } : r))
       )
 
-      if (newStatus === "CANCELLED") {
-        const res = await fetch("/api/cancelReservation", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookingId: reservationId }),
-        })
+      const endpoint = newStatus === "CANCELLED" ? "/api/cancelReservation" : "/api/reservations"
+      const method = newStatus === "CANCELLED" ? "POST" : "PATCH"
+      const body = newStatus === "CANCELLED"
+        ? { bookingId: reservationId }
+        : { id: reservationId, status: newStatus }
 
-        if (!res.ok) {
-          throw new Error("Failed to cancel reservation")
-        }
+      const res = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
 
-        const { reservation: updatedReservation } = await res.json()
-        setReservations((prevReservations) =>
-          prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
-        )
-      } else {
-        const res = await fetch("/api/reservations", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: reservationId, status: newStatus }),
-        })
-
-        if (!res.ok) {
-          throw new Error("Failed to update reservation status")
-        }
-
-        const updatedReservation = await res.json()
-        setReservations((prevReservations) =>
-          prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
-        )
+      if (!res.ok) {
+        throw new Error(`Failed to ${newStatus === "CANCELLED" ? "cancel" : "update"} reservation`)
       }
+
+      const updatedReservation = await res.json()
+      setReservations((prevReservations) =>
+        prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
+      )
     } catch (error) {
       console.error("Error updating reservation status:", error)
-      // Revert the optimistic update if the API call fails
-      setReservations((prevReservations) =>
-        prevReservations.map((r) => (r.id === reservationId ? { ...r, status: r.status } : r))
-      )
     }
   }
 

@@ -38,6 +38,7 @@ export const DELETE = async (req: Request) => {
     }
 };
 export const POST = async (req: Request) => {
+    console.log("admin apiiiiiiiiiiiii")
     const cookiesData = await cookies()
     const adminValue = cookiesData.get("admin")?.value
     console.log("ADMIN VALUE: ", adminValue)
