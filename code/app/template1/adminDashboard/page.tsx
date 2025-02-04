@@ -87,7 +87,6 @@ const AdminDashboard = () => {
 
   const handleReservationUpdate = async (reservationId: string, newStatus: string) => {
     try {
-      // Optimistic update
       setReservations((prevReservations) =>
         prevReservations.map((r) => (r.id === reservationId ? { ...r, status: newStatus } : r))
       )
@@ -116,21 +115,16 @@ const AdminDashboard = () => {
           body: JSON.stringify({ id: reservationId, status: newStatus }),
         })
 
-        if (!res.ok) {
-          throw new Error("Failed to update reservation status")
-        }
-
-        const updatedReservation = await res.json()
-        setReservations((prevReservations) =>
-          prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
-        )
+      if (!res.ok) {
+        throw new Error(`Failed to ${newStatus === "CANCELLED" ? "cancel" : "update"} reservation`)
       }
+
+      const updatedReservation = await res.json()
+      setReservations((prevReservations) =>
+        prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
+      )
     } catch (error) {
       console.error("Error updating reservation status:", error)
-      // Revert the optimistic update if the API call fails
-      setReservations((prevReservations) =>
-        prevReservations.map((r) => (r.id === reservationId ? { ...r, status: r.status } : r))
-      )
     }
   }
 

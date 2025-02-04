@@ -1,4 +1,4 @@
-"use client";
+"use client";  // Ensure this is at the very top
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -37,7 +37,7 @@ const EditProfile = () => {
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
-  
+
   const [editFirstName, setEditFirstName] = useState<boolean>(false);
   const [editLastName, setEditLastName] = useState<boolean>(false);
   const [editPhone, setEditPhone] = useState<boolean>(false);
@@ -51,8 +51,10 @@ const EditProfile = () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
           setEmail(session.user.email);
+          setIsLoading(true);
           const data = await fetchUserProfile(session.user.email);
 
+          // Set the values directly from the fetched data
           setFirstName(data.firstName || "");
           setLastName(data.lastName || "");
           setPhone(data.phone || "");
@@ -125,7 +127,7 @@ const EditProfile = () => {
           <div className="flex items-center justify-center mb-6">
             <div className="relative">
               <Image
-                className="rounded full w-24 h-24"
+                className="rounded-full w-24 h-24"
                 src={jerry}
                 alt="Profile Avatar"
                 width={100}
@@ -153,7 +155,7 @@ const EditProfile = () => {
                 <input
                   type="text"
                   id="name"
-                  value={editFirstName ? firstName : ""}
+                  value={firstName}  // Show the actual value
                   onChange={(e) => setFirstName(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="First and last name"
@@ -167,7 +169,7 @@ const EditProfile = () => {
                     }
                     setEditFirstName(!editFirstName);
                   }}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded"
+                  className="ml-2 p-2 bg-[#800000] text-white rounded"
                 >
                   {editFirstName ? "Save" : "Edit"}
                 </button>
@@ -177,7 +179,7 @@ const EditProfile = () => {
             {/* Last Name */}
             <div>
               <label
-                htmlFor="name"
+                htmlFor="lastName"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Last Name
@@ -186,7 +188,7 @@ const EditProfile = () => {
                 <input
                   type="text"
                   id="lastName"
-                  value={editLastName ? lastName : ""}
+                  value={lastName}  
                   onChange={(e) => setLastName(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Last name"
@@ -200,7 +202,7 @@ const EditProfile = () => {
                     }
                     setEditLastName(!editLastName);
                   }}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded"
+                  className="ml-2 p-2 bg-[#800000] text-white rounded"
                 >
                   {editLastName ? "Save" : "Edit"}
                 </button>
@@ -219,7 +221,7 @@ const EditProfile = () => {
                 <input
                   type="tel"
                   id="phone"
-                  value={editPhone ? phone : ""}
+                  value={phone}  // Show the actual value
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Phone number"
@@ -233,7 +235,7 @@ const EditProfile = () => {
                     }
                     setEditPhone(!editPhone);
                   }}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded"
+                  className="ml-2 p-2 bg-[#800000] text-white rounded"
                 >
                   {editPhone ? "Save" : "Edit"}
                 </button>
@@ -252,7 +254,7 @@ const EditProfile = () => {
                 <input
                   type="text"
                   id="address"
-                  value={editAddress ? address : ""}
+                  value={address}  // Show the actual value
                   onChange={(e) => setAddress(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Street address"
@@ -266,7 +268,7 @@ const EditProfile = () => {
                     }
                     setEditAddress(!editAddress);
                   }}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded"
+                  className="ml-2 p-2 bg-[#800000] text-white rounded"
                 >
                   {editAddress ? "Save" : "Edit"}
                 </button>
@@ -285,7 +287,7 @@ const EditProfile = () => {
                 <input
                   type="text"
                   id="city"
-                  value={editCity ? city : ""}
+                  value={city}  // Show the actual value
                   onChange={(e) => setCity(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="City"
@@ -299,19 +301,14 @@ const EditProfile = () => {
                     }
                     setEditCity(!editCity);
                   }}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded"
+                  className="ml-2 p-2 bg-[#800000] text-white rounded"
                 >
                   {editCity ? "Save" : "Edit"}
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full p-3 bg-[#800000] text-white font-semibold rounded-lg"
-            >
-              Save
-            </button>
+            
           </form>
         </div>
       </div>

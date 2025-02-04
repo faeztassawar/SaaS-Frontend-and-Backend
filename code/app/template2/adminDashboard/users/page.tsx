@@ -4,19 +4,20 @@ import React, { useEffect, useState } from "react";
 import Header from "@/app/template2/components/Header";
 import Footer from "@/app/template2/components/Footer";
 import UserTabs from "@/app/template2/components/UserTabs";
-
-
 import { RestaurantCustomer } from "@prisma/client";
-
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 type userProps = {
   users: RestaurantCustomer[];
 };
 
 const handleDelete = async (item: RestaurantCustomer) => {
-  const user = await fetch(`/api/restaurantUsers`, {
+  await fetch(`/api/restaurantUsers`, {
     method: "DELETE",
     body: JSON.stringify({
       id: item.id,
@@ -24,8 +25,9 @@ const handleDelete = async (item: RestaurantCustomer) => {
     }),
   });
 };
+
 const handleAdmin = async (item: RestaurantCustomer) => {
-  const user = await fetch(`/api/restaurantUsers`, {
+  await fetch(`/api/restaurantUsers`, {
     method: "POST",
     body: JSON.stringify({
       id: item.id,
@@ -50,7 +52,9 @@ const UsersPage = ({ users }: userProps) => {
             router.push(`/restaurants/${jsonData.restaurant_id}`);
           }
 
-          const usersResponse = await fetch(`/api/restaurantUsers/${jsonData.restaurant_id}`);
+          const usersResponse = await fetch(
+            `/api/restaurantUsers/${jsonData.restaurant_id}`
+          );
           const usersData = await usersResponse.json();
           setFetchedUsers(usersData);
         } catch (error) {
@@ -61,13 +65,35 @@ const UsersPage = ({ users }: userProps) => {
     fetchData();
   }, [status, data]);
 
+  const confirmAction = async (item: RestaurantCustomer, action: string) => {
+    const actionMap: { [key: string]: () => Promise<void> } = {
+      delete: () => handleDelete(item),
+      makeAdmin: () => handleAdmin(item),
+      removeAdmin: () => handleAdmin(item),
+    };
 
+    const result = await MySwal.fire({
+      title: <p className="text-2xl">Are you sure?</p>,
+      text: `You are about to ${action.replace(/([A-Z])/g, ' $1').toLowerCase()}.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes!",
+      background: "#969292",
+      color: "#fff",
+      customClass: {
+        popup: "rounded-xl border-gray-600",
+        confirmButton: "bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg",
+        cancelButton: "bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg mr-3",
+      },
+    });
 
-  console.log("USERSSSS T2", fetchedUsers);
-
-
-
-
+    if (result.isConfirmed) {
+      await actionMap[action]();
+      router.refresh();
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -92,10 +118,7 @@ const UsersPage = ({ users }: userProps) => {
                 <div className="flex gap-2">
                   {!user.isOwner && (
                     <button
-                      onClick={async () => {
-                        await handleDelete(user);
-                        router.refresh();
-                      }}
+                      onClick={() => confirmAction(user, "delete")}
                       className="button bg-red-600 text-white px-4 py-2 rounded font-semibold hover:bg-red-700"
                     >
                       Delete
@@ -103,10 +126,7 @@ const UsersPage = ({ users }: userProps) => {
                   )}
                   {!user.isAdmin && !user.isOwner && (
                     <button
-                      onClick={async () => {
-                        await handleAdmin(user);
-                        router.refresh();
-                      }}
+                      onClick={() => confirmAction(user, "makeAdmin")}
                       className="button bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700"
                     >
                       Make Admin
@@ -114,16 +134,15 @@ const UsersPage = ({ users }: userProps) => {
                   )}
                   {user.isAdmin && !user.isOwner && (
                     <button
-                      onClick={async () => {
-                        await handleAdmin(user);
-                        router.refresh();
-                      }}
+                      onClick={() => confirmAction(user, "removeAdmin")}
                       className="button bg-yellow-600 text-white px-4 py-2 rounded font-semibold hover:bg-yellow-700"
                     >
                       Remove Admin
                     </button>
                   )}
-                  {user.isOwner && <span className="font-semibold text-gray-700">OWNER</span>}
+                  {user.isOwner && (
+                    <span className="font-semibold text-gray-700">OWNER</span>
+                  )}
                 </div>
               </div>
             ))
@@ -136,4 +155,5 @@ const UsersPage = ({ users }: userProps) => {
     </div>
   );
 };
+
 export default UsersPage;

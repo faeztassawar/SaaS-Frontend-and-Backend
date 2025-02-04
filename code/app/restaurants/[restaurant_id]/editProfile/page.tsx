@@ -14,7 +14,7 @@ const getData = async (restaurant_id: string) => {
 
 
 const loadTemplate = async (templateId: string) => {
-  if (templateId === "1") return dynamic(() => import("@/app/template1/editProfile/page"));
+  if (templateId === "1") return dynamic(() => import("@/app/template1/page"));
   if (templateId === "2") return dynamic(() => import("@/app/template2/editProfile/page"));
   return dynamic(() => import("@/app/page"));
 };

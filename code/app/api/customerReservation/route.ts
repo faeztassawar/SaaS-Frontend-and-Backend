@@ -24,6 +24,9 @@ export const POST = async (req: Request) => {
     const response = {
       firstName: customer.name?.split(" ")[0] || "",
       lastName: customer.name?.split(" ")[1] || "",
+      city:customer.city,
+      address:customer.address,
+      phone:customer.phoneNumber,
       bookings: customer.Reservations.map((res) => ({
         id: res.id,
         date: res.date,
