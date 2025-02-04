@@ -18,7 +18,7 @@ type Reservation = {
 
 const deletePastReservations = async (restaurantId: string) => {
   try {
-    const res = await fetch(`/api/reservations/?restaurant_id=${restaurantId}`, { method: "DELETE" })
+    const res = await fetch(`/api/reservations?restaurant_id=${restaurantId}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Failed to delete past reservations")
     const data = await res.json()
     console.log("Deleted past reservations:", data.deletedCount)
@@ -65,14 +65,15 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchReservations = async () => {
-      if (restaurant_id && !initialFetchDone.current) {
+      if (restaurant_id) {
         try {
           setIsLoading(true)
           await deletePastReservations(restaurant_id)
           const res = await fetch(`/api/reservations?restaurant_id=${restaurant_id}`)
           if (!res.ok) throw new Error("Failed to fetch reservations")
           const data = await res.json()
-          setReservations(data)
+          console.log("Fetched reservations:", data) // Debug log
+          setReservations(Array.isArray(data) ? data : [])
           initialFetchDone.current = true
         } catch (error) {
           console.error("Error fetching reservations:", error)
@@ -93,7 +94,6 @@ const AdminDashboard = () => {
       )
 
       if (newStatus === "CANCELLED") {
-        // Use the new cancellation API endpoint
         const res = await fetch("/api/cancelReservation", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -109,7 +109,6 @@ const AdminDashboard = () => {
           prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
         )
       } else {
-        // Use the existing endpoint for other status updates
         const res = await fetch("/api/reservations", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -168,7 +167,7 @@ const AdminDashboard = () => {
         </div>
         <div className="space-y-2">
           {reservations.length > 0 ? (
-            reservations.map((item, index) => (
+            reservations.map((item) => (
               <div key={item.id} className="grid grid-cols-12 gap-4 text-gray-200 items-center">
                 <div className="col-span-3 truncate">{item.name}</div>
                 <div className="col-span-2">{new Date(item.date).toLocaleDateString('en-US', { 
