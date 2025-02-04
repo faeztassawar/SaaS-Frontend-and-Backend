@@ -89,44 +89,48 @@ const AdminDashboard = () => {
     try {
       setReservations((prevReservations) =>
         prevReservations.map((r) => (r.id === reservationId ? { ...r, status: newStatus } : r))
-      )
-
+      );
+  
+      let updatedReservation;
+  
       if (newStatus === "CANCELLED") {
         // Use the new cancellation API endpoint
         const res = await fetch("/api/cancelReservation", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ bookingId: reservationId }),
-        })
-
+        });
+  
         if (!res.ok) {
-          throw new Error("Failed to cancel reservation")
+          throw new Error("Failed to cancel reservation");
         }
-
-        const { reservation: updatedReservation } = await res.json()
-        setReservations((prevReservations) =>
-          prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
-        )
+  
+        const data = await res.json();
+        updatedReservation = data.reservation; // Ensure response structure is correct
       } else {
         // Use the existing endpoint for other status updates
         const res = await fetch("/api/reservations", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: reservationId, status: newStatus }),
-        })
-
-      if (!res.ok) {
-        throw new Error(`Failed to ${newStatus === "CANCELLED" ? "cancel" : "update"} reservation`)
+        });
+  
+        if (!res.ok) {
+          throw new Error(`Failed to update reservation status to ${newStatus}`);
+        }
+  
+        updatedReservation = await res.json();
       }
-
-      const updatedReservation = await res.json()
+  
+      // Update state only if the request succeeds
       setReservations((prevReservations) =>
         prevReservations.map((r) => (r.id === reservationId ? updatedReservation : r))
-      )
+      );
     } catch (error) {
-      console.error("Error updating reservation status:", error)
+      console.error("Error updating reservation status:", error);
     }
-  }
+  };
+  
 
   const pendingReservations = reservations.filter((r) => r.status === "PENDING")
   const acceptedReservations = reservations.filter((r) => r.status === "ACCEPTED")
