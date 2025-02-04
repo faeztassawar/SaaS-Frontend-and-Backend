@@ -4,28 +4,32 @@ import { useSession } from "next-auth/react";
 import { CiEdit } from "react-icons/ci";
 import Link from "next/link";
 
-// Define the type for a booking
 interface Booking {
   id: string;
   date: string;
   time: string;
-  status: string; // Add status to the booking type
+  status: string;
 }
 
 const fetchUserProfile = async (email: string) => {
   try {
-    console.log("EMAILLLLLLLLLLLLLLLLLL", email);
+    console.log("EMAIL", email);
     const response = await fetch("/api/customerReservation", {
       method: "POST",
       body: JSON.stringify({ email }),
     });
 
     if (!response.ok) {
-      console.log("EMAILLLLLLLLLLLLLLLLLL no");
+      console.log("EMAIL no");
       throw new Error(`Error: ${response.statusText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    // Filter out cancelled bookings before returning
+    return {
+      ...data,
+      bookings: data.bookings?.filter((booking: Booking) => booking.status !== "CANCELLED") || []
+    };
   } catch (error) {
     console.error("Error fetching profile:", error);
     return { firstName: "", lastName: "", bookings: [] };
@@ -42,7 +46,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState<string>("");
   const [editFirstName, setEditFirstName] = useState<boolean>(false);
   const [editLastName, setEditLastName] = useState<boolean>(false);
-  const [bookings, setBookings] = useState<Booking[]>([]); // Specify the state type as Booking[]
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -54,7 +58,8 @@ const EditProfile = () => {
 
           setFirstName(data.firstName || "");
           setLastName(data.lastName || "");
-          setBookings(data.bookings || []); // Ensure the bookings data has the correct structure
+          // Only set non-cancelled bookings
+          setBookings(data.bookings.filter((booking: Booking) => booking.status !== "CANCELLED"));
         } catch (error) {
           console.error("Error loading profile:", error);
         } finally {
@@ -81,7 +86,6 @@ const EditProfile = () => {
         throw new Error("Failed to update customer name");
       }
 
-      // Update the local state
       if (type === "firstName") {
         setFirstName(value);
         setEditFirstName(false);
@@ -102,6 +106,7 @@ const EditProfile = () => {
     if (!isConfirmed) return;
 
     try {
+      setIsLoading(true);
       const response = await fetch('/api/cancelReservation', {
         method: 'POST',
         body: JSON.stringify({ bookingId }),
@@ -109,13 +114,15 @@ const EditProfile = () => {
       });
 
       if (response.ok) {
-        // Remove the cancelled booking from the state
-        setBookings(bookings.filter((booking) => booking.id !== bookingId));
+        // Remove the cancelled booking from the state immediately
+        setBookings(prevBookings => prevBookings.filter(booking => booking.id !== bookingId));
       } else {
         console.error('Failed to cancel booking');
       }
     } catch (error) {
       console.error("Error cancelling booking:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -216,26 +223,21 @@ const EditProfile = () => {
                   >
                     <h1>{item.date}</h1>
                     <h1>{item.time}</h1>
-
                     <span
                       className={`${
-                      item.status === 'DECLINED'
-                      ? 'text-red-500' // Red color for Rejected
-                      : item.status === 'PENDING'
-                      ? 'text-yellow-500' // Yellow color for Pending
-                      : item.status === 'ACCEPTED'
-                      ? 'text-green-500' // Green color for other statuses
-                      : 'text-green-500'
+                        item.status === 'DECLINED'
+                          ? 'text-red-500'
+                          : item.status === 'PENDING'
+                            ? 'text-yellow-500'
+                            : 'text-green-500'
                       }`}
-                      >
+                    >
                       {item.status}
                     </span>
-
-                    {/* Cancel button */}
                     <button
                       onClick={() => handleCancelBooking(item.id)}
-                      className="px-5 py-2 bg-red-800 rounded-xl"
-                      disabled={isLoading} // Disable the button while loading
+                      className="px-5 py-2 bg-red-800 rounded-xl hover:bg-red-900 transition-colors"
+                      disabled={isLoading}
                     >
                       {isLoading ? 'Cancelling...' : 'Cancel'}
                     </button>
