@@ -1,156 +1,85 @@
-"use client";
+"use client"
 
-import { useState, FormEvent } from "react";
-import Image from "next/image";
-import jerry from "@/app/template2/images/jerry.png"; 
-import MenuItemPriceProps from "@/app/template2/components/MenuItemPriceProps"; 
+import React, { useState, type FormEvent } from "react"
 
 interface MenuItemFormProps {
-  onSubmit: (ev: FormEvent<HTMLFormElement>, menuItem: MenuItem) => void;
+  _id?: string
+  name?: string
+  description?: string
+  basePrice?: string
+  category?: string
+  image?: string
 }
 
-interface MenuItem {
-  image: string;
-  name: string;
-  description: string;
-  basePrice: string;
-  category: string;
-  sizes: Prop[];  
-  extraIngredientPrices: Prop[]; 
-}
+export default function MenuItemForm({
+  _id,
+  name: existingName,
+  description: existingDescription,
+  basePrice: existingBasePrice,
+  category: existingCategory,
+  image: existingImage,
+}: MenuItemFormProps) {
+  const [name, setName] = useState(existingName || "")
+  const [description, setDescription] = useState(existingDescription || "")
+  const [basePrice, setBasePrice] = useState(existingBasePrice || "")
+  const [category, setCategory] = useState(existingCategory || "")
+  const [image, setImage] = useState<string | null>(existingImage || null)
 
-interface Prop {
-  name: string;
-  price: number;
-}
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImage(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
-export default function MenuItemForm() {
-  const [image, setImage] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [basePrice, setBasePrice] = useState<string>("");
-  const [category, setCategory] = useState("");
-  
-  // Initialize sizes and extraIngredientPrices as empty arrays
-  const [sizes, setSizes] = useState<Prop[]>([]); 
-  const [extraIngredientPrices, setExtraIngredientPrices] = useState<Prop[]>([]); 
-
-  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
-    ev.preventDefault();
-    const menuItem: MenuItem = {
-      image,
-      name,
-      description,
-      basePrice,
-      category,
-      sizes, 
-      extraIngredientPrices, // Add extra ingredient prices to the menu item
-    };
-    
-    // You can handle the menuItem here, e.g., sending it to the API
-  };
+  async function handleFormSubmit(ev: FormEvent<HTMLFormElement>) {
+    ev.preventDefault()
+    const data = { name, description, basePrice, category, image }
+    if (_id) {
+      // update
+      await fetch("/api/items", {
+        method: "PUT",
+        body: JSON.stringify({ ...data, _id }),
+        headers: { "Content-Type": "application/json" },
+      })
+    } else {
+      // create
+      await fetch("/api/items", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      })
+    }
+  }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      <div className="flex-grow flex justify-center items-center mt-7">
-        <div className="p-8 rounded-lg shadow-2xl w-1/3 bg-gray-100">
-          <div className="relative flex justify-center items-center">
-            <Image
-              className="rounded-full w-24 h-24"
-              src={jerry} // Placeholder image
-              alt="Menu Item Image"
-              width={96}
-              height={96}
-            />
-            <label>
-              <input type="file" className="hidden" />
-              <span className="block p-1 text-xs rounded-full bg-white text-gray-800 shadow-md cursor-pointer">
-                Edit
-              </span>
-            </label>
-          </div>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Item Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(ev) => setName(ev.target.value)}
-                id="name"
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Menu item name"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <input
-                type="text"
-                value={description}
-                onChange={(ev) => setDescription(ev.target.value)}
-                id="description"
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Menu description"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
-              <input
-                type="text"
-                value={category}
-                onChange={(ev) => setCategory(ev.target.value)}
-                id="category"
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Category"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="basePrice" className="block text-sm font-medium text-gray-700 mb-1">
-                Base Price
-              </label>
-              <input
-                type="text"
-                value={basePrice}
-                onChange={(ev) => setBasePrice(ev.target.value)}
-                id="basePrice"
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                placeholder="Base price"
-                required
-              />
-            </div>
-            <MenuItemPriceProps
-              name={"Sizes"}
-              addLabel={"Add Item Size"}
-              props={sizes}
-              setProps={setSizes}
-            />
-            <MenuItemPriceProps
-              name={"Extra Ingredients"}
-              addLabel={"Add Ingredients Prices"}
-              props={extraIngredientPrices}
-              setProps={setExtraIngredientPrices}
-            />
-            <button
-              type="submit"
-              className="w-full p-3 bg-[#800000] text-white font-semibold rounded-lg"
-            >
-              Save
-            </button>
-          </form>
+    <form className="mt-8 max-w-2xl mx-auto" onSubmit={handleFormSubmit}>
+      <div className="flex items-start gap-4">
+        <div className="grow">
+          <label>Item name</label>
+          <input type="text" value={name} onChange={(ev) => setName(ev.target.value)} />
+          <label>Description</label>
+          <input type="text" value={description} onChange={(ev) => setDescription(ev.target.value)} />
+          <label>Category</label>
+          <input type="text" value={category} onChange={(ev) => setCategory(ev.target.value)} />
+          <label>Base price</label>
+          <input type="text" value={basePrice} onChange={(ev) => setBasePrice(ev.target.value)} />
+        </div>
+        <div>
+          <label>Item image</label>
+          <img className="rounded-lg w-full h-full mb-1" src={image || "/placeholder.png"} alt="item image" />
+          <label className="button w-full text-center cursor-pointer">
+            <input type="file" className="hidden" onChange={handleFileChange} />
+            Edit image
+          </label>
         </div>
       </div>
-    </div>
-  );
+      <button type="submit">Save</button>
+    </form>
+  )
 }
+

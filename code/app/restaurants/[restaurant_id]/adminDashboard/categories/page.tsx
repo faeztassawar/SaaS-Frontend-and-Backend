@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { Category } from "@prisma/client"
 
 const getData = async (restaurant_id: string) => {
   const res = await fetch(

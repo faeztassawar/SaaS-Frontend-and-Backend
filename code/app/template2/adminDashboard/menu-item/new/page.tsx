@@ -1,33 +1,21 @@
-"use client";
+"use client"
 
-import { FormEvent } from "react";
-import Header from "@/app/template2/components/Header";
-import Footer from "@/app/template2/components/Footer";
-import UserTabs from "@/app/template2/components/UserTabs";
-import MenuItemForm from "@/app/template2/components/MenuItemForm";
-import SectionHeader from "../../../components/SectionHeader";
-
-interface MenuItem {
-  image: string;
-  name: string;
-  description: string;
-  basePrice: string;
-  category: string;
-}
+import Header from "@/app/template2/components/Header"
+import Footer from "@/app/template2/components/Footer"
+import UserTabs from "@/app/template2/components/UserTabs"
+import MenuItemForm from "@/app/template2/components/MenuItemForm"
+import SectionHeader from "../../../components/SectionHeader"
+import { useState } from "react"
 
 export default function NewMenuItemPage() {
-  const handleFormSubmit = (
-    ev: FormEvent<HTMLFormElement>,
-    menuItem: MenuItem
-  ) => {
-    ev.preventDefault();
-  };
+  const [restId, setRestId] = useState<string>("")
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header isAdmin={true} />
       <div className="text-center mt-8 mb-8">
-        <UserTabs isAdmin={true} />
+        <UserTabs isAdmin={true}
+        rest_id={restId} />
       </div>
       <div className="text-center justify-center items-center">
         <SectionHeader mainHeader="New Item" subHeader="ADD" />
@@ -35,5 +23,6 @@ export default function NewMenuItemPage() {
       <MenuItemForm />
       <Footer />
     </div>
-  );
+  )
 }
+

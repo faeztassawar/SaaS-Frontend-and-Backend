@@ -1,26 +1,42 @@
-"use client";
+"use client"
 
-// import { useState, FormEvent } from "react";
-import Link from "next/link";
-import MenuItemForm from "@/app/template2/components/MenuItemForm";
-import Header from "@/app/template2/components/Header";
-import Footer from "@/app/template2/components/Footer";
-import UserTabs from "../../components/UserTabs";
-import { FaAngleRight } from "react-icons/fa";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import MenuItemForm from "@/app/template2/components/MenuItemForm"
+import Header from "@/app/template2/components/Header"
+import Footer from "@/app/template2/components/Footer"
+import UserTabs from "@/app/template2/components/UserTabs"
+import { FaAngleRight } from "react-icons/fa"
 
-export default function EditMenuItemPage() {
-  // const [menuItem, setMenuItem] = useState(null);
+interface MenuItem {
+  _id?: string
+  name?: string
+  description?: string
+  basePrice?: string
+  category?: string
+  image?: string
+}
 
-  // const handleFormSubmit = (ev: FormEvent<HTMLFormElement>) => {
-  //   ev.preventDefault();
+export default function EditMenuItemPage({ params }: { params: { id: string } }) {
+  const [menuItem, setMenuItem] = useState<MenuItem | null>(null)
+  const [restId, setRestId] = useState<string>("")
 
-  // };
+  useEffect(() => {
+    if (params.id) {
+      fetch(`/api/items/${params.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setMenuItem(data)
+        })
+    }
+  }, [params.id])
 
   return (
     <div className="min-h-screen">
       <Header isAdmin={true} />
       <div className="text-center mt-12 mb-10">
-        <UserTabs isAdmin={true} />
+        <UserTabs isAdmin={true}
+        rest_id={restId} />
       </div>
       <div className="mt-8 flex justify-center bg-gray-50">
         <Link href={"/template2/menu-item"}>
@@ -30,8 +46,9 @@ export default function EditMenuItemPage() {
           </button>
         </Link>
       </div>
-      <MenuItemForm />
+      {menuItem && <MenuItemForm {...menuItem} />}
       <Footer />
     </div>
-  );
+  )
 }
+
