@@ -12,6 +12,7 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
   const userpath = `/restaurants/${rest_id}/adminDashboard/users`;
   const editProfilePath = `/restaurants/${rest_id}/editProfile`;
   const settingsPath = `/restaurants/${rest_id}/adminDashboard/settings`
+  const catPath = `/restaurants/${rest_id}/adminDashboard/categories`
 
   const path = usePathname();
 
@@ -41,7 +42,7 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
             Manage Orders
           </Link>
           <Link
-            href="/template2/categories"
+            href={catPath}
             className={
               path === "/template2/categories"
                 ? "bg-[#800000] text-white rounded-full px-3 py-2"

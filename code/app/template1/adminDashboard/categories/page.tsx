@@ -2,7 +2,6 @@
 import DSearch from "@/app/template1/components/DSearch";
 import { Category } from "@prisma/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -57,7 +56,6 @@ const handleArchive = async (item: Category) => {
 };
 
 const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
-  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

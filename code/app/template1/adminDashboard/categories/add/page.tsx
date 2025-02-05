@@ -1,7 +1,5 @@
 "use client";
-import { Category } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type AddItemPageProps = {
   menuId: string;
@@ -10,7 +8,6 @@ type AddItemPageProps = {
 const AddItemPage = ({ menuId }: AddItemPageProps) => {
   const [catName, setCatName] = useState<string>();
   const [catImage, setCatImage] = useState<File>();
-  const router = useRouter();
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("name", catName || "");

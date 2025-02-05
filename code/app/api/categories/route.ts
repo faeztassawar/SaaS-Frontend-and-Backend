@@ -1,5 +1,4 @@
 import prisma from "@/lib/connect"
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server"
 
 
@@ -33,10 +32,14 @@ export const POST = async (req: Request) => {
     try {
         console.log("Creating new Category!")
         const formData = await req.formData()
-        const img = formData.get("image") as File;
+        const img = formData.get("image") as File | null;
         const name = formData.get("name") as string;
         const menu = formData.get("menuId") as string
-        const buffer = Buffer.from(await img.arrayBuffer());
+        let buffer: Buffer | null = null;
+
+        if (img) {
+            buffer = Buffer.from(await img.arrayBuffer());
+        }
 
         const cat = await prisma.category.create({
             data: {
