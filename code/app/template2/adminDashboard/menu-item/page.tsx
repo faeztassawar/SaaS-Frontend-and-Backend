@@ -1,65 +1,71 @@
 "use client"
 
-import type React from "react"
+import Image from "next/image"
+import Header from "@/app/template2/components/Header"
+import Footer from "@/app/template2/components/Footer"
+import UserTabs from "@/app/template2/components/UserTabs"
+import { FaAngleRight } from "react-icons/fa"
 import Link from "next/link"
-import type { Item, Category } from "@prisma/client"
-import { useEffect, useState } from "react"
+import { Category } from "@prisma/client"
 
 interface Template2ItemsPageProps {
   restaurantId: string
-  menuId: string
+  isAdmin: boolean
   categories: Category[]
-  items: Item[]
+  items: {
+    id: string
+    name: string
+    image: string
+    price: number
+  }[]
 }
 
-const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({ restaurantId, menuId, categories, items }) => {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
+const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({ restaurantId, items }) => {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Menu Items</h1>
-      <Link
-        href={`/restaurants/${restaurantId}/adminDashboard/items/add`}
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block hover:bg-blue-600 transition-colors"
-      >
-        Add New Item
-      </Link>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        {categories.map((category) => (
-          <div key={category.id} className="border p-4 rounded shadow-sm bg-white">
-            <h2 className="text-xl font-semibold mb-3 text-gray-800">{category.name}</h2>
-            <ul className="space-y-2">
-              {items
-                .filter((item) => item.categoryId === category.id)
-                .map((item) => (
-                  <li key={item.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                    <div>
-                      <span className="font-medium text-gray-700">{item.name}</span>
-                      <span className="ml-2 text-gray-600">${item.price.toFixed(2)}</span>
-                    </div>
-                    <Link
-                      href={`/restaurants/${restaurantId}/adminDashboard/items/edit/${item.id}`}
-                      className="text-blue-500 hover:text-blue-700 font-medium"
-                    >
-                      Edit
-                    </Link>
-                  </li>
-                ))}
-              {items.filter((item) => item.categoryId === category.id).length === 0 && (
-                <li className="text-gray-500 italic">No items in this category</li>
-              )}
-            </ul>
-          </div>
-        ))}
+    <div className="min-h-screen">
+      <Header isAdmin={true} />
+      <div className="text-center mt-12 mb-12">
+        <UserTabs isAdmin={true} restaurant_id="" />
       </div>
+      <section className="bg-gray-50 max-w-2xl mx-auto p-2 shadow-2xl">
+        <div className="mt-2 flex justify-center items-center">
+          <Link href={`/restaurants/${restaurantId}/adminDashboard/items/add`}>
+            <button className="flex justify-center items-center gap-2 text-center bg-[#800000] border text-white font-semibold rounded-xl px-6 py-2">
+              Create New Menu Item
+              <FaAngleRight size={20} />
+            </button>
+          </Link>
+        </div>
+
+        <div>
+          <h2 className="text-sm text-gray-700 mt-8 mb-3 px-2">Edit Menu Item:</h2>
+          <div className="grid grid-cols-3 gap-2 p-2">
+            {items.map((item) => (
+              <Link
+                key={item.id}
+                href={`/restaurants/${restaurantId}/adminDashboard/items/edit`}
+                className="bg-gray-300 rounded-lg p-4 hover:bg-white hover:shadow-2xl hover:shadow-black/30 transition-all"
+                aria-label={`Edit ${item.name}`}
+              >
+                <div className="relative">
+                  <Image
+                    className="rounded-md"
+                    src={item.image || "/placeholder.png"}
+                    alt={item.name}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+                <div className="text-center font-semibold text-lg">{item.name}</div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      <Footer />
     </div>
   )
 }
 
 export default Template2ItemsPage
+

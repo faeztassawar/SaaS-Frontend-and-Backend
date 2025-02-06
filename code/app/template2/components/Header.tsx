@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
+import { useRouter } from "next/router"
 
 interface HeaderProps {
   rest_id?: string;
@@ -15,6 +16,7 @@ const Header = ({ rest_id = "", rest_name = "", isAdmin = false }: HeaderProps) 
 
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
+  const [restaurantId, setRestaurantId] = useState(rest_id)
 
   // Dynamic paths based on `rest_id`
   const homePath = `/restaurants/${rest_id}`;
@@ -36,7 +38,8 @@ const Header = ({ rest_id = "", rest_name = "", isAdmin = false }: HeaderProps) 
 
         const jsonData = await response.json();
         if (jsonData?.restaurant_id) {
-          setAllowed(true);
+          setAllowed(true)
+          setRestaurantId(jsonData.restaurant_id)
         }
       } catch (error) {
         console.error("Error fetching session data:", error);

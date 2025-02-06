@@ -2,18 +2,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+
 interface UserTabsProps {
-  isAdmin: boolean;
-  rest_id: string;
+  restaurant_id: string;
+  isAdmin: boolean
 }
 
-export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
+const UserTabs = ({restaurant_id, isAdmin }: UserTabsProps) => {
   
-  const userpath = `/restaurants/${rest_id}/adminDashboard/users`;
-  const editProfilePath = `/restaurants/${rest_id}/editProfile`;
-  const settingsPath = `/restaurants/${rest_id}/adminDashboard/settings`
-  const catPath = `/restaurants/${rest_id}/adminDashboard/categories`
-  const menuItemPath = `/restaurants/${rest_id}/adminDashboard/items`
+  const userpath = `/restaurants/${restaurant_id}/adminDashboard/users`;
+  const editProfilePath = `/restaurants/${restaurant_id}/editProfile`;
+  const settingsPath = `/restaurants/${restaurant_id}/adminDashboard/settings`
+  const catPath = `/restaurants/${restaurant_id}/adminDashboard/categories`
+  const menuItemPath = `/restaurants/${restaurant_id}/adminDashboard/items`
 
   const path = usePathname();
 
@@ -29,9 +30,6 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
       >
         Profile
       </Link>
-
-      {isAdmin && (
-        <>
           <Link
             href="/template2/orderManage"
             className={
@@ -55,9 +53,9 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
           <Link
             href={menuItemPath}
             className={
-              path === "/template2/menu-item" ||
-              path === "/template2/menu-item/new" ||
-              path === "/template2/menu-item/edit"
+              path === `/restaurants/${restaurant_id}/adminDashboard/items` ||
+              path === `/restaurants/${restaurant_id}/adminDashboard/items/add` ||
+              path === `/restaurants/${restaurant_id}/adminDashboard/items/edit`
                 ? "bg-[#800000] text-white rounded-full px-3 py-2"
                 : "bg-[#9f8881] text-white rounded-full px-3 py-2"
             }
@@ -97,8 +95,7 @@ export default function UserTabs({ isAdmin, rest_id }: UserTabsProps) {
           >
             Settings
           </Link>
-        </>
-      )}
     </div>
   );
 }
+export default UserTabs;

@@ -56,7 +56,7 @@ const NavBar = ({ rest_id }: NavBarProps) => {
       } catch (error) {
         console.error("Error fetching session data:", error);
       }
-    };
+    }
     fetchData();
   }, [status]);
   console.log("Owner:", user);

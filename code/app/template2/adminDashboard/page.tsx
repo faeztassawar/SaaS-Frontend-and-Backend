@@ -51,7 +51,7 @@ export default function UserPage() {
       {restaurant_id && <Header rest_id={restaurant_id} rest_name="T2" />}
       
       <div className="text-center mt-8 mb-12">
-        <UserTabs isAdmin={true} rest_id={restaurant_id} />
+        <UserTabs isAdmin={true} restaurant_id={restaurant_id} />
       </div>
 
       <Footer />
