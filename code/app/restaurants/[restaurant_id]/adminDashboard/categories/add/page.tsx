@@ -22,7 +22,7 @@ const loadTemplate = async (templateId: string) => {
       () => import("@/app/template1/adminDashboard/categories/add/page")
     )
     else if (templateId === "2") {
-      return dynamic(() => import("@/app/template2/adminDashboard/menu-item/new/page"))
+      return dynamic(() => import("@/app/template2/adminDashboard/categories/page"))
     }
   return dynamic(() => import("@/app/page"));
 };
@@ -37,7 +37,7 @@ const page = async ({ params }: never) => {
   const Template = await loadTemplate(restaurant?.tempModel);
   const menu = await getMenu(restaurant_id);
   // Pass the restaurant object to the template
-  return <Template menuId={menu.id}/>
+  return <Template menuId={menu.id} restaurantId={restaurant_id}/>
 }
 
 export default page;
