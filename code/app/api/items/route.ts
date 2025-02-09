@@ -68,35 +68,35 @@ export const POST = async (req: Request) => {
     }
 };
 
-export const PUT = async (req: Request) => {
-    try {
-      const formData = await req.formData()
-      const id = formData.get("id") as string
-      const name = formData.get("name") as string
-      const desc = formData.get("desc") as string
-      const price = formData.get("price") as string
-      const categoryId = formData.get("categoryId") as string
-      const priceValue = Number.parseInt(price, 10)
-      const img = formData.get("image") as File
-      const buffer = img ? Buffer.from(await img.arrayBuffer()) : undefined
+// export const PUT = async (req: Request) => {
+//     try {
+//       const formData = await req.formData()
+//       const id = formData.get("id") as string
+//       const name = formData.get("name") as string
+//       const desc = formData.get("desc") as string
+//       const price = formData.get("price") as string
+//       const categoryId = formData.get("categoryId") as string
+//       const priceValue = Number.parseInt(price, 10)
+//       const img = formData.get("image") as File
+//       const buffer = img ? Buffer.from(await img.arrayBuffer()) : undefined
   
-      console.log("Updating Item!")
+//       console.log("Updating Item!")
   
-      const item = await prisma.item.update({
-        where: { id },
-        data: {
-          name,
-          desc,
-          price: priceValue,
-          categoryId,
-          ...(buffer && { image: buffer }),
-        },
-      })
+//       const item = await prisma.item.update({
+//         where: { id },
+//         data: {
+//           name,
+//           desc,
+//           price: priceValue,
+//           categoryId,
+//           ...(buffer && { image: buffer }),
+//         },
+//       })
   
-      console.log("Item Updated ", item)
-      return NextResponse.json(item)
-    } catch (err) {
-      console.error("Error updating Item:", err)
-      return NextResponse.json({ message: "Something went wrong!" }, { status: 500 })
-    }
-};
+//       console.log("Item Updated ", item)
+//       return NextResponse.json(item)
+//     } catch (err) {
+//       console.error("Error updating Item:", err)
+//       return NextResponse.json({ message: "Something went wrong!" }, { status: 500 })
+//     }
+// };

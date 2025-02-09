@@ -63,7 +63,6 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
           );
           if (itemsRes.ok) {
             const itemsData = await itemsRes.json();
-            console.log(`Items for Category ${cat.id}:`, itemsData);
             return itemsData;
           } else {
             console.error(`Failed to fetch items for category ${cat.id}`);
@@ -72,7 +71,6 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
         });
 
         const allItems = (await Promise.all(itemsPromises)).flat();
-        console.log("All Items:", allItems);
         setItemsList(allItems);
       } else {
         console.error("Failed to fetch categories");
@@ -131,8 +129,6 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
       }
     });
   };
-  console.log("ITems: ", itemsList);
-  console.log("Cats: ", categories);
   const pathName = `/restaurants/${restaurantId}/adminDashboard/items/add`;
   return (
     <div className="p-5">
@@ -193,9 +189,6 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
                   </td>
                   <td className="text-xl font-semibold w-[25%] text-right">
                     <div className="flex gap-4 justify-end">
-                      <button className="px-4 py-2 hover:scale-110 transition-all bg-green-700 rounded">
-                        View
-                      </button>
                       <button
                         onClick={() => {
                           confirmDelete(item);
