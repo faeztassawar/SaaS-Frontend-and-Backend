@@ -22,6 +22,9 @@ const getMenu = async (restaurant_id: string) => {
 const loadTemplate = async (templateId: string) => {
   if (templateId === "1")
     return dynamic(() => import("@/app/template1/adminDashboard/items/page"));
+
+  if (templateId === "2")
+    return dynamic(() => import("@/app/template2/adminDashboard/menu-item/page"));
   return dynamic(() => import("@/app/page"));
 };
 

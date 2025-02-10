@@ -85,7 +85,7 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
                 className="w-full p-2 bg-[#1c9cea] text-white rounded-md hover:bg-[#1683c2] transition-colors"
               >
                 OK
-              </button>
+              </button>lmljk
             </div>
           </div>
         )}

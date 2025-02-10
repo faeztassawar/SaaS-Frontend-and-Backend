@@ -1,6 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { RestaurantCustomer } from "@prisma/client";
 
 
 interface UserTabsProps {
@@ -17,6 +21,42 @@ const UserTabs = ({restaurant_id, isAdmin }: UserTabsProps) => {
   const menuItemPath = `/restaurants/${restaurant_id}/adminDashboard/items`
 
   const path = usePathname();
+
+  const { data, status } = useSession();
+  const router = useRouter();
+  const [user, setUser] = useState<RestaurantCustomer>();
+
+  useEffect(() => {
+    // Set cookie after component mounts
+    document.cookie = `id=${restaurant_id}; path=/; SameSite=Lax`;
+  }, [restaurant_id]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const email = data?.user?.email;
+        if (!email) return;
+
+        console.log("CLIENT EMAIL: ", email);
+        const response = await fetch(`/api/session/restaurant/${email}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const jsonData = await response.json();
+        console.log("JSON DATA: ", jsonData);
+        setUser(jsonData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (status === "authenticated") {
+      fetchData();
+    }
+  }, [status, data?.user?.email]);
+  
 
   return (
     <div className="flex mx-auto gap-2 mt-4 tabs rounded-full justify-center flex-wrap">
@@ -43,7 +83,7 @@ const UserTabs = ({restaurant_id, isAdmin }: UserTabsProps) => {
           <Link
             href={catPath}
             className={
-              path === "/template2/categories"
+              path === `/restaurants/${restaurant_id}/adminDashboard/categories`
                 ? "bg-[#800000] text-white rounded-full px-3 py-2"
                 : "bg-[#9f8881] text-white rounded-full px-3 py-2"
             }
