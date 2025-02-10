@@ -1,26 +1,67 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Header from "@/app/template2/components/Header"
-import Footer from "@/app/template2/components/Footer"
-import UserTabs from "@/app/template2/components/UserTabs"
-import { FaAngleRight } from "react-icons/fa"
-import Link from "next/link"
-import { Category } from "@prisma/client"
+import Image from "next/image";
+import Header from "@/app/template2/components/Header";
+import Footer from "@/app/template2/components/Footer";
+import UserTabs from "@/app/template2/components/UserTabs";
+import { FaAngleRight } from "react-icons/fa";
+import Link from "next/link";
+import { Category, Item } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 interface Template2ItemsPageProps {
-  restaurantId: string
-  isAdmin: boolean
-  categories: Category[]
-  items: {
-    id: string
-    name: string
-    image: string
-    price: number
-  }[]
+  restaurantId: string;
+  menuId: string;
 }
 
-const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({ restaurantId, items }) => {
+const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({
+  restaurantId,
+  menuId,
+}) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [itemsList, setItemsList] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const categoriesRes = await fetch(
+        `http://localhost:3000/api/categories/${menuId}`
+      );
+
+      if (categoriesRes.ok) {
+        const categoriesData = await categoriesRes.json();
+        console.log("Categories Data:", categoriesData);
+        setCategories(categoriesData);
+
+        const itemsPromises = categoriesData.map(async (cat: Category) => {
+          const itemsRes = await fetch(
+            `http://localhost:3000/api/items/${cat.id}`
+          );
+          if (itemsRes.ok) {
+            const itemsData = await itemsRes.json();
+            return itemsData;
+          } else {
+            console.error(`Failed to fetch items for category ${cat.id}`);
+            return [];
+          }
+        });
+
+        const allItems = (await Promise.all(itemsPromises)).flat();
+        setItemsList(allItems);
+      } else {
+        console.error("Failed to fetch categories");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [menuId]);
   return (
     <div className="min-h-screen">
       <Header isAdmin={true} />
@@ -38,9 +79,11 @@ const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({ restaurantId, i
         </div>
 
         <div>
-          <h2 className="text-sm text-gray-700 mt-8 mb-3 px-2">Edit Menu Item:</h2>
+          <h2 className="text-sm text-gray-700 mt-8 mb-3 px-2">
+            Edit Menu Item:
+          </h2>
           <div className="grid grid-cols-3 gap-2 p-2">
-            {items.map((item) => (
+            {itemsList.map((item) => (
               <Link
                 key={item.id}
                 href={`/restaurants/${restaurantId}/adminDashboard/items/edit`}
@@ -48,15 +91,17 @@ const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({ restaurantId, i
                 aria-label={`Edit ${item.name}`}
               >
                 <div className="relative">
-                  <Image
+                  <image
                     className="rounded-md"
-                    src={item.image || "/placeholder.png"}
+                    src={item.image}
                     alt={item.name}
                     width={200}
                     height={200}
                   />
                 </div>
-                <div className="text-center font-semibold text-lg">{item.name}</div>
+                <div className="text-center font-semibold text-lg">
+                  {item.name}
+                </div>
               </Link>
             ))}
           </div>
@@ -64,8 +109,7 @@ const Template2ItemsPage: React.FC<Template2ItemsPageProps> = ({ restaurantId, i
       </section>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Template2ItemsPage
-
+export default Template2ItemsPage;

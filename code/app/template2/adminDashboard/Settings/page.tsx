@@ -20,6 +20,8 @@ const Settings = ({ restaurant_id }: settingProps) => {
   const [restaurantData, setRestaurantData] = useState<Restaurant>();
   const [nameChange, setNameChange] = useState(restaurantData?.name || "");
   const [descChange, setDescChange] = useState(restaurantData?.desc || "");
+  const [opentime, setOpenTime] = useState(restaurantData?.desc || "");
+  const [closetime, setCloseTime] = useState(restaurantData?.desc || "");
   const [aboutUsChange, setAboutUsChange] = useState(
     restaurantData?.about_us || ""
   );
@@ -114,6 +116,8 @@ const Settings = ({ restaurant_id }: settingProps) => {
           about_us: aboutUsChange || restaurantData?.about_us,
           desc: descChange || restaurantData?.desc,
           cuisine: cuisineChange || restaurantData?.cuisine,
+          opentiming: opentime || restaurantData?.opentiming,
+          closetiming: opentime || restaurantData?.closetiming,
         }),
       });
 
@@ -161,7 +165,7 @@ const Settings = ({ restaurant_id }: settingProps) => {
   return (
     <div className="flex flex-col gap-8">
       <Header rest_id={restaurant_id} rest_name="Settings" />
-      <UserTabs isAdmin={true} rest_id={restaurant_id} />
+      <UserTabs isAdmin={true} restaurant_id={restaurant_id} />
 
       <div className="flex w-full max-w-3xl items-center bg-gray-50 rounded-lg px-5 py-4 mx-auto">
         <h1 className="text-2xl px-3 font-semibold">
@@ -205,6 +209,22 @@ const Settings = ({ restaurant_id }: settingProps) => {
           onChange={(e) => setCuisineChange(e.target.value)}
           className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
           placeholder="Cuisine"
+        />
+        <h1>Opening Time</h1>
+        <input
+          value={opentime}
+          type="time"
+          onChange={(e) => setOpenTime(e.target.value)}
+          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
+          placeholder="Opening Timing"
+        />
+        <h1>Closing Time</h1>
+        <input
+          value={closetime}
+          onChange={(e) => setCloseTime(e.target.value)}
+          type="time"
+          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
+          placeholder="Closing Timing"
         />
         <div className="flex justify-end">
           <button

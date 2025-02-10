@@ -15,28 +15,29 @@ type RestaurantProps = {
 
 export default function Home({ restaurant_id }: RestaurantProps) {
   const { data, status } = useSession();
-  
-    const [restaurantData, setRestaurantData] = useState<Restaurant>();
-    useEffect(() => {
-      const fetchRestaurant = async () => {
-        console.log("USER PROFILE RESTAURANT ID: ", restaurant_id);
-        const res = await fetch(`/api/restaurant/${restaurant_id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setRestaurantData(data);
-          console.log("RESTAURANT FETCHED: ", restaurantData);
-        } else {
-          console.log("NO RESTAURANT!");
-        }
-      };
-      fetchRestaurant();
-    }, [restaurantData, restaurant_id, status]);
-    console.log("EMAIL: ", data?.user?.email);
-    if (typeof window !== "undefined") {
-      document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;
-    }
-    console.log("RESTAURANT: ", restaurant_id);
 
+  const [restaurantData, setRestaurantData] = useState<Restaurant>();
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      console.log("USER PROFILE RESTAURANT ID: ", restaurant_id);
+      const res = await fetch(`/api/restaurant/${restaurant_id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setRestaurantData(data);
+        console.log("RESTAURANT FETCHED: ", restaurantData);
+      } else {
+        console.log("NO RESTAURANT!");
+      }
+    };
+    fetchRestaurant();
+  }, [restaurantData, restaurant_id, status]);
+  console.log("EMAIL: ", data?.user?.email);
+  if (typeof window !== "undefined") {
+    document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;
+  }
+  console.log("RESTAURANT: ", restaurant_id);
+  const timing =
+    restaurantData?.opentiming + " to " + restaurantData?.closetiming;
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header
@@ -45,8 +46,14 @@ export default function Home({ restaurant_id }: RestaurantProps) {
       />
 
       <Hero />
-
-      <HomeMenu />
+      {/* <div className="text-center mt-8 sm:mt-10 lg:my-16">
+        <SectionHeader subHeader="Go To" mainHeader="Our Menu" />
+        <div className="flex justify-center mt-6">
+          <button className="bg-red-600 text-white text-lg font-semibold px-8 py-4 rounded-full border-2 border-red-600 transition-all duration-300 relative overflow-hidden hover:shadow-[0_0_20px_5px_rgba(220,38,38,0.5)]">
+            Menu
+          </button>
+        </div>
+      </div> */}
 
       {restaurantData && (
         <>
@@ -55,6 +62,11 @@ export default function Home({ restaurant_id }: RestaurantProps) {
             <div className="text-[#333333] max-w-md sm:max-w-xl lg:max-w-4xl mx-auto mt-4 px-4 lg:px-0 flex flex-col gap-4">
               <p className="text-sm sm:text-base">{restaurantData.about_us}</p>
               <p className="text-sm sm:text-base">{restaurantData.desc}</p>
+            </div>
+          </div>
+          <div className="text-center mt-8 sm:mt-10 lg:my-16">
+            <div className="text-[#333333] max-w-md sm:max-w-xl lg:max-w-4xl mx-auto mt-4 px-4 lg:px-0 flex flex-col gap-4">
+              <SectionHeader subHeader="We are open from" mainHeader={timing} />
             </div>
           </div>
 
