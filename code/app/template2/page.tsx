@@ -8,6 +8,8 @@ import SectionHeader from "./components/SectionHeader";
 import Footer from "./components/Footer";
 import { Restaurant } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import imgBg from "@/app/template2/images/t2.png";
+import Image from "next/image";
 
 type RestaurantProps = {
   restaurant_id: string;
@@ -45,7 +47,7 @@ export default function Home({ restaurant_id }: RestaurantProps) {
         rest_name={restaurantData?.name || ""}
       />
 
-      <Hero />
+      <Hero line={restaurantData?.desc} />
       {/* <div className="text-center mt-8 sm:mt-10 lg:my-16">
         <SectionHeader subHeader="Go To" mainHeader="Our Menu" />
         <div className="flex justify-center mt-6">
@@ -57,13 +59,25 @@ export default function Home({ restaurant_id }: RestaurantProps) {
 
       {restaurantData && (
         <>
-          <div className="text-center mt-8 sm:mt-10 lg:my-16">
-            <SectionHeader subHeader="OUR STORY" mainHeader="About Us" />
-            <div className="text-[#333333] max-w-md sm:max-w-xl lg:max-w-4xl mx-auto mt-4 px-4 lg:px-0 flex flex-col gap-4">
-              <p className="text-sm sm:text-base">{restaurantData.about_us}</p>
-              <p className="text-sm sm:text-base">{restaurantData.desc}</p>
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mt-8 sm:mt-10 lg:my-16 border border-gray-300 rounded-lg p-6 max-w-5xl mx-auto">
+            {/* Left Side - Image */}
+            <div className="w-full lg:w-1/2 flex justify-center">
+              <Image
+                src={imgBg}
+                alt="Our Story"
+                className="max-w-full h-auto rounded-lg"
+              />
+            </div>
+
+            {/* Right Side - About Us Info */}
+            <div className="w-full lg:w-1/2 text-[#333333] flex flex-col gap-4 text-center lg:text-left">
+              <SectionHeader subHeader="OUR STORY" mainHeader="About Us" />
+              <p className="text-sm sm:text-base inline-flex">
+                {restaurantData.about_us}
+              </p>
             </div>
           </div>
+
           <div className="text-center mt-8 sm:mt-10 lg:my-16">
             <div className="text-[#333333] max-w-md sm:max-w-xl lg:max-w-4xl mx-auto mt-4 px-4 lg:px-0 flex flex-col gap-4">
               <SectionHeader subHeader="We are open from" mainHeader={timing} />
