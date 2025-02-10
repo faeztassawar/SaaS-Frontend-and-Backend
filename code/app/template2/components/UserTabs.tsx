@@ -9,16 +9,15 @@ import { RestaurantCustomer } from "@prisma/client";
 
 interface UserTabsProps {
   restaurant_id: string;
-  isAdmin: boolean
+  isAdmin: boolean;
 }
 
-const UserTabs = ({restaurant_id, isAdmin }: UserTabsProps) => {
-  
+const UserTabs = ({ restaurant_id, isAdmin }: UserTabsProps) => {
   const userpath = `/restaurants/${restaurant_id}/adminDashboard/users`;
   const editProfilePath = `/restaurants/${restaurant_id}/editProfile`;
-  const settingsPath = `/restaurants/${restaurant_id}/adminDashboard/settings`
-  const catPath = `/restaurants/${restaurant_id}/adminDashboard/categories`
-  const menuItemPath = `/restaurants/${restaurant_id}/adminDashboard/items`
+  const settingsPath = `/restaurants/${restaurant_id}/adminDashboard/settings`;
+  const catPath = `/restaurants/${restaurant_id}/adminDashboard/categories`;
+  const menuItemPath = `/restaurants/${restaurant_id}/adminDashboard/items`;
 
   const path = usePathname();
 
@@ -114,28 +113,28 @@ const UserTabs = ({restaurant_id, isAdmin }: UserTabsProps) => {
             Users
           </Link>
 
-          <Link
-            href="/template2/Orders"
-            className={
-              path === "/template2/Orders"
-                ? "bg-[#800000] text-white rounded-full px-3 py-2"
-                : "bg-[#9f8881] text-white rounded-full px-3 py-2"
-            }
-          >
-            All Orders
-          </Link>
+      <Link
+        href="/template2/Orders"
+        className={
+          path === "/template2/Orders"
+            ? "bg-[#800000] text-white rounded-full px-3 py-2"
+            : "bg-[#9f8881] text-white rounded-full px-3 py-2"
+        }
+      >
+        All Orders
+      </Link>
 
-          <Link
-            href={settingsPath}
-            className={
-              path === "/template2/settings"
-                ? "bg-[#800000] text-white rounded-full px-3 py-2"
-                : "bg-[#9f8881] text-white rounded-full px-3 py-2"
-            }
-          >
-            Settings
-          </Link>
+      <Link
+        href={settingsPath}
+        className={
+          path === "/template2/settings"
+            ? "bg-[#800000] text-white rounded-full px-3 py-2"
+            : "bg-[#9f8881] text-white rounded-full px-3 py-2"
+        }
+      >
+        Settings
+      </Link>
     </div>
   );
-}
+};
 export default UserTabs;

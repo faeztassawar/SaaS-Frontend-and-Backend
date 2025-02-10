@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image"
 import Header from "@/app/template2/components/Header"
@@ -199,5 +199,4 @@ const Template2ItemsPage = ({ restaurantId, menuId }: Template2ItemsPageProps) =
     );
   };    
 
-export default Template2ItemsPage
-
+export default Template2ItemsPage;
