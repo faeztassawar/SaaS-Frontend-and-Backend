@@ -17,12 +17,36 @@ interface MenuItemType {
   desc: string;
   price: string;
   category_id: string;
+  image: string
 }
 
 interface MenuProps {
   id: string;
   restaurant_id: string;
 }
+
+const getImageUrl = (
+  img: Uint8Array | { type: "Buffer"; data: number[] } | string
+) => {
+  if (typeof img === "object" && img !== null) {
+    if (!("type" in img)) {
+      const byteArray = Object.values(img);
+      return `data:image/jpeg;base64,${Buffer.from(byteArray).toString(
+        "base64"
+      )}`;
+    }
+
+    if (img.type === "Buffer") {
+      return `data:image/jpeg;base64,${Buffer.from(img.data).toString(
+        "base64"
+      )}`;
+    }
+  }
+  if (img instanceof Uint8Array) {
+    return `data:image/jpeg;base64,${Buffer.from(img).toString("base64")}`;
+  }
+  return typeof img === "string" ? img : null;
+};
 
 export default function MenuPage({ id, restaurant_id }: MenuProps) {
   const { status } = useSession();
@@ -86,7 +110,17 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
   };
 
   const handleItemClick = (item: MenuItemType) => {
-    setSelectedItem(item);
+
+    let image = item.image;
+
+    if (image && typeof image === "object" && !("type" in image)) {
+      const byteArray = new Uint8Array(Object.values(image) as number[]);
+      image = `data:image/jpeg;base64,${Buffer.from(byteArray).toString(
+        "base64"
+      )}`;
+
+      setSelectedItem({ ...item, image });
+    }
     setIsModalOpen(true);
   };
 
@@ -114,16 +148,27 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
                 <div key={category.id} className="mb-12">
                   <SectionHeader mainHeader={category.name} subHeader="" />
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
-                    {itemsByCategory[category.id]?.map((item) => (
+                    {itemsByCategory[category.id]?.map((item) => {
+                      let image = item.image
+
+                      if (image && typeof image === "object" && !("type" in image)) {
+                        const byteArray = new Uint8Array(Object.values(image) as number[]);
+                        image = `data:image/jpeg;base64,${Buffer.from(byteArray).toString(
+                          "base64"
+                        )}`;
+                      }
+                      return(
                       <MenuItem
                         key={item.id}
                         name={item.name}
                         desc={item.desc}
                         price={item.price}
+                        img = {item.image}
                         onClick={() => handleItemClick(item)}
                         onAddToCart={handleAddToCart}
                       />
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ) : (

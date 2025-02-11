@@ -1,12 +1,11 @@
 import React from "react";
 import Image from "next/image";
-import PizzaImg from "@/app/template2/images/pizza.png";
 
 type MenuItemProp = {
   name: string;
   desc: string;
   price: number | string;
-  imageSrc?: string; // Optional image source for dynamic images
+  img: Uint8Array | { type: "Buffer"; data: number[] } | string;
   onClick?: () => void;
   onAddToCart?: (itemName: string) => void;
 };
@@ -15,23 +14,56 @@ const MenuItem = ({
   name,
   desc,
   price,
-  imageSrc,
+  img,
   onClick,
   onAddToCart,
 }: MenuItemProp) => {
+  console.log("Image: ", img);
+  const getImageUrl = () => {
+    // If img is an object with numeric keys (incorrectly structured Uint8Array)
+    if (typeof img === "object" && img !== null) {
+      // If img is an object with numeric keys (incorrectly structured Uint8Array)
+      if (!("type" in img)) {
+        const byteArray = Object.values(img); // Extract numeric values
+        const buffer = Buffer.from(byteArray); // Convert to Buffer
+
+        return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+      }
+
+      // If img is a serialized Buffer object (e.g., from an API response)
+      if (img.type === "Buffer") {
+        return `data:image/jpeg;base64,${Buffer.from(img.data).toString(
+          "base64"
+        )}`;
+      }
+    }
+
+    // If img is a Uint8Array (direct Prisma format)
+    if (img instanceof Uint8Array) {
+      return `data:image/jpeg;base64,${Buffer.from(img).toString("base64")}`;
+    }
+
+    // If img is already a Base64 string or URL
+    if (typeof img === "string") return img;
+  };
+
+  const imageUrl = getImageUrl();
+
+  if (!imageUrl)
+    console.log("No Image Found")
   return (
     <div
       className="p-3 rounded-lg text-center flex flex-col items-center max-w-[15rem] mx-auto hover:bg-white hover:shadow-2xl hover:shadow-black/30 transition-all"
       onClick={onClick}
     >
       {/* Product Image */}
-      <div className="text-center">
+      <div className="w-[150px] h-[150px] flex items-center justify-center overflow-hidden">
         <Image
-          src={imageSrc || PizzaImg} // Use the dynamic image source if provided
+          src={imageUrl as string} // Use the dynamic image source if provided
           alt={name}
           width={150}
           height={150}
-          className="mx-auto my-auto"
+          className="object-cover"
         />
       </div>
 

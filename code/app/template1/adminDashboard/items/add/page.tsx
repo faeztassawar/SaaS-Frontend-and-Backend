@@ -86,7 +86,6 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
               >
                 OK
               </button>
-              lmljk
             </div>
           </div>
         )}

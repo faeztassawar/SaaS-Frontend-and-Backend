@@ -170,10 +170,12 @@ const Template2ItemsPage = ({ restaurantId, menuId }: Template2ItemsPageProps) =
           {/* Edit Menu Items */}
           <h2 className="text-sm text-gray-700 mt-8 mb-3 px-2">Edit Menu Item:</h2>
           <div className="flex flex-col gap-4 p-2">
-            {itemsList.map((item) => (
+            {itemsList.map((item) => {
+              const category = categories.find((cat) => cat.id === item.categoryId);
+              return(
               <Link
                 key={item.id}
-                href={`/restaurants/${restaurantId}/adminDashboard/items/edit`}
+                href={`/restaurants/${restaurantId}/adminDashboard/items`}
                 className="bg-gray-300 rounded-lg p-4 hover:bg-white hover:shadow-2xl hover:shadow-black/30 transition-all"
                 aria-label={`Edit ${item.name}`}
               >
@@ -182,16 +184,23 @@ const Template2ItemsPage = ({ restaurantId, menuId }: Template2ItemsPageProps) =
                   {/* Item Details */}
                   <div className="flex-1">
                     <h2 className="text-lg font-semibold">{item.name}</h2>
+                    <p className="text-sm text-gray-500">
+                      Category: {category ? category.name : "Uncategorized"}
+                    </p>
                     <p className="text-gray-600">${item.price}</p>
                   </div>
   
-                  {/* Edit Button */}
-                  <button className="bg-[#800000] text-white px-4 py-2 rounded">
-                    Edit
+                  {/* Delete Button */}
+                  <button onClick={() => {
+                          confirmDelete(item);
+                  }}
+                  className="bg-[#800000] text-white px-4 py-2 rounded" >
+                    Delete
                   </button>
                 </div>
               </Link>
-            ))}
+              );
+             })}
           </div>
         </section>
         <Footer />

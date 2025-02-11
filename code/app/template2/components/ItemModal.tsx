@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import PizzaImg from "@/app/template2/images/pizza.png";
+
 
 interface MenuItemType {
   name: string;
   desc: string;
   price: string;
+  image: Uint8Array | { type: "Buffer"; data: number[] } | string;
 }
 
 interface ItemModalProps {
@@ -17,6 +18,37 @@ interface ItemModalProps {
 
 const ItemModal = ({ item, onClose, onAddToCart }: ItemModalProps) => {
   const [selectedSize, setSelectedSize] = useState("Medium");
+  console.log("Image: ", item.image);
+
+  const getImageUrl = () => {
+    // If img is an object with numeric keys (incorrectly structured Uint8Array)
+    if (typeof item.image === "object" && item.image !== null) {
+      // If img is an object with numeric keys (incorrectly structured Uint8Array)
+      if (!("type" in item.image)) {
+        const byteArray = Object.values(item.image); // Extract numeric values
+        const buffer = Buffer.from(byteArray); // Convert to Buffer
+
+        return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+      }
+
+      // If img is a serialized Buffer object (e.g., from an API response)
+      if (item.image.type === "Buffer") {
+        return `data:image/jpeg;base64,${Buffer.from(item.image.data).toString(
+          "base64"
+        )}`;
+      }
+    }
+
+    // If img is a Uint8Array (direct Prisma format)
+    if (item.image instanceof Uint8Array) {
+      return `data:image/jpeg;base64,${Buffer.from(item.image).toString("base64")}`;
+    }
+
+    // If img is already a Base64 string or URL
+    if (typeof item.image === "string") return item.image;
+  };
+
+  const imageUrl = getImageUrl();
 
   const handleAddToCart = () => {
     toast.success(`${item.name} (${selectedSize}) has been added to cart!`);
@@ -44,11 +76,12 @@ const ItemModal = ({ item, onClose, onAddToCart }: ItemModalProps) => {
           </svg>
         </button>
         <Image
-          src={PizzaImg}
+          src={imageUrl as string}
           alt="Pizza"
           width={150}
           height={150}
           className="mx-auto my-auto"
+          unoptimized={true}
         />
         <h3 className="text-2xl font-semibold mb-4">{item.name}</h3>
         <p className="text-gray-600 mb-4">{item.desc}</p>

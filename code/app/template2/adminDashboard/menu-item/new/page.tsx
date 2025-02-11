@@ -107,7 +107,7 @@ const NewMenuItemPage = ({ menuId, restaurantId }: AddItemPageProps) => {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Item Name</label>
                 <input type="text" name="title" value={itemName} onChange={(e) => setItemName(e.target.value)} 
-                className="mt-1 block w-full p-2 border rounded-lg focus:ring-red-500 focus:border-red-500"/>
+                className="mt-1 block w-full p-2 border rounded-lg  bg-white text-gray-700 focus:ring-red-500 focus:border-red-500"/>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Category</label>
@@ -119,7 +119,7 @@ const NewMenuItemPage = ({ menuId, restaurantId }: AddItemPageProps) => {
                   onChange={(e) => setItemCategory(e.target.value)}
                 >
                   <option value="">Choose a Category</option>
-                  {categories.map((item) => (
+                  {categories.filter((item) => !item.isArchive).map((item) => (
                     <option key={item.id} value={item.name}>
                       {item.name}
                     </option>
