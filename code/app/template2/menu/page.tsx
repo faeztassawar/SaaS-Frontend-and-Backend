@@ -27,7 +27,9 @@ interface MenuProps {
 export default function MenuPage({ id, restaurant_id }: MenuProps) {
   const { status } = useSession();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [itemsByCategory, setItemsByCategory] = useState<Record<string, MenuItemType[]>>({});
+  const [itemsByCategory, setItemsByCategory] = useState<
+    Record<string, MenuItemType[]>
+  >({});
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
@@ -47,7 +49,9 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
         const itemsPromises = categoryData.map(async (category) => {
           const itemResponse = await fetch(`/api/items/${category.id}`);
           if (!itemResponse.ok) {
-            throw new Error(`Failed to fetch items for category ${category.id}`);
+            throw new Error(
+              `Failed to fetch items for category ${category.id}`
+            );
           }
           const itemData: MenuItemType[] = await itemResponse.json();
           return { categoryId: category.id, items: itemData };
@@ -97,27 +101,35 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
 
   return (
     <div className="min-h-screen">
-      <div className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}>
+      <div
+        className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}
+      >
         <Header rest_id={restaurant_id} rest_name="Menu" />
 
         {/* Menu Sections */}
         <section className="mt-8">
           {categories.map((category) => (
-            <div key={category.id} className="mb-12">
-              <SectionHeader mainHeader={category.name} subHeader="" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
-                {itemsByCategory[category.id]?.map((item) => (
-                  <MenuItem
-                    key={item.id}
-                    name={item.name}
-                    desc={item.desc}
-                    price={item.price}
-                    onClick={() => handleItemClick(item)}
-                    onAddToCart={handleAddToCart}
-                  />
-                ))}
-              </div>
-            </div>
+            <>
+              {!category.isArchive ? (
+                <div key={category.id} className="mb-12">
+                  <SectionHeader mainHeader={category.name} subHeader="" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
+                    {itemsByCategory[category.id]?.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        name={item.name}
+                        desc={item.desc}
+                        price={item.price}
+                        onClick={() => handleItemClick(item)}
+                        onAddToCart={handleAddToCart}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+            </>
           ))}
         </section>
       </div>

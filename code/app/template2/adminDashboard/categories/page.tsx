@@ -241,7 +241,10 @@ export default function CategoriesPage({ menuId, restaurantId }: CatPageProps) {
                       <span>{category.name}</span>
                       <div className="flex gap-4">
                         <button
-                          onClick={() => handleArchive(category)}
+                          onClick={async () => {
+                            await handleArchive(category);
+                            await fetchCategories();
+                          }}
                           type="button"
                           className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition-colors duration-300"
                         >

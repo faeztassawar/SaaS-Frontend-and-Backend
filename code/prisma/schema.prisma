@@ -13,6 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Cart {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  restaurant_id        String
+  email                String
+  name                 String
+  RestaurantCustomer   RestaurantCustomer @relation(fields: [restaurantCustomerId], references: [id])
+  restaurantCustomerId String             @db.ObjectId
+  items                Item[]
+  totalPrice           String?
+}
+
+model Order {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  items                Item[]
+  restaurantCustomerId String             @db.ObjectId
+  totalPrice           String?
+  restaurant_id        String             @db.ObjectId
+  restaurant           Restaurant         @relation(fields: [restaurant_id], references: [restaurant_id])
+  restaurnatCustomer   RestaurantCustomer @relation(fields: [restaurantCustomerId], references: [id])
+}
+
 model Item {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   name       String   @unique
@@ -21,6 +42,10 @@ model Item {
   image      Bytes?
   categoryId String   @db.ObjectId // categoryId should not be nullable
   Category   Category @relation(fields: [categoryId], references: [id])
+  Cart       Cart?    @relation(fields: [cartId], references: [id])
+  cartId     String?  @db.ObjectId
+  Order      Order?   @relation(fields: [orderId], references: [id])
+  orderId    String?  @db.ObjectId
 }
 
 model Category {
@@ -46,6 +71,7 @@ model Restaurant {
   tempModel     String
   Menu          Menu[]
   Customers     RestaurantCustomer[]
+  Order         Order[]
 
   @@map("restaurants")
 }
@@ -63,9 +89,12 @@ model RestaurantCustomer {
 
   Reservations Reservation[] // Add this line for the relation
 
-  city          String?      // Optional city field
-  address       String?      // Optional address field
-  phoneNumber   String?      // Optional phone number field
+  city        String? // Optional city field
+  address     String? // Optional address field
+  phoneNumber String? // Optional phone number field
+  Cart        Cart[]
+  Order       Order[]
+
   @@map("restaurantCustomer")
 }
 

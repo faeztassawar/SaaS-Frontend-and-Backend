@@ -85,7 +85,8 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
                 className="w-full p-2 bg-[#1c9cea] text-white rounded-md hover:bg-[#1683c2] transition-colors"
               >
                 OK
-              </button>lmljk
+              </button>
+              lmljk
             </div>
           </div>
         )}
@@ -128,6 +129,7 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
         <input
           type="file"
           name="image"
+          required
           accept="image/*"
           onChange={(e) => setItemImage(e.target.files?.[0])}
           className="p-4 bg-[#1f273a] text-white border-2 border-gray-700 rounded-md mb-5 w-[45%]"
