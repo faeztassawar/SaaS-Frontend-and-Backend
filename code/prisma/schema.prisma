@@ -27,11 +27,19 @@ model Cart {
 model Order {
   id                   String             @id @default(auto()) @map("_id") @db.ObjectId
   items                Item[]
+  name                 String
+  email                String
+  city                 String
+  phno                 String
+  address              String
+  status               String
   restaurantCustomerId String             @db.ObjectId
   totalPrice           String?
   restaurant_id        String             @db.ObjectId
   restaurant           Restaurant         @relation(fields: [restaurant_id], references: [restaurant_id])
-  restaurnatCustomer   RestaurantCustomer @relation(fields: [restaurantCustomerId], references: [id])
+  restaurantCustomer   RestaurantCustomer @relation(fields: [restaurantCustomerId], references: [id])
+
+  @@map("order")
 }
 
 model Item {
