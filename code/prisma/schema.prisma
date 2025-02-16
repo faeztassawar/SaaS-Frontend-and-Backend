@@ -14,19 +14,18 @@ datasource db {
 }
 
 model Cart {
-  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
-  restaurant_id        String
-  email                String
+  id                   String              @id @default(auto()) @map("_id") @db.ObjectId
+  email                String              @unique
   name                 String
-  RestaurantCustomer   RestaurantCustomer @relation(fields: [restaurantCustomerId], references: [id])
-  restaurantCustomerId String             @db.ObjectId
-  items                Item[]
+  restaurantCustomerId String              @db.ObjectId
+  items                Json
   totalPrice           String?
+  RestaurantCustomer   RestaurantCustomer? @relation(fields: [restaurantCustomerId], references: [id])
 }
 
 model Order {
   id                   String             @id @default(auto()) @map("_id") @db.ObjectId
-  items                Item[]
+  items                String[]
   name                 String
   email                String
   city                 String
@@ -50,10 +49,6 @@ model Item {
   image      Bytes?
   categoryId String   @db.ObjectId // categoryId should not be nullable
   Category   Category @relation(fields: [categoryId], references: [id])
-  Cart       Cart?    @relation(fields: [cartId], references: [id])
-  cartId     String?  @db.ObjectId
-  Order      Order?   @relation(fields: [orderId], references: [id])
-  orderId    String?  @db.ObjectId
 }
 
 model Category {

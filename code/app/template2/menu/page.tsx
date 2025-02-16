@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import ItemModal from "../components/ItemModal";
 import Footer from "../components/Footer";
-import { Category } from "@prisma/client";
+import { Category, Item } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 interface MenuItemType {
@@ -17,7 +17,7 @@ interface MenuItemType {
   desc: string;
   price: string;
   category_id: string;
-  image: string
+  image: string;
 }
 
 interface MenuProps {
@@ -49,7 +49,7 @@ const getImageUrl = (
 };
 
 export default function MenuPage({ id, restaurant_id }: MenuProps) {
-  const { status } = useSession();
+  const { data, status } = useSession();
   const [categories, setCategories] = useState<Category[]>([]);
   const [itemsByCategory, setItemsByCategory] = useState<
     Record<string, MenuItemType[]>
@@ -68,7 +68,6 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
 
         const categoryData: Category[] = await categoryResponse.json();
         setCategories(categoryData);
-
         // Fetch items for each category
         const itemsPromises = categoryData.map(async (category) => {
           const itemResponse = await fetch(`/api/items/${category.id}`);
@@ -102,15 +101,22 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
     }
   }, [id, status]);
 
-  const handleAddToCart = (itemName: string) => {
-    toast.success(`${itemName} has been added to the cart`, {
-      position: "bottom-right",
-      autoClose: 3000,
+  const handleAddToCart = async (item: MenuItemType) => {
+    const addToCart = await fetch(`/api/cart/${data?.user?.email}`, {
+      method: "post",
+      body: JSON.stringify({
+        item_id: item.id,
+      }),
     });
+    if (addToCart.ok) {
+      toast.success(`${item.name} has been added to the cart`, {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleItemClick = (item: MenuItemType) => {
-
     let image = item.image;
 
     if (image && typeof image === "object" && !("type" in image)) {
@@ -149,24 +155,32 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
                   <SectionHeader mainHeader={category.name} subHeader="" />
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
                     {itemsByCategory[category.id]?.map((item) => {
-                      let image = item.image
+                      let image = item.image;
 
-                      if (image && typeof image === "object" && !("type" in image)) {
-                        const byteArray = new Uint8Array(Object.values(image) as number[]);
-                        image = `data:image/jpeg;base64,${Buffer.from(byteArray).toString(
-                          "base64"
-                        )}`;
+                      if (
+                        image &&
+                        typeof image === "object" &&
+                        !("type" in image)
+                      ) {
+                        const byteArray = new Uint8Array(
+                          Object.values(image) as number[]
+                        );
+                        image = `data:image/jpeg;base64,${Buffer.from(
+                          byteArray
+                        ).toString("base64")}`;
                       }
-                      return(
-                      <MenuItem
-                        key={item.id}
-                        name={item.name}
-                        desc={item.desc}
-                        price={item.price}
-                        img = {item.image}
-                        onClick={() => handleItemClick(item)}
-                        onAddToCart={handleAddToCart}
-                      />
+                      return (
+                        <MenuItem
+                          key={item.id}
+                          name={item.name}
+                          desc={item.desc}
+                          price={item.price}
+                          img={item.image}
+                          onClick={() => handleItemClick(item)}
+                          onAddToCart={async () => {
+                            await handleAddToCart(item);
+                          }}
+                        />
                       );
                     })}
                   </div>
@@ -187,7 +201,9 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
             <ItemModal
               item={selectedItem}
               onClose={closeModal}
-              onAddToCart={handleAddToCart}
+              onAddToCart={async () => {
+                await handleAddToCart(selectedItem);
+              }}
             />
           </div>
         </>

@@ -10,6 +10,7 @@ export const GET = async (req: Request, { params }: { params: { email: string } 
         console.log("EMAIL: ", email)
         const cookiesData = await cookies();
         const restaurantId = cookiesData.get("id")?.value
+        console.log("Restaurant Id by Cookie: ", restaurantId)
         cookiesData.delete("id")
         const check = await prisma.restaurantCustomer.findFirst({
             where: {

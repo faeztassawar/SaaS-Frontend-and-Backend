@@ -4,6 +4,8 @@ import { getServerSession, NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { useRouter } from "next/router";
 import { cookies } from 'next/headers'
+import { connect } from "http2";
+import { Cart } from "@prisma/client";
 
 
 const authOptions: NextAuthOptions = {
@@ -81,6 +83,22 @@ const authOptions: NextAuthOptions = {
                             isOwner: false,
                             Restaurant: {
                                 connect: { restaurant_id: rest },
+                            }
+                        }
+                    })
+                    const cart = await prisma.cart.create({
+                        data: {
+                            name: newCustomer.name as string,
+                            email: newCustomer.email,
+                            restaurantCustomerId: newCustomer.id
+                        }
+                    })
+                    const customer = await prisma.restaurantCustomer.update({
+                        where: {
+                            id: newCustomer.id
+                        }, data: {
+                            Cart: {
+                                connect: { id: cart.id }
                             }
                         }
                     })

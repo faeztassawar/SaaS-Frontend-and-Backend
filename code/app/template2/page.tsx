@@ -34,9 +34,7 @@ export default function Home({ restaurant_id }: RestaurantProps) {
     fetchRestaurant();
   }, [restaurantData, restaurant_id, status]);
   console.log("EMAIL: ", data?.user?.email);
-  if (typeof window !== "undefined") {
-    document.cookie = `id=${restaurant_id};path=/; SameSite=Lax `;
-  }
+  document.cookie = `rest_id=${restaurant_id};path=/; SameSite=Lax `;
   console.log("RESTAURANT: ", restaurant_id);
   const timing =
     restaurantData?.opentiming + " to " + restaurantData?.closetiming;
