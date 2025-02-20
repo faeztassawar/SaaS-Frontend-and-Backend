@@ -110,16 +110,6 @@ model Menu {
   @@map("menus")
 }
 
-enum Templates {
-  Classic
-  FastFood
-}
-
-enum SubscriptionPeriod {
-  monthly
-  yearly
-}
-
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
@@ -138,25 +128,9 @@ model RestaurantOwner {
   email         String  @unique
   userId        String  @unique
   restaurant_id String? @db.ObjectId
+  stripe_customer_id  String?
 
   customerId String? @unique // Stripe customer ID, this will be important when we need to delete the subscription
-
-  Subscription Subscription?
-}
-
-model Subscription {
-  id       String             @id @default(cuid()) @map("_id")
-  userId   String             @unique
-  template Templates
-  period   SubscriptionPeriod
-
-  startDate DateTime @default(now())
-  endDate   DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  RestaurantOwnerId RestaurantOwner @relation(fields: [userId], references: [id])
 }
 
 model Template {
@@ -165,14 +139,6 @@ model Template {
   name          String
   customerCount Int
 }
-
-// model Order {
-//   order_id String  @id @default(auto()) @map("_id") @db.ObjectId
-//   u_id     User    @relation(fields: [User_id], references: [user_id])
-//   User_id  String  @db.ObjectId
-//   cart     Item[]
-//   Status   Boolean
-// }
 
 model Reservation {
   id            String              @id @default(auto()) @map("_id") @db.ObjectId

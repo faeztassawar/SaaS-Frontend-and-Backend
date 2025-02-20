@@ -1,22 +1,13 @@
+"use client"
+
 import React, { useEffect, useState } from "react";
 import logos from "@/app/images/downloadlogo.png";
 import Image from "next/image";
 import { TfiMenu } from "react-icons/tfi";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Router } from "lucide-react";
-import { useRouter } from "next/navigation";
-
-type RestaurantOwner = {
-  id: String | null;
-  name: String | null;
-  email: String | null;
-  userId: String | null;
-  restaurant_id: String | null;
-};
 
 const NavBar = () => {
-  const router = useRouter();
 
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
@@ -40,7 +31,7 @@ const NavBar = () => {
     };
 
     fetchData();
-  }, [status]);
+  }, [data?.user?.email, status]);
   return (
     <div className="flex items-center text-white justify-between bg-black py-3 px-4">
       <div className="relative">
@@ -57,6 +48,18 @@ const NavBar = () => {
         <TfiMenu />
       </div>
       <div className="sm:flex gap-6 px-4 items-center hidden">
+        <Link
+          href="/"
+          className="text-white text-opacity-60  hover:text-opacity-100"
+        >
+          Home
+        </Link>
+        <Link
+          href="/aboutUsSaas"
+          className="text-white text-opacity-60  hover:text-opacity-100"
+        >
+          About Us
+        </Link>
         {status === "authenticated" &&
         data.user?.email === "dinedesign.4@gmail.com" ? (
           <Link
