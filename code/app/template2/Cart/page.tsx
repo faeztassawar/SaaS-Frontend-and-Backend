@@ -112,6 +112,7 @@ const CartPage = ({ restaurant_id }: CartProps) => {
           {cartItems?.map((item) => (
             <>
               <CartItem
+                id={item.id}
                 name={item.name}
                 price={item.price}
                 cart={cart?.id as string}
