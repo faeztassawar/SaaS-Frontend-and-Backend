@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import ItemModal from "../components/ItemModal";
 import Footer from "../components/Footer";
-import { Category, Item } from "@prisma/client";
+import { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 interface MenuItemType {
@@ -136,60 +136,43 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-white py-10">Loading...</div>;
   }
 
   return (
     <div className="min-h-screen">
-      <div
-        className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}
-      >
+      <div className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}>
         <Header rest_id={restaurant_id} rest_name="Menu" />
 
         {/* Menu Sections */}
         <section className="mt-8">
-          {categories.map((category) => (
-            <>
-              {!category.isArchive ? (
-                <div key={category.id} className="mb-12">
+          {categories.map((category) =>
+            !category.isArchive ? (
+              <div key={category.id} className="mb-12">
+                {/* Centered Category Name */}
+                <div className="text-center mb-6">
                   <SectionHeader mainHeader={category.name} subHeader="" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-4 mt-10 max-w-7xl mx-auto px-4">
-                    {itemsByCategory[category.id]?.map((item) => {
-                      let image = item.image;
-
-                      if (
-                        image &&
-                        typeof image === "object" &&
-                        !("type" in image)
-                      ) {
-                        const byteArray = new Uint8Array(
-                          Object.values(image) as number[]
-                        );
-                        image = `data:image/jpeg;base64,${Buffer.from(
-                          byteArray
-                        ).toString("base64")}`;
-                      }
-                      return (
-                        <MenuItem
-                          key={item.id}
-                          name={item.name}
-                          desc={item.desc}
-                          price={item.price}
-                          img={item.image}
-                          onClick={() => handleItemClick(item)}
-                          onAddToCart={async () => {
-                            await handleAddToCart(item);
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
                 </div>
-              ) : (
-                <></>
-              )}
-            </>
-          ))}
+
+                {/* Items Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4 max-w-7xl mx-auto px-4">
+                  {itemsByCategory[category.id]?.map((item) => (
+                    <MenuItem
+                      key={item.id}
+                      name={item.name}
+                      desc={item.desc}
+                      price={item.price}
+                      img={item.image}
+                      onClick={() => handleItemClick(item)}
+                      onAddToCart={async () => {
+                        await handleAddToCart(item);
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null
+          )}
         </section>
       </div>
 
@@ -208,6 +191,7 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
           </div>
         </>
       )}
+
       <ToastContainer />
       <Footer />
     </div>

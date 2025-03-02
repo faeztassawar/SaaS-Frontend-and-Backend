@@ -4,7 +4,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { useRouter } from "next/router"
 
 interface HeaderProps {
   rest_id?: string;

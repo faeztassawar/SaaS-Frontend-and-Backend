@@ -40,7 +40,7 @@ export async function createCheckoutLink(customer: string): Promise<string | und
             customer: customer,
             line_items: [
                 {
-                    price: 'price_1NarR3APMZcBliJSoefCKTi5',
+                    price: 'price_1QxqjlKNed87YjIOvU2OiW1h',
                     quantity: 1
                 }
             ],

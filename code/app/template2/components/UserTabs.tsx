@@ -2,17 +2,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { RestaurantCustomer } from "@prisma/client";
 
 
 interface UserTabsProps {
   restaurant_id: string;
-  isAdmin: boolean;
 }
 
-const UserTabs = ({ restaurant_id, isAdmin }: UserTabsProps) => {
+const UserTabs = ({ restaurant_id }: UserTabsProps) => {
   const userpath = `/restaurants/${restaurant_id}/adminDashboard/users`;
   const editProfilePath = `/restaurants/${restaurant_id}/editProfile`;
   const settingsPath = `/restaurants/${restaurant_id}/adminDashboard/settings`;
@@ -22,7 +20,6 @@ const UserTabs = ({ restaurant_id, isAdmin }: UserTabsProps) => {
   const path = usePathname();
 
   const { data, status } = useSession();
-  const router = useRouter();
   const [user, setUser] = useState<RestaurantCustomer>();
 
   useEffect(() => {

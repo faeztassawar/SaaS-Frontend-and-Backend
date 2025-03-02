@@ -8,7 +8,7 @@ import Header from "../components/Header";
 import UserTabs from "../components/UserTabs";
 
 export default function UserPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [] = useState(true);
   const [restaurant_id, setRestaurantId] = useState(""); // Ensure it's a string
 
   const { data: session, status } = useSession();
@@ -48,10 +48,10 @@ export default function UserPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Pass only when restaurant_id is available */}
-      {restaurant_id && <Header rest_id={restaurant_id} rest_name="T2" />}
+      {restaurant_id && <Header rest_id={restaurant_id} rest_name="Admin Dashboard" />}
       
       <div className="text-center mt-8 mb-12">
-        <UserTabs isAdmin={true} restaurant_id={restaurant_id} />
+        <UserTabs restaurant_id={restaurant_id} />
       </div>
 
       <Footer />

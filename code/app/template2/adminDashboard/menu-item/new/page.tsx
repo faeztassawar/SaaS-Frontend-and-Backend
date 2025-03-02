@@ -6,8 +6,7 @@ import Footer from "@/app/template2/components/Footer";
 import UserTabs from "@/app/template2/components/UserTabs";
 import SectionHeader from "@/app/template2/components/SectionHeader";
 import { Category } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { Upload } from "lucide-react"
+import { Upload } from "lucide-react";
 
 type AddItemPageProps = {
   menuId: string;
@@ -22,7 +21,6 @@ const NewMenuItemPage = ({ menuId, restaurantId }: AddItemPageProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
-  const router = useRouter();
 
   const handleSubmit = async () => {
     try {
@@ -71,95 +69,136 @@ const NewMenuItemPage = ({ menuId, restaurantId }: AddItemPageProps) => {
 
   useEffect(() => {
     fetchCategories();
-  }, [menuId]);
+  }, [fetchCategories, menuId]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="flex flex-col min-h-screen bg-gray-100">
       <Header isAdmin={true} />
 
-      {/* User Tabs */}
       <div className="text-center mt-8 mb-8">
-        <UserTabs isAdmin={true} restaurant_id={restaurantId}/>
+        <UserTabs isAdmin={true} restaurant_id={restaurantId} />
       </div>
 
-      {/* Section Header */}
       <div className="flex flex-col items-center">
         <SectionHeader mainHeader="New Item" subHeader="ADD" />
       </div>
 
-      {/* Menu Item Form */}
       <div className="flex justify-center">
-        <form className="mt-8 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md" onSubmit={(e) => e.preventDefault()}>
-          <h2 className="text-2xl font-semibold text-center text-red-700 mb-4">Add New Item</h2>
-          
+        <form
+          className="mt-8 max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg border border-gray-200"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <h2 className="text-3xl font-semibold text-center text-red-700 mb-6">
+            Add New Item
+          </h2>
+
           {/* Status Message */}
           {status !== "idle" && (
-            <div className={`mb-4 p-3 rounded-lg text-center ${
-              status === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-            }`}>
+            <div
+              className={`mb-4 p-3 rounded-lg text-center text-sm font-medium ${
+                status === "success"
+                  ? "bg-green-100 text-green-700 border border-green-500"
+                  : "bg-red-100 text-red-700 border border-red-500"
+              }`}
+            >
               {message}
             </div>
           )}
-          
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-4">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-5">
+              {/* Item Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Item Name</label>
-                <input type="text" name="title" value={itemName} onChange={(e) => setItemName(e.target.value)} 
-                className="mt-1 block w-full p-2 border rounded-lg  bg-white text-gray-700 focus:ring-red-500 focus:border-red-500"/>
+                <label className="block text-sm font-medium text-gray-700">
+                  Item Name
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)}
+                  className="mt-2 block w-full p-2.5 border rounded-lg bg-gray-50 text-gray-700 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                  placeholder="Enter item name"
+                />
               </div>
+
+              {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Category
+                </label>
                 <select
                   name="cat"
-                  id="cat"
-                  className="mt-1 block w-full p-2 border rounded-lg bg-white text-gray-700 focus:ring-red-500 focus:border-red-500"
+                  className="mt-2 block w-full p-2.5 border rounded-lg bg-gray-50 text-gray-700 focus:ring-red-500 focus:border-red-500 outline-none transition"
                   value={itemCategory}
                   onChange={(e) => setItemCategory(e.target.value)}
                 >
                   <option value="">Choose a Category</option>
-                  {categories.filter((item) => !item.isArchive).map((item) => (
-                    <option key={item.id} value={item.name}>
-                      {item.name}
-                    </option>
-                  ))}
+                  {categories
+                    .filter((item) => !item.isArchive)
+                    .map((item) => (
+                      <option key={item.id} value={item.name}>
+                        {item.name}
+                      </option>
+                    ))}
                 </select>
               </div>
+
+              {/* Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Price</label>
-                <input type="number" name="price" required value={itemPrice || ""} onChange={(e) => setItemPrice(Number(e.target.value))}
-                className="mt-1 block w-full p-2 border rounded-lg focus:ring-red-500 focus:border-red-500"/>
+                <label className="block text-sm font-medium text-gray-700">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  required
+                  value={itemPrice || ""}
+                  onChange={(e) => setItemPrice(Number(e.target.value))}
+                  className="mt-2 block w-full p-2.5 border rounded-lg bg-gray-50 text-gray-700 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                  placeholder="Enter price"
+                />
               </div>
             </div>
 
+            {/* Image Upload */}
             <div className="flex flex-col items-center">
-              <label className="block text-sm font-medium text-gray-700">Item Image</label>
-              <div className="relative w-40 h-40 border-2 border-gray-300 rounded-lg overflow-hidden flex items-center justify-center bg-gray-100">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Item Image
+              </label>
+              <div className="relative w-40 h-40 border-2 border-dashed border-gray-400 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition">
                 {itemImg ? (
-                  <img src={URL.createObjectURL(itemImg)} alt="Item Preview" className="object-cover w-full h-full" />
+                  <img
+                    src={URL.createObjectURL(itemImg)}
+                    alt="Item Preview"
+                    className="object-cover w-full h-full rounded-lg"
+                  />
                 ) : (
-                  <Upload className="text-gray-500 w-10 h-10" />
+                  <Upload className="text-gray-500 w-12 h-12" />
                 )}
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   name="image"
                   accept="image/*"
                   className="absolute inset-0 opacity-0 cursor-pointer"
-                  onChange={(e) => setItemImage(e.target.files?.[0] || null)} 
+                  onChange={(e) => setItemImage(e.target.files?.[0] || null)}
                 />
               </div>
               <p className="mt-2 text-sm text-gray-500">Click to upload</p>
             </div>
           </div>
 
-          <button type="submit" onClick={handleSubmit} className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
-            Save
+          {/* Save Button */}
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="mt-6 w-full bg-red-600 text-white py-2.5 rounded-lg font-medium hover:bg-red-700 transition duration-200"
+          >
+            Save Item
           </button>
         </form>
       </div>
 
-      {/* Footer */}
       <Footer />
     </div>
   );

@@ -163,78 +163,90 @@ const Settings = ({ restaurant_id }: settingProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col min-h-screen bg-gray-100">
       <Header rest_id={restaurant_id} rest_name="Settings" />
-      <UserTabs isAdmin={true} restaurant_id={restaurant_id} />
+      <UserTabs restaurant_id={restaurant_id} />
 
-      <div className="flex w-full max-w-3xl items-center bg-gray-50 rounded-lg px-5 py-4 mx-auto">
-        <h1 className="text-2xl px-3 font-semibold">
-          Change Restaurant Name:{" "}
-        </h1>
-        <input
-          value={nameChange}
-          onChange={(e) => setNameChange(e.target.value)}
-          className="w-[40%] border border-gray-800 px-5 py-3 ml-4 rounded-full bg-[#FDFFF1]"
-          placeholder={restaurantData?.name || ""}
-        />
-        <button
-          onClick={async () => {
-            await handleNameChange();
-            router.refresh();
-          }}
-          className="ml-4 px-5 py-3 bg-[#800000] text-white font-semibold rounded-full"
-        >
-          Confirm
-        </button>
-      </div>
-
-      <div className="flex flex-col w-full max-w-3xl gap-5 bg-[#FDFFF1] px-5 py-4 rounded-lg mx-auto">
-        <h1 className="text-2xl px-3 font-semibold">
-          Edit About Us Information
-        </h1>
-        <input
-          value={descChange}
-          onChange={(e) => setDescChange(e.target.value)}
-          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
-          placeholder="Write Introduction/Description (Max 1000 characters)"
-        />
-        <input
-          value={aboutUsChange}
-          onChange={(e) => setAboutUsChange(e.target.value)}
-          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
-          placeholder="Write About Us ( Max 1000 letters )"
-        />
-        <input
-          value={cuisineChange}
-          onChange={(e) => setCuisineChange(e.target.value)}
-          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
-          placeholder="Cuisine"
-        />
-        <h1>Opening Time</h1>
-        <input
-          value={opentime}
-          type="time"
-          onChange={(e) => setOpenTime(e.target.value)}
-          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
-          placeholder="Opening Timing"
-        />
-        <h1>Closing Time</h1>
-        <input
-          value={closetime}
-          onChange={(e) => setCloseTime(e.target.value)}
-          type="time"
-          className="rounded-xl border px-5 py-3 border-gray-800 bg-[#F0F0F0] h-24"
-          placeholder="Closing Timing"
-        />
-        <div className="flex justify-end">
+      {/* Restaurant Name Update */}
+      <div className="max-w-3xl bg-white rounded-lg shadow-md p-6 mx-auto mt-8">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Change Restaurant Name
+        </h2>
+        <div className="flex items-center gap-4">
+          <input
+            value={nameChange}
+            onChange={(e) => setNameChange(e.target.value)}
+            className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+            placeholder="Enter new name"
+          />
           <button
-            onClick={async () => {
-              await handleDetailsChange();
-              router.refresh();
-            }}
-            className="my-3 px-5 py-3 bg-[#800000] text-white font-semibold rounded-full"
+            onClick={handleNameChange}
+            className="px-5 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
           >
             Confirm
+          </button>
+        </div>
+      </div>
+
+      {/* About & Details Section */}
+      <div className="max-w-3xl bg-white rounded-lg shadow-md p-6 mx-auto mt-8">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Edit About Us Information
+        </h2>
+
+        <div className="space-y-4">
+          <textarea
+            value={descChange}
+            onChange={(e) => setDescChange(e.target.value)}
+            className="w-full h-24 border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+            placeholder="Write Introduction/Description"
+          />
+
+          <textarea
+            value={aboutUsChange}
+            onChange={(e) => setAboutUsChange(e.target.value)}
+            className="w-full h-24 border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+            placeholder="Write About Us"
+          />
+
+          <input
+            value={cuisineChange}
+            onChange={(e) => setCuisineChange(e.target.value)}
+            className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+            placeholder="Cuisine"
+          />
+
+          {/* Opening & Closing Times */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Opening Time
+              </label>
+              <input
+                type="time"
+                value={opentime}
+                onChange={(e) => setOpenTime(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Closing Time
+              </label>
+              <input
+                type="time"
+                value={closetime}
+                onChange={(e) => setCloseTime(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <button
+            onClick={handleDetailsChange}
+            className="w-full py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
+          >
+            Save Changes
           </button>
         </div>
       </div>

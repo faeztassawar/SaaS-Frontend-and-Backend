@@ -13,7 +13,8 @@ import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
 type userProps = {
-  users: RestaurantCustomer[];
+  users: RestaurantCustomer[],
+  restaurantId: string
 };
 
 const handleDelete = async (item: RestaurantCustomer) => {
@@ -36,7 +37,7 @@ const handleAdmin = async (item: RestaurantCustomer) => {
   });
 };
 
-const UsersPage = ({ users }: userProps) => {
+const UsersPage = ({ users, restaurantId }: userProps) => {
   const { data, status } = useSession();
   const router = useRouter();
   const [fetchedUsers, setFetchedUsers] = useState<RestaurantCustomer[]>([]);
@@ -99,7 +100,7 @@ const UsersPage = ({ users }: userProps) => {
     <div className="flex flex-col min-h-screen">
       <Header isAdmin={true} />
       <div className="text-center mt-8 mb-12">
-        <UserTabs isAdmin={true} rest_id={""} />
+        <UserTabs restaurant_id={restaurantId} />
       </div>
       <div className="items-center justify-center mt-6 w-full max-w-2xl mx-auto">
         <div className="shadow-2xl rounded-lg p-5 bg-gray-100">

@@ -49,38 +49,40 @@ const MenuItem = ({
 
   const imageUrl = getImageUrl();
 
-  if (!imageUrl)
-    console.log("No Image Found")
+  if (!imageUrl) console.log("No Image Found");
   return (
     <div
-      className="p-3 rounded-lg text-center flex flex-col items-center max-w-[15rem] mx-auto hover:bg-white hover:shadow-2xl hover:shadow-black/30 transition-all"
+      className="p-4 rounded-lg text-center flex flex-col items-center max-w-[16rem] mx-auto bg-white shadow-md hover:shadow-2xl hover:scale-105 transition-all duration-200 border border-gray-200"
       onClick={onClick}
     >
       {/* Product Image */}
-      <div className="w-[150px] h-[150px] flex items-center justify-center overflow-hidden">
+      <div className="w-[160px] h-[160px] flex items-center justify-center overflow-hidden rounded-lg bg-gray-100">
         <Image
-          src={imageUrl as string} // Use the dynamic image source if provided
+          src={imageUrl as string}
           alt={name}
-          width={150}
-          height={150}
-          className="object-cover"
+          width={160}
+          height={160}
+          className="object-cover rounded-lg"
         />
       </div>
 
       {/* Product Name */}
-      <h4 className="font-semibold text-xl my-3">{name}</h4>
+      <h4 className="font-bold text-xl mt-4 text-gray-900">{name}</h4>
 
       {/* Product Description */}
-      <p className="text-gray-500 text-sm text-center px-4">{desc}</p>
+      <p className="text-gray-600 text-sm text-center px-4 mt-2">{desc}</p>
+
+      {/* Product Price */}
+      <p className="text-xl font-semibold text-[#d32f2f] mt-3">${price}</p>
 
       {/* Add to Cart Button */}
       <button
-        className="mt-4 bg-[#800000] text-white rounded-full px-8 py-2"
+        className="mt-4 bg-[#800000] text-white font-medium rounded-full px-6 py-2 hover:bg-red-700 transition-all duration-200"
         aria-label={`Add ${name} to cart for ${price}`}
         onClick={(e) => {
-          e.stopPropagation(); // Prevent triggering the parent `onClick`
+          e.stopPropagation();
           if (onAddToCart) {
-            onAddToCart(name); // Pass the item's name to the `onAddToCart` callback
+            onAddToCart(name);
           }
         }}
       >
