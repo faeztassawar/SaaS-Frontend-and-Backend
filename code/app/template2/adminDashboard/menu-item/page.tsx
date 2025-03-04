@@ -150,7 +150,7 @@ const Template2ItemsPage = ({
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header isAdmin={true} />
+      <Header rest_id={restaurantId}/>
 
       <div className="text-center mt-12 mb-12">
         <UserTabs restaurant_id={restaurantId} />
@@ -169,7 +169,7 @@ const Template2ItemsPage = ({
 
         {/* Edit Menu Items */}
         <h2 className="text-lg text-gray-700 mt-6 mb-3 px-2 font-semibold">
-          Edit Menu Item:
+          Menu Items:
         </h2>
         <div className="flex flex-col gap-4">
           {itemsList.map((item) => {

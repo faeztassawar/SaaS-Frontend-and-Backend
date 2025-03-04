@@ -9,6 +9,8 @@ import {
 } from "@/lib/billing";
 import prisma from "@/lib/connect";
 import Link from "next/link";
+import { FaCreditCard, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import NavBar from "../components/NavBar";
 
 export const stripe = new Stripe(String(process.env.STRIPE_SECRET), {
   apiVersion: "2025-01-27.acacia",
@@ -44,38 +46,66 @@ export default async function Page() {
     );
 
     return (
-      <div className="max-w-4xl m-auto w-full px-4">
-        <div className="flex flex-col">
-          <p className="text-2xl font-medium">Welcome, {session.user.name}</p>
-          {manageBillingUrl ? (
-            <div className="py-4">
-              <Link
-                href={manageBillingUrl}
-                className="p-6 rounded-md border-zinc-400 border shadow-sm font-medium flex items-center gap-2"
-              >
-                Manage Billing
-              </Link>
-              <div>
-                {hasSub ? (
-                  <div className="p-6 rounded-md border-emerald-400 border shadow-sm font-medium">
-                    Subscribed
-                  </div>
-                ) : (
-                  <div className="p-6 rounded-md border-zinc-400 border shadow-sm font-medium flex items-center gap-2">
-                    Free Plan
-                    <Link
-                      className="bg-black text-white rounded-md px-2 py-1 ml-auto"
-                      href={"" + checkout_link}
-                    >
-                      Upgrade
-                    </Link>
-                  </div>
-                )}
-              </div>
+      <div className="w-full overflow-x-hidden">
+        <NavBar />
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[linear-gradient(to_bottom,#000,#200d42_34%,#4f21a1_65%,#a46edb_100%)] text-white px-6">
+          {/* Header */}
+          <h1 className="text-4xl font-extrabold text-center mt-8">
+            Stripe Billing Dashboard
+          </h1>
+          <p className="text-gray-300 text-center mt-2">
+            Manage your subscription and billing details easily.
+          </p>
+
+          {/* Billing Overview Card */}
+          <div className="mt-10 bg-white/10 backdrop-blur-lg border border-gray-500/30 shadow-xl rounded-2xl p-8 max-w-lg w-full text-center">
+            <h2 className="text-xl font-semibold">
+              Welcome, {session.user.name}
+            </h2>
+
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <FaCreditCard className="text-4xl text-yellow-300" />
+              {hasSub ? (
+                <div className="flex items-center gap-2 bg-green-700/20 text-green-400 px-3 py-2 rounded-lg shadow-md">
+                  <FaCheckCircle />
+                  <span className="font-medium">Active Subscription</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 bg-red-700/20 text-red-400 px-3 py-2 rounded-lg shadow-md">
+                  <FaTimesCircle />
+                  <span className="font-medium">Free Plan</span>
+                </div>
+              )}
             </div>
-          ) : (
-            <p className="text-red-500">Failed to generate billing link.</p>
-          )}
+
+            {/* Manage Billing & Upgrade Options */}
+            <div className="flex flex-col gap-4 mt-6">
+              {manageBillingUrl ? (
+                <Link
+                  href={manageBillingUrl}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-3 transition-all"
+                >
+                  Manage Billing
+                </Link>
+              ) : (
+                <p className="text-red-400">Failed to generate billing link.</p>
+              )}
+
+              {!hasSub && (
+                <Link
+                  href={"" + checkout_link}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-6 py-3 transition-all"
+                >
+                  Upgrade Plan
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <footer className="mt-12 text-gray-400 text-sm">
+            Powered by Stripe. Secure payments guaranteed.
+          </footer>
         </div>
       </div>
     );

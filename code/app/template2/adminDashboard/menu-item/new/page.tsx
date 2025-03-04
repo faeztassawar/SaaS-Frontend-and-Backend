@@ -73,10 +73,10 @@ const NewMenuItemPage = ({ menuId, restaurantId }: AddItemPageProps) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <Header isAdmin={true} />
+      <Header rest_id={restaurantId}/>
 
       <div className="text-center mt-8 mb-8">
-        <UserTabs isAdmin={true} restaurant_id={restaurantId} />
+        <UserTabs restaurant_id={restaurantId} />
       </div>
 
       <div className="flex flex-col items-center">

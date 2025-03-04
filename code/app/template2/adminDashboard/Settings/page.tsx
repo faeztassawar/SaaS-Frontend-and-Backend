@@ -165,7 +165,9 @@ const Settings = ({ restaurant_id }: settingProps) => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header rest_id={restaurant_id} rest_name="Settings" />
-      <UserTabs restaurant_id={restaurant_id} />
+      <div className="mt-8">
+        <UserTabs restaurant_id={restaurant_id} />
+      </div>
 
       {/* Restaurant Name Update */}
       <div className="max-w-3xl bg-white rounded-lg shadow-md p-6 mx-auto mt-8">

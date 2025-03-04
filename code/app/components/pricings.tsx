@@ -17,7 +17,7 @@ export const StripePricingTable = () => {
 	}, []);
   
 	return React.createElement("stripe-pricing-table", {
-	  "pricing-table-id": "<PRICING TABLE ID>",
+	  "pricing-table-id": "prctbl_1QybXTKNed87YjIOmFWmSxIK",
 	  "publishable-key":
 		"pk_live_51Nj0LYKNed87YjIO4oXzTi2k3KuOVfvGfREZIMDPSwia9epS9u0wMukT1z1KE48zuxHFyDNf93Fv9hHjD64GTPgd00S3FP7FOD",
 	});

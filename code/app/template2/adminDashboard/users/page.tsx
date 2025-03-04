@@ -64,7 +64,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
       }
     };
     fetchData();
-  }, [status, data]);
+  }, [status, data, router]);
 
   const confirmAction = async (item: RestaurantCustomer, action: string) => {
     const actionMap: { [key: string]: () => Promise<void> } = {
@@ -98,7 +98,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header isAdmin={true} />
+      <Header rest_id={restaurantId}/>
       <div className="text-center mt-8 mb-12">
         <UserTabs restaurant_id={restaurantId} />
       </div>

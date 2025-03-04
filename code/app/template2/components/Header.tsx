@@ -11,7 +11,7 @@ interface HeaderProps {
   isAdmin?: boolean; // ✅ Add this
 }
 
-const Header = ({ rest_id = "", rest_name = "", isAdmin = false }: HeaderProps) => {
+const Header = ({ rest_id = "", rest_name = ""}: HeaderProps) => {
 
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);

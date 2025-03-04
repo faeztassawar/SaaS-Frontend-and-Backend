@@ -184,9 +184,9 @@ export default function CategoriesPage({ menuId, restaurantId }: CatPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header isAdmin={true} rest_id={restaurantId} />
+      <Header rest_id={restaurantId} />
       <div className="text-center mt-8 mb-12">
-        <UserTabs restaurant_id={restaurantId} isAdmin={true} />
+        <UserTabs restaurant_id={restaurantId}/>
       </div>
 
       <div className="flex grow flex-col items-center justify-center">

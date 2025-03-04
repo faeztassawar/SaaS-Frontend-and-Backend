@@ -26,7 +26,12 @@ const fetchUserProfile = async (email: string) => {
   }
 };
 
-const EditProfile = () => {
+interface EditProfileProps
+{
+  restaurant_id: string
+}
+
+const EditProfile = ({restaurant_id }: EditProfileProps) => {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -119,7 +124,7 @@ const EditProfile = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header isAdmin={true} />
       <div className="mt-8">
-        <UserTabs isAdmin={true} rest_id={" "} />
+        <UserTabs restaurant_id={restaurant_id} />
       </div>
 
       <div className="flex-grow flex justify-center items-center mt-7">

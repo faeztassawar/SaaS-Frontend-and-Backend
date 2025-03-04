@@ -100,9 +100,9 @@ const CartPage = ({ restaurant_id }: CartProps) => {
   }, []);
   return (
     <div className="min-h-screen">
-      <Header isAdmin={false} />
+      <Header rest_id={restaurant_id} rest_name="Cart" />
       <div className="text-center mt-8 mb-12 bg-gray-50">
-        <SectionHeader mainHeader="Cart" subHeader="" />
+        <SectionHeader mainHeader="Cart" subHeader="Here is Your" />
       </div>
 
       {/* Grid with 2 columns */}

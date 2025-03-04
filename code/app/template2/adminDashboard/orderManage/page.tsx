@@ -7,6 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+interface OrderProps
+{
+  restaurant_id: string;
+}
+
 type Order = {
   id: string;
   name: string;
@@ -19,7 +24,7 @@ type Order = {
   totalPrice?: string;
 };
 
-const OrderManage = () => {
+const OrderManage = ({restaurant_id}: OrderProps) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
@@ -114,8 +119,8 @@ const OrderManage = () => {
 
   return (
     <div>
-      <Header />
-      <UserTabs isAdmin={true} restaurant_id="" />
+      <Header rest_id={restaurant_id}/>
+      <UserTabs restaurant_id={restaurant_id} />
       <div className="p-6 max-w-4xl mx-auto">
         <h2 className="text-2xl font-semibold mb-4">Manage Orders</h2>
         {isLoading ? (
