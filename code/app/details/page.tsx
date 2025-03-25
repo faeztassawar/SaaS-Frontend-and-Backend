@@ -51,6 +51,37 @@ const Details = () => {
     }
   };
 
+  const handleBuy = async () => {
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        const { url } = await res.json();
+        window.location.href = url; // Redirect to Stripe checkout
+      } else {
+        console.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    const isSuccess = searchParams.get("success");
+    const isCanceled = searchParams.get("canceled");
+
+    if (isSuccess) {
+      createRestaurant(template === "classic" ? "1" : "2"); // Differentiate templates
+    } else if (isCanceled) {
+      router.push("/"); // Redirect to home on cancel
+    }
+  }, [searchParams, router, template]);
+
   return (
     <div className="w-full overflow-x-hidden">
       <NavBar />
@@ -160,7 +191,7 @@ const Details = () => {
               </Link>
               {status === "authenticated" ? (
                 <button
-                  onClick={() => createRestaurant("1")}
+                  onClick={handleBuy}
                   className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
                 >
                   Buy
@@ -283,7 +314,7 @@ const Details = () => {
                 Preview
               </Link>
               <button
-                onClick={() => createRestaurant("2")}
+                onClick={handleBuy}
                 className="px-5 py-3 text-black bg-white rounded-2xl hover:scale-110 transition-all duration-200"
               >
                 Buy
