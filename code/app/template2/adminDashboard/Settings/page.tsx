@@ -22,6 +22,10 @@ const Settings = ({ restaurant_id }: settingProps) => {
   const [descChange, setDescChange] = useState(restaurantData?.desc || "");
   const [opentime, setOpenTime] = useState(restaurantData?.desc || "");
   const [closetime, setCloseTime] = useState(restaurantData?.desc || "");
+  const [addressChange, setAddressChange] = useState(
+    restaurantData?.address || ""
+  );
+  const [phoneChange, setPhoneChange] = useState(restaurantData?.phone || "");
   const [aboutUsChange, setAboutUsChange] = useState(
     restaurantData?.about_us || ""
   );
@@ -39,6 +43,8 @@ const Settings = ({ restaurant_id }: settingProps) => {
         setDescChange(data.desc);
         setAboutUsChange(data.about_us);
         setCuisineChange(data.cuisine);
+        setAddressChange(data.address);
+        setPhoneChange(data.phone);
       }
     };
     fetchRestaurant();
@@ -116,6 +122,8 @@ const Settings = ({ restaurant_id }: settingProps) => {
           about_us: aboutUsChange || restaurantData?.about_us,
           desc: descChange || restaurantData?.desc,
           cuisine: cuisineChange || restaurantData?.cuisine,
+          address: addressChange || restaurantData?.address,
+          phone: phoneChange || restaurantData?.phone,
           opentiming: opentime || restaurantData?.opentiming,
           closetiming: opentime || restaurantData?.closetiming,
         }),
@@ -126,6 +134,8 @@ const Settings = ({ restaurant_id }: settingProps) => {
         setDescChange(data.desc);
         setAboutUsChange(data.about_us);
         setCuisineChange(data.cuisine);
+        setAddressChange(data.address);
+        setPhoneChange(data.phone);
         showSuccessDialog("Details updated successfully!");
         toast.success("Details updated", {
           position: "top-right",
@@ -211,6 +221,20 @@ const Settings = ({ restaurant_id }: settingProps) => {
             placeholder="Write About Us"
           />
 
+          <textarea
+            value={addressChange}
+            onChange={(e) => setAddressChange(e.target.value)}
+            className="w-full h-24 border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+            placeholder="Write Address"
+          />
+
+          <input
+            value={phoneChange}
+            onChange={(e) => setPhoneChange(e.target.value)}
+            className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+            placeholder="Phone Number"
+          />
+
           <input
             value={cuisineChange}
             onChange={(e) => setCuisineChange(e.target.value)}
@@ -245,7 +269,10 @@ const Settings = ({ restaurant_id }: settingProps) => {
           </div>
 
           <button
-            onClick={handleDetailsChange}
+            onClick={async () => {
+              await handleDetailsChange(); // Wait for the function to complete
+              window.location.reload(); // Refresh the page after saving changes
+            }}
             className="w-full py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
           >
             Save Changes
@@ -253,7 +280,7 @@ const Settings = ({ restaurant_id }: settingProps) => {
         </div>
       </div>
 
-      <Footer />
+      <Footer restaurant_id={restaurant_id} />
     </div>
   );
 };

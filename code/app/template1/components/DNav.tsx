@@ -1,6 +1,5 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { MdSearch } from "react-icons/md";
 
 const Navbar = () => {
   const pathname = usePathname();

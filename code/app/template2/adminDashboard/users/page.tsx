@@ -152,7 +152,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
           )}
         </div>
       </div>
-      <Footer />
+      <Footer restaurant_id={restaurantId}/>
     </div>
   );
 };

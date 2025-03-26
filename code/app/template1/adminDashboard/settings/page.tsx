@@ -16,6 +16,8 @@ const Page = ({ restaurant_id }: settingProps) => {
   const [restaurantData, setRestaurantData] = useState<Restaurant>();
   const [nameChange, setNameChange] = useState(restaurantData?.name || "");
   const [descChange, setDescChange] = useState(restaurantData?.desc || "");
+  const [addressChange, setAddressChange] = useState(restaurantData?.address || "");
+  const [phoneChange, setPhoneChange] = useState(restaurantData?.phone || "");
   const [openTime, setOpenTime] = useState(restaurantData?.opentiming || "");
   const [closeTime, setCloseTime] = useState(restaurantData?.closetiming || "");
   const [aboutUsChange, setAboutUsChange] = useState(
@@ -35,6 +37,8 @@ const Page = ({ restaurant_id }: settingProps) => {
         setDescChange(data.desc);
         setAboutUsChange(data.about_us);
         setCuisineChange(data.cuisine);
+        setAddressChange(data.address);
+        setPhoneChange(data.phone);
         setOpenTime(data.opentime);
         setCloseTime(data.closetime);
         console.log(data);
@@ -115,6 +119,8 @@ const Page = ({ restaurant_id }: settingProps) => {
           about_us: aboutUsChange || restaurantData?.about_us,
           desc: descChange || restaurantData?.desc,
           cuisine: cuisineChange || restaurantData?.cuisine,
+          address: addressChange || restaurantData?.address,
+          phone: phoneChange || restaurantData?.phone,
           opentiming: openTime || restaurantData?.opentiming,
           closetiming: closeTime || restaurantData?.closetiming,
         }),
@@ -125,6 +131,8 @@ const Page = ({ restaurant_id }: settingProps) => {
         setDescChange(data.desc);
         setAboutUsChange(data.about_us);
         setCuisineChange(data.cuisine);
+        setAddressChange(data.address);
+        setPhoneChange(data.phone);
         showSuccessDialog("Details updated successfully!");
         toast.success("Details updated", {
           position: "top-right",
@@ -195,6 +203,20 @@ const Page = ({ restaurant_id }: settingProps) => {
         <input
           value={aboutUsChange}
           onChange={(e) => setAboutUsChange(e.target.value)}
+          className="rounded-xl border border-gray-800 px-5 py-3 bg-[#2f4880]"
+          placeholder="Write About Us ( Max 1000 letters )"
+        />
+
+        <input
+          value={addressChange}
+          onChange={(e) => setAddressChange(e.target.value)}
+          className="rounded-xl border border-gray-800 px-5 py-3 bg-[#2f4880]"
+          placeholder="Write About Us ( Max 1000 letters )"
+        />
+
+        <input
+          value={phoneChange}
+          onChange={(e) => setPhoneChange(e.target.value)}
           className="rounded-xl border border-gray-800 px-5 py-3 bg-[#2f4880]"
           placeholder="Write About Us ( Max 1000 letters )"
         />

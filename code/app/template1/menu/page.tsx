@@ -155,7 +155,7 @@ const MenuPage = ({ id, restaurant_id, name }: MenuProps) => {
           <NavBar rest_id={restaurant_id} />
         </div>
         <div className="m-4">
-          <Footer />
+          <Footer restaurant_id={restaurant_id}/>
         </div>
       </div>
     </div>

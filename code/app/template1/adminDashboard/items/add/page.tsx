@@ -15,7 +15,6 @@ const AddItemPage = ({ menuId }: AddItemPageProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
-  const router = useRouter();
 
   const handleSubmit = async () => {
     try {

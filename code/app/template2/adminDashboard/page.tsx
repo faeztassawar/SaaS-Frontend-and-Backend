@@ -16,9 +16,9 @@ export default function UserPage() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/");
+      router.push(`/${restaurant_id}`);
     }
-  }, [status, router]);
+  }, [status, router, restaurant_id]);
 
   useEffect(() => {
     const fetchUserRestaurantId = async () => {
@@ -54,7 +54,7 @@ export default function UserPage() {
         <UserTabs restaurant_id={restaurant_id} />
       </div>
 
-      <Footer />
+      <Footer restaurant_id={restaurant_id}/>
     </div>
   );
 }

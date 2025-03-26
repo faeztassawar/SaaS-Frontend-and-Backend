@@ -199,7 +199,7 @@ const NewMenuItemPage = ({ menuId, restaurantId }: AddItemPageProps) => {
         </form>
       </div>
 
-      <Footer />
+      <Footer restaurant_id={restaurantId}/>
     </div>
   );
 };

@@ -154,7 +154,7 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
           </>
         )}
       </div>
-      <Footer />
+      <Footer restaurant_id={restaurant_id} />
     </div>
   );
 };

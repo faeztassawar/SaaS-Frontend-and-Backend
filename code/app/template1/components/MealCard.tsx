@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import food from "@/app/template1/images/Soup.png";
 
 type MealCardProps = {
   name: string; // Changed "String" to "string" for consistency with TypeScript conventions

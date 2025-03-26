@@ -37,6 +37,7 @@ export const POST = async (req: Request) => {
                 opentiming: '9:00 AM',
                 closetiming: '9:00 PM',
                 phone: body.phone,
+                address: body.address,
                 tempModel: body.tempModel,
             }
         })

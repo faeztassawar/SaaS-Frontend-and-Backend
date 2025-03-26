@@ -121,7 +121,7 @@ const AboutUsPage: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
         </div>
         <NavBar rest_id={restaurant_id} />
       </div>
-      <Footer />
+      <Footer restaurant_id={restaurant_id}/>
       <style jsx>{`
         @keyframes fadeIn {
           0% {

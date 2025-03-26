@@ -19,7 +19,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Restaurant, RestaurantCustomer } from "@prisma/client";
+import { RestaurantCustomer } from "@prisma/client";
 import Cookies from "js-cookie";
 
 type NavBarProps = {
@@ -60,8 +60,8 @@ const NavBar = ({ rest_id }: NavBarProps) => {
     fetchData();
   }, [status]);
   console.log("Owner:", user);
-  let ot = Cookies.get("OT");
-  let ct = Cookies.get("CT");
+  const ot = Cookies.get("OT");
+  const ct = Cookies.get("CT");
   return (
     <div className="rounded-full flex justify-between gap-8 items-center bg-[rgb(193,151,98)] bg-opacity-80 py-2 px-7 xl:scale-100 lg:scale-90 md:scale-75">
       <div className="text-3xl flex gap-8 items-center text-black font-chillax">

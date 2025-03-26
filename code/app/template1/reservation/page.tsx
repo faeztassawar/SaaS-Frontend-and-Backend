@@ -9,7 +9,6 @@ import NavBar from "../components/NavBar";
 import ReservationForm from "../components/ReservationForm";
 import { useSession } from "next-auth/react";
 import ReservationList from "../components/ReservationList";
-import { format } from "date-fns";
 
 interface ReservationPageProps {
   id: string;
@@ -105,7 +104,7 @@ const ReservationPage = ({ id, restaurant_id, name }: ReservationPageProps) => {
           <NavBar rest_id={restaurant_id} />
         </div>
         <div className="mt-10">
-          <Footer />
+          <Footer restaurant_id={restaurant_id} />
         </div>
       </div>
     </div>

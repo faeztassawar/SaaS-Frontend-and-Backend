@@ -132,7 +132,7 @@ const CartPage = ({ restaurant_id }: CartProps) => {
         </div>
       </div>
 
-      <Footer />
+      <Footer restaurant_id={restaurant_id}/>
     </div>
   );
 };

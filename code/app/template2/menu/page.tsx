@@ -193,7 +193,7 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
       )}
 
       <ToastContainer />
-      <Footer />
+      <Footer restaurant_id={restaurant_id}/>
     </div>
   );
 }

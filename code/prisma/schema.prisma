@@ -71,6 +71,7 @@ model Restaurant {
   opentiming    String?
   closetiming   String?
   phone         String?
+  address       String?
   tempModel     String
   Menu          Menu[]
   Customers     RestaurantCustomer[]

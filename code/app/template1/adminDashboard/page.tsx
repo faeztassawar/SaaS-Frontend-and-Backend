@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import DReservation from "../components/DReservation"
 import DInfoCard from "../components/DInfoCard"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -39,9 +38,9 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/")
+      router.push(`/${restaurant_id}`)
     }
-  }, [status, router])
+  }, [status, router, restaurant_id])
 
   useEffect(() => {
     const fetchUserRestaurantId = async () => {

@@ -9,7 +9,6 @@ import {
   MdOutlineSettings,
 } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { RestaurantCustomer } from "@prisma/client";
 
@@ -62,7 +61,6 @@ const Sidebar = ({ restaurant_id }: sidebarprops) => {
   ];
 
   const { data, status } = useSession();
-  const router = useRouter();
   const [user, setUser] = useState<RestaurantCustomer>();
 
   useEffect(() => {

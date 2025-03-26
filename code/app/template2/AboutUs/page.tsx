@@ -80,14 +80,14 @@ const AboutUs: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
           <p className="text-sm sm:text-base text-[#333333] max-w-lg mx-auto mb-4">
             Have questions or want to learn more? We would love to hear from you!
           </p>
-          <a className="text-1xl sm:text-2xl lg:text-2xl text-[#333333]" href="tel:+923332760526">
+          <a className="text-1xl sm:text-2xl lg:text-2xl text-[#333333]">
             +92 4543545346
           </a>
         </div>
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer restaurant_id={restaurant_id}/>
     </div>
   )
 }

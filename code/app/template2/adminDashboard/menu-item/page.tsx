@@ -203,7 +203,7 @@ const Template2ItemsPage = ({
         </div>
       </section>
 
-      <Footer />
+      <Footer restaurant_id={restaurantId}/>
     </div>
   );
 };

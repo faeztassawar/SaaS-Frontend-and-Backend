@@ -302,7 +302,7 @@ export default function CategoriesPage({ menuId, restaurantId }: CatPageProps) {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer restaurant_id={restaurantId}/>
     </div>
   );
 }

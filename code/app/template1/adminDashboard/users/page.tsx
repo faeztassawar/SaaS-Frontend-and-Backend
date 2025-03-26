@@ -7,7 +7,6 @@ import { useSession } from "next-auth/react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { toast } from "react-hot-toast";
-import { fetchData } from "next-auth/client/_utils";
 
 type userProps = {
   users: RestaurantCustomer[];

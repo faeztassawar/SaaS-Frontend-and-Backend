@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import { format, isBefore, startOfDay, isSameDay } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 
 const ReservationForm = ({ restaurant_id }: { restaurant_id: string }) => {
   const { data: session } = useSession();
