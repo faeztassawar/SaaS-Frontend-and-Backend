@@ -1,77 +1,81 @@
-"use client"
+"use client";
 
-import { useSession } from "next-auth/react"
-import { useState, useEffect } from "react"
-import NavBar from "@/app/components/NavBar"
-import { TiUser } from "react-icons/ti"
-import { FaCircleUser } from "react-icons/fa6"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { IoMdClose } from "react-icons/io"
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import NavBar from "@/app/components/NavBar";
+import { TiUser } from "react-icons/ti";
+import { FaCircleUser } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { IoMdClose } from "react-icons/io";
 
 const ProfilePage = () => {
-  const { data: session, status } = useSession()
-  const [userProfile, setUserProfile] = useState<any>(null)
-  const [restaurantData, setRestaurantData] = useState<any>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [details, setDetails] = useState(true)
-  const [link, setLink] = useState("")
+  const { data: session, status } = useSession();
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [restaurantData, setRestaurantData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [details, setDetails] = useState(true);
+  const [link, setLink] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (!session) {
-      router.push("/")
+      router.push("/");
     }
 
     const fetchUserProfile = async () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
-          const response = await fetch(`/api/session/saas/${session.user.email}`)
+          const response = await fetch(
+            `/api/session/saas/${session.user.email}`
+          );
           if (response.ok) {
-            const data = await response.json()
-            setUserProfile(data)
+            const data = await response.json();
+            setUserProfile(data);
           } else {
-            console.error("Failed to fetch user profile.")
+            console.error("Failed to fetch user profile.");
           }
         } catch (error) {
-          console.error("Error fetching user profile:", error)
+          console.error("Error fetching user profile:", error);
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
       } else {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchUserProfile()
-  }, [session, status, router])
+    fetchUserProfile();
+  }, [session, status, router]);
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       if (userProfile?.restaurant_id) {
         try {
-          const res = await fetch(`/api/restaurant/${userProfile.restaurant_id}`)
+          const res = await fetch(
+            `/api/restaurant/${userProfile.restaurant_id}`
+          );
           if (res.ok) {
-            const data = await res.json()
-            setRestaurantData(data)
-            setLink(`/restaurants/${data.restaurant_id}`)
+            const data = await res.json();
+            setRestaurantData(data);
+            setLink(`/restaurants/${data.restaurant_id}`);
           }
         } catch (error) {
-          console.error("Error fetching restaurant data:", error)
+          console.error("Error fetching restaurant data:", error);
         }
       }
-    }
+    };
 
-    fetchRestaurant()
-  }, [userProfile])
+    fetchRestaurant();
+  }, [userProfile]);
 
   const handleClose = () => {
-    router.push("/")
-  }
+    router.push("/");
+  };
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -110,21 +114,28 @@ const ProfilePage = () => {
                   <div className="flex justify-start items-center py-10">
                     <div className="basis-1/2">
                       <h1 className="text-4xl font-bold">Name</h1>
-                      <h3 className="text-xl py-3 pl-1 text-white/80">{userProfile?.name}</h3>
+                      <h3 className="text-xl py-3 pl-1 text-white/80">
+                        {userProfile?.name}
+                      </h3>
                     </div>
                     <div className="basis-1/2">
                       <h1 className="text-4xl font-bold">Email</h1>
-                      <h3 className="text-xl py-3 pl-1 text-white/80">{userProfile?.email}</h3>
+                      <h3 className="text-xl py-3 pl-1 text-white/80">
+                        {userProfile?.email}
+                      </h3>
                     </div>
                   </div>
 
                   <div>
-                    <h1 className="text-4xl font-bold">Payment Method</h1>
+                    <h1 className="text-4xl font-bold">Payment</h1>
                     <div className="flex items-center justify-between mt-2 p-4 bg-[#2f2f2f] rounded-lg">
                       <h1 className="text-2xl text-white/80">Stripe</h1>
-                      <button className="px-5 py-2 rounded-full text-black bg-white hover:scale-110 transition-all duration-200">
-                        Add Payment Method
-                      </button>
+                      <Link
+                        href="/StripeDashboard"
+                        className="px-5 py-2 rounded-full text-black bg-white hover:scale-110 transition-all duration-200"
+                      >
+                        Your Account
+                      </Link>
                     </div>
                   </div>
 
@@ -134,9 +145,15 @@ const ProfilePage = () => {
                       <div className="flex flex-col w-full overflow-hidden">
                         <div>
                           <div className="flex justify-center bg-[#2f2f2f] text-lg font-semibold py-3 px-4 rounded-t-lg">
-                            <div className="basis-1/3 text-center text-xl py-4 px-3">Restaurant ID</div>
-                            <div className="basis-1/3 text-center text-xl py-4 px-3">Restaurant Name</div>
-                            <div className="basis-1/3 text-center text-xl py-4 px-3">Template</div>
+                            <div className="basis-1/3 text-center text-xl py-4 px-3">
+                              Restaurant ID
+                            </div>
+                            <div className="basis-1/3 text-center text-xl py-4 px-3">
+                              Restaurant Name
+                            </div>
+                            <div className="basis-1/3 text-center text-xl py-4 px-3">
+                              Template
+                            </div>
                           </div>
                         </div>
                         <div>
@@ -167,7 +184,9 @@ const ProfilePage = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-3xl text-extrabold flex justify-center py-10">No Restaurant</div>
+                    <div className="text-3xl text-extrabold flex justify-center py-10">
+                      No Restaurant
+                    </div>
                   )}
                 </div>
               </div>
@@ -176,8 +195,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
-
+export default ProfilePage;

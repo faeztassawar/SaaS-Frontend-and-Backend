@@ -17,9 +17,9 @@ export const StripePricingTable = () => {
 	}, []);
   
 	return React.createElement("stripe-pricing-table", {
-	  "pricing-table-id": "prctbl_1QybXTKNed87YjIOmFWmSxIK",
+	  "pricing-table-id": "prctbl_1R7088KNed87YjIOLRB5xnvU",
 	  "publishable-key":
-		"pk_live_51Nj0LYKNed87YjIO4oXzTi2k3KuOVfvGfREZIMDPSwia9epS9u0wMukT1z1KE48zuxHFyDNf93Fv9hHjD64GTPgd00S3FP7FOD",
+		"pk_test_51Nj0LYKNed87YjIOoDVZg8oAhf0SUwx4LJTu0mu0xbf4yQdn5RYzdrZYJp6ZqN7ojxge3kVB00CobmpxIeJk6Gyn00gV4jY8eP",
 	});
   
   };

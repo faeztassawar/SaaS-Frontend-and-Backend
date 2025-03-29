@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import Stripe from "stripe";
 import {
   createCheckoutLink,
   createCustomerIfNull,
@@ -11,10 +10,6 @@ import prisma from "@/lib/connect";
 import Link from "next/link";
 import { FaCreditCard, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import NavBar from "../components/NavBar";
-
-export const stripe = new Stripe(String(process.env.STRIPE_SECRET), {
-  apiVersion: "2025-01-27.acacia",
-});
 
 export default async function Page() {
   try {
@@ -66,9 +61,15 @@ export default async function Page() {
             <div className="flex items-center justify-center gap-4 mt-4">
               <FaCreditCard className="text-4xl text-yellow-300" />
               {hasSub ? (
-                <div className="flex items-center gap-2 bg-green-700/20 text-green-400 px-3 py-2 rounded-lg shadow-md">
-                  <FaCheckCircle />
-                  <span className="font-medium">Active Subscription</span>
+                <div className="flex flex-col items-center gap-2 bg-green-700/20 text-green-400 px-3 py-2 rounded-lg shadow-md">
+                  <div className="flex items-center gap-2">
+                    <FaCheckCircle />
+                    <span className="font-medium">Active Subscription</span>
+                  </div>
+                  <p className="text-sm text-yellow-300 mt-1">
+                    🎉 Congratulations! Go to your profile to access your
+                    restaurant.
+                  </p>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 bg-red-700/20 text-red-400 px-3 py-2 rounded-lg shadow-md">

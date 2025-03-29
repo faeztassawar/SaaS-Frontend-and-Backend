@@ -75,7 +75,7 @@ const Header = ({ rest_id = "", rest_name = ""}: HeaderProps) => {
             onClick={() => signOut()}
             className="bg-white text-primaryTem2 px-8 py-2 rounded-full"
           >
-            LogOut
+            Logout
           </button>
         ) : (
           <button

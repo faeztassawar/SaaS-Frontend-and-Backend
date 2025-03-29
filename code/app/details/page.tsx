@@ -55,9 +55,6 @@ const Details = () => {
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       if (res.ok) {
