@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -19,47 +19,20 @@ import { useSession } from "next-auth/react";
 
 const Details = () => {
   const searchParams = useSearchParams();
-  const template = searchParams.get("template");
+  const templateParam = searchParams.get("template"); // Extract once
+  const isSuccess = searchParams.get("success");
+  const isCanceled = searchParams.get("canceled");
+  
   const router = useRouter();
   const { data, status } = useSession();
 
-  const createRestaurant = async (template: string) => {
-    console.log("buying");
-    console.log("fetching");
-
-    const res = await fetch("/api/restaurant", {
-      method: "POST",
-      body: JSON.stringify({
-        owner_email: data?.user?.email,
-        name: "nique",
-        about_us: "We serve delicious Food",
-        desc: "Great ambiance and friendly staff.",
-        timing: "9am - 9pm",
-        phone: "0333 5896242",
-        tempModel: template,
-      }),
-    });
-
-    if (res.status === 200) {
-      const data = await res.json();
-      console.log(data);
-      console.log("success");
-      router.push(`/restaurants/${data.restaurant_id}`);
-    } else if (res?.statusText === "Already!") {
-      console.log("This user already has a restaurant");
-      router.push("/");
-    }
-  };
-
   const handleBuy = async () => {
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-      });
+      const res = await fetch("/api/checkout", { method: "POST" });
 
       if (res.ok) {
         const { url } = await res.json();
-        window.location.href = url; // Redirect to Stripe checkout
+        router.push(url); // Redirect to Stripe checkout
       } else {
         console.error("Failed to create checkout session");
       }
@@ -68,22 +41,54 @@ const Details = () => {
     }
   };
 
-  React.useEffect(() => {
-    const isSuccess = searchParams.get("success");
-    const isCanceled = searchParams.get("canceled");
+  useEffect(() => {
+    if (status !== "authenticated") return; // Wait until session is authenticated
+
+    const createRestaurant = async (template: string) => {
+      console.log("Creating restaurant...");
+
+      try {
+        const res = await fetch("/api/restaurant", {
+          method: "POST",
+          body: JSON.stringify({
+            owner_email: data?.user?.email,
+            name: "Nique",
+            about_us: "We serve delicious food",
+            desc: "Great ambiance and friendly staff.",
+            timing: "9am - 9pm",
+            phone: "0333 5896242",
+            tempModel: template,
+          }),
+        });
+
+        if (res.ok) {
+          const responseData = await res.json();
+          console.log("Restaurant created successfully:", responseData);
+          router.push(`/restaurants/${responseData.restaurant_id}`);
+        } else if (res.status === 409) { // Handle duplicate restaurant case
+          console.log("This user already has a restaurant.");
+          router.push("/");
+        } else {
+          console.error("Failed to create restaurant:", await res.text());
+        }
+      } catch (error) {
+        console.error("Error creating restaurant:", error);
+      }
+    };
 
     if (isSuccess) {
-      createRestaurant(template === "classic" ? "1" : "2"); // Differentiate templates
+      const templateId = templateParam === "classic" ? "1" : "2"; // Differentiate templates
+      createRestaurant(templateId);
     } else if (isCanceled) {
-      router.push("/"); // Redirect to home on cancel
+      router.push("/"); // Redirect to home if checkout was canceled
     }
-  }, [searchParams, router, template]);
+  }, [status, isSuccess, isCanceled, templateParam, router, data?.user?.email]);
 
   return (
     <div className="w-full overflow-x-hidden">
       <NavBar />
       <div className="p-10 bg-[linear-gradient(to_bottom,#000,#200d42_34%,#4f21a1_65%,#a46edb_100%)] text-white min-h-screen flex flex-col items-center ">
-        {template === "classic" ? (
+        {templateParam === "classic" ? (
           <div className="flex flex-col items-center">
             <h1 className="text-5xl font-bold">Classic Restaurant Details</h1>
             <div className="border px-10 py-10 border-[rgb(193,151,98)] rounded-3xl flex flex-col mt-12 w-full items-center shadow-[0_0_15px_5px] shadow-[rgb(193,151,98)]/50">
@@ -205,7 +210,7 @@ const Details = () => {
               </Link>
             </div>
           </div>
-        ) : template === "fastfood" ? (
+        ) : templateParam === "fastfood" ? (
           <div className="flex flex-col items-center">
             <h1 className="text-5xl font-bold py-10">
               Fast Food Restaurant Details

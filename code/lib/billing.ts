@@ -36,7 +36,7 @@ export async function createCheckoutLink(customer: string): Promise<string | und
     try {
         const checkout = await stripe.checkout.sessions.create({
             success_url: `${process.env.NEXTAUTH_URL}/details?success=true`,
-            cancel_url: `${process.env.NEXTAUTH_URL}/StripeDashboard?canceled=true`,
+            cancel_url: `${process.env.NEXTAUTH_URL}/details?canceled=true`,
             customer: customer,
             line_items: [
                 {
