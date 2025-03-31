@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -19,12 +19,28 @@ import { useSession } from "next-auth/react";
 
 const Details = () => {
   const searchParams = useSearchParams();
-  const templateParam = searchParams.get("template"); // Extract once
-  const isSuccess = searchParams.get("success");
-  const isCanceled = searchParams.get("canceled");
-  
   const router = useRouter();
   const { data, status } = useSession();
+
+  // Extract template from URL
+  const templateParam = searchParams.get("template");
+  const isSuccess = searchParams.get("success");
+  const isCanceled = searchParams.get("canceled");
+
+  // State to persist template ID
+  const [templateId, setTemplateId] = useState<string | null>(null);
+
+  // Set template ID when user first visits the page
+  useEffect(() => {
+    if (templateParam) {
+      setTemplateId(templateParam === "classic" ? "1" : "2");
+      sessionStorage.setItem("templateId", templateParam === "classic" ? "1" : "2");
+    } else {
+      // Retrieve from session storage if lost after redirection
+      const storedTemplate = sessionStorage.getItem("templateId");
+      if (storedTemplate) setTemplateId(storedTemplate);
+    }
+  }, [templateParam]);
 
   const handleBuy = async () => {
     try {
@@ -42,10 +58,10 @@ const Details = () => {
   };
 
   useEffect(() => {
-    if (status !== "authenticated") return; // Wait until session is authenticated
+    if (status !== "authenticated" || !templateId) return; // Ensure session & template ID exist
 
-    const createRestaurant = async (template: string) => {
-      console.log("Creating restaurant...");
+    const createRestaurant = async (templateId: string) => {
+      console.log("Creating restaurant with template ID:", templateId);
 
       try {
         const res = await fetch("/api/restaurant", {
@@ -57,7 +73,7 @@ const Details = () => {
             desc: "Great ambiance and friendly staff.",
             timing: "9am - 9pm",
             phone: "0333 5896242",
-            tempModel: template,
+            tempModel: templateId,
           }),
         });
 
@@ -65,7 +81,7 @@ const Details = () => {
           const responseData = await res.json();
           console.log("Restaurant created successfully:", responseData);
           router.push(`/restaurants/${responseData.restaurant_id}`);
-        } else if (res.status === 409) { // Handle duplicate restaurant case
+        } else if (res.status === 409) {
           console.log("This user already has a restaurant.");
           router.push("/");
         } else {
@@ -77,12 +93,11 @@ const Details = () => {
     };
 
     if (isSuccess) {
-      const templateId = templateParam === "classic" ? "1" : "2"; // Differentiate templates
       createRestaurant(templateId);
     } else if (isCanceled) {
-      router.push("/"); // Redirect to home if checkout was canceled
+      router.push("/");
     }
-  }, [status, isSuccess, isCanceled, templateParam, router, data?.user?.email]);
+  }, [status, isSuccess, isCanceled, templateId, router, data?.user?.email]);
 
   return (
     <div className="w-full overflow-x-hidden">
