@@ -4,9 +4,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SectionHeader from "../components/SectionHeader";
 import CartItem from "../components/CartItem";
-import UserForm from "../components/UserForm";
 import { useSession } from "next-auth/react";
 import { Cart, Item } from "@prisma/client";
+
 type CartProps = {
   restaurant_id: string;
 };
@@ -89,15 +89,95 @@ const CartPage = ({ restaurant_id }: CartProps) => {
       console.error("❌ Error fetching cart:", error);
     }
   };
-  // ✅ Log after state update
+
   useEffect(() => {
     console.log("🛒 Updated Cart Items:", cartItems);
   }, [cartItems]);
+
   useEffect(() => {
-    console.log("Restauarnt Id: ", restaurant_id);
+    console.log("Restaurant Id: ", restaurant_id);
     document.cookie = `id=${restaurant_id}; path=/; SameSite=Lax;`;
     getCart(data?.user?.email ?? "");
-  }, []);
+  }, [restaurant_id, data?.user?.email]);
+
+  const handleOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!data?.user?.email || !data?.user?.name) {
+      alert("User information is missing. Please login.");
+      return;
+    }
+
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    const phno = formData.get("phone") as string;
+    const address = formData.get("street") as string;
+    const city = formData.get("city") as string;
+
+    if (!cart || !cart.items || !cartItems || cartItems.length === 0) {
+      alert("Cart is empty or not loaded.");
+      return;
+    }
+
+    const parsedItems =
+      typeof cart.items === "string" ? JSON.parse(cart.items) : cart.items;
+
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: data.user.name,
+        email: data.user.email,
+        city,
+        address,
+        phno,
+        restaurant_id,
+        items: parsedItems ?? [],
+        totalPrice: totalPrice.toString(), // Ensure totalPrice is a string
+      }),
+    });
+
+    // Log the raw response text
+    const text = await res.text();
+    console.log("Raw response:", text);
+
+    // Attempt to parse the JSON
+    let orderData;
+    try {
+      orderData = JSON.parse(text);
+    } catch (error) {
+      console.error("Failed to parse response as JSON:", error);
+      console.error("Raw response:", text);
+      return;
+    }
+
+    if (!res.ok) {
+      console.error("Order submission failed:", orderData);
+      return;
+    }
+
+    console.log("Order response data:", orderData);
+
+    if (!res.ok) {
+      const err = await res.json();
+      console.error("❌ Order failed:", err);
+      alert("Order creation failed!");
+      return;
+    }
+
+    // Clear user's cart
+    await fetch(`/api/cart/${data.user.email}`, {
+      method: "DELETE",
+    });
+
+    alert("Order placed successfully!");
+    setCart(undefined);
+    setCartItems([]);
+    setTotalPrice(0);
+  };
+
   return (
     <div className="min-h-screen">
       <Header rest_id={restaurant_id} rest_name="Cart" />
@@ -111,48 +191,37 @@ const CartPage = ({ restaurant_id }: CartProps) => {
         <div className="px-4">
           {cartItems?.map((item) => {
             const getImageUrl = () => {
-              // If img is an object with numeric keys (incorrectly structured Uint8Array)
               if (typeof item.image === "object" && item.image !== null) {
-                // If img is an object with numeric keys (incorrectly structured Uint8Array)
                 if (!("type" in item.image)) {
-                  const byteArray = Object.values(item.image); // Extract numeric values
-                  const buffer = Buffer.from(byteArray); // Convert to Buffer
-
+                  const byteArray = Object.values(item.image);
+                  const buffer = Buffer.from(byteArray);
                   return `data:image/jpeg;base64,${buffer.toString("base64")}`;
                 }
-
-                // If img is a serialized Buffer object (e.g., from an API response)
                 if (item.image.type === "Buffer") {
                   return `data:image/jpeg;base64,${Buffer.from(
                     item.image.data
                   ).toString("base64")}`;
                 }
               }
-
-              // If img is a Uint8Array (direct Prisma format)
               if (item.image instanceof Uint8Array) {
                 return `data:image/jpeg;base64,${Buffer.from(
                   item.image
                 ).toString("base64")}`;
               }
-
-              // If img is already a Base64 string or URL
               if (typeof item.image === "string") return item.image;
             };
 
             const imageUrl = getImageUrl();
 
             return (
-              <>
-                <CartItem
-                  id={item.id}
-                  name={item.name}
-                  price={item.price}
-                  cart={cart?.id as string}
-                  item={item.id}
-                  img={imageUrl as string}
-                />
-              </>
+              <CartItem
+                id={item.id}
+                name={item.name}
+                price={item.price}
+                cart={cart?.id as string}
+                item={item.id}
+                img={imageUrl as string}
+              />
             );
           })}
           <div className="py-2 text-right pr-12 flex justify-center mt-6 items-center">
@@ -163,7 +232,66 @@ const CartPage = ({ restaurant_id }: CartProps) => {
 
         {/* Right Column with form */}
         <div className="bg-gray-100 p-6 rounded-2xl mx-3 lg:mx-8 shadow-2xl">
-          <UserForm />
+          <div>
+            <form className="space-y-4" onSubmit={handleOrder}>
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Phone number"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="street"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Street Address
+                </label>
+                <input
+                  type="text"
+                  id="street"
+                  name="street"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Street address"
+                />
+              </div>
+
+              <div className="flex space-x-4">
+                <div className="w-full">
+                  <label
+                    htmlFor="city"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-3"
+                    placeholder="City"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full p-3 bg-[#800000] text-white font-semibold rounded-lg mb-2"
+              >
+                Confirm
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 

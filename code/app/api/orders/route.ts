@@ -3,22 +3,18 @@ import prisma from "@/lib/connect";
 
 export async function POST(req: Request) {
     try {
+        console.log("ORDER FOR ORDER")
         const bodyText = await req.text();
-        console.log("Raw request body:", bodyText);
-
         const body = JSON.parse(bodyText || "{}");
-        console.log("Parsed order data:", body);
 
-        // Destructure fields
-        const { restaurant_id, email, name, city, address, phno } = body;
+        const { restaurant_id, email, name, city, address, phno, items, totalPrice } = body;
 
-        // Validate all required fields
-        if (!restaurant_id || !email || !name || !city || !phno || !address) {
-            console.error("Missing required fields:", { restaurant_id, email, name, address, phno, city });
+        // ✅ Validation
+        if (!restaurant_id || !email || !name || !city || !phno || !address || !items || !totalPrice) {
             return NextResponse.json({ error: "All fields are required" }, { status: 400 });
         }
 
-        // First, find the RestaurantCustomer
+        // ✅ Get restaurantCustomer
         const customer = await prisma.restaurantCustomer.findFirst({
             where: { email }
         });
@@ -27,31 +23,30 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Customer not found" }, { status: 404 });
         }
 
-        // Debug Prisma data before insertion
-        const orderData = {
-            restaurant: { connect: { restaurant_id } }, // Proper relation mapping
-            restaurantCustomer: { connect: { id: customer.id } }, // Correct relation mapping
-            name,
-            phno,
-            city,
-            email,
-            address,
-            status: "PENDING",
-            item: {},
-        };
-
+        // ✅ Create order
         const order = await prisma.order.create({
-            data: orderData,
+            data: {
+                restaurant: { connect: { restaurant_id } },
+                restaurantCustomer: { connect: { id: customer.id } },
+                name,
+                phno,
+                city,
+                email,
+                address,
+                items, // This is a string[]
+                totalPrice, // Stored as string
+                status: "PENDING",
+            },
         });
 
-
-        console.log("Created order:", order);
+        console.log("✅ Order created:", order);
         return NextResponse.json(order);
     } catch (error) {
-        console.error("Error creating order:", error instanceof Error ? error.message : String(error));
-        return NextResponse.json({ error: "Error creating order" }, { status: 500 });
+        console.error("❌ Error creating order:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
+
 
 
 

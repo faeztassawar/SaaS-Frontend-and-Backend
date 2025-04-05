@@ -105,58 +105,21 @@ export const POST = async (req: Request, { params }: { params: { restaurantCusto
 export const DELETE = async (req: Request, { params }: { params: { restaurantCustomerEmail: string } }) => {
   try {
     const { restaurantCustomerEmail } = params;
-    console.log("Removing from cart of:", restaurantCustomerEmail);
+    console.log("Removing cart of:", restaurantCustomerEmail);
 
     if (!restaurantCustomerEmail) {
       console.log("Email Issue");
       return NextResponse.json({ message: "Customer Email is required" }, { status: 400 });
     }
 
-    const body = await req.json();
-    if (!body.id) {
-      return NextResponse.json({ message: "Item ID is required" }, { status: 400 });
-    }
 
     // Find existing cart
-    const existingCart = await prisma.cart.findUnique({
+    const deleteCart = await prisma.cart.delete({
       where: { email: restaurantCustomerEmail },
-      select: { items: true } // Fetch existing items
     });
 
-    let cartItems: string[] = [];
 
-    // Check if items exist and are valid JSON before parsing
-    if (existingCart?.items && typeof existingCart.items === "string") {
-      try {
-        cartItems = JSON.parse(existingCart.items);
-        if (!Array.isArray(cartItems)) {
-          cartItems = []; // Ensure it's an array
-        }
-      } catch (error) {
-        console.error("Error parsing cart items:", error);
-        cartItems = []; // Reset to empty array on parsing failure
-      }
-    }
-
-    // Remove only the first occurrence of the item_id (to handle quantity reductions)
-    const itemIndex = cartItems.indexOf(body.id);
-    if (itemIndex !== -1) {
-      cartItems.splice(itemIndex, 1);
-    } else {
-      return NextResponse.json({ message: "Item not found in cart" }, { status: 404 });
-    }
-
-    // If cart is empty after deletion, remove all items
-    const updatedData = cartItems.length > 0 ? JSON.stringify(cartItems) : null;
-
-    // Update the cart in Prisma
-    const updatedCart = await prisma.cart.update({
-      where: { email: restaurantCustomerEmail },
-      data: { items: updatedData ?? "" } // Store as JSON string or null if empty
-    });
-
-    console.log("CART UPDATED AFTER DELETE:", updatedCart);
-    return NextResponse.json(updatedCart);
+    return NextResponse.json({ message: "Cart Deleted Successfully" }, { status: 200 });
   } catch (err) {
     console.error("Error deleting item from cart:", err);
     return NextResponse.json({ message: "Something went wrong!" }, { status: 500 });
