@@ -5,6 +5,7 @@ import Header from "@/app/template2/components/Header";
 import Footer from "@/app/template2/components/Footer";
 import UserTabs from "@/app/template2/components/UserTabs";
 import { useSession } from "next-auth/react";
+import { Order } from "@prisma/client";
 
 const fetchUserProfile = async (email: string) => {
   try {
@@ -30,7 +31,12 @@ const fetchUserProfile = async (email: string) => {
     };
   }
 };
-
+const getOrderStatusColor = (status: string) => {
+  if (status === "pending") return "bg-blue-500 text-white"; // Blue for pending
+  if (status === "accepted") return "bg-green-500 text-white"; // Green for accepted
+  if (status === "cancelled") return "bg-red-500 text-white"; // Red for cancelled
+  return "bg-gray-500 text-white"; // Default for other statuses
+};
 interface EditProfileProps {
   restaurant_id: string;
 }
@@ -46,6 +52,7 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const [orders, setOrders] = useState<Order[]>();
 
   const [editFirstName, setEditFirstName] = useState<boolean>(false);
   const [editLastName, setEditLastName] = useState<boolean>(false);
@@ -76,7 +83,19 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
         }
       }
     };
-
+    const getOrder = async () => {
+      const orderDetails = await fetch(
+        `/api/orders/?email=${session?.user?.email}`
+      );
+      const data = await orderDetails.json();
+      if (orderDetails.ok) {
+        setOrders(data);
+        console.log("Orders", data);
+      } else {
+        console.log("Error Fetching Orders");
+      }
+    };
+    getOrder();
     getUserData();
   }, [session, status]);
 
@@ -299,6 +318,31 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
               </div>
             </div>
           </form>
+
+          <div className="mt-6">
+            <h3 className="font-bold text-lg">Orders</h3>
+            <div className="mt-4">
+              {orders?.map((order, index) => (
+                <div
+                  key={order.id}
+                  className="flex justify-between items-center py-3 px-4 mb-3 rounded-lg shadow-md border border-gray-300 bg-white"
+                >
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-700">
+                      Order: {index + 1}
+                    </h4>
+                  </div>
+                  <div
+                    className={`font-semibold px-3 py-1 rounded-full ${getOrderStatusColor(
+                      order.status
+                    )}`}
+                  >
+                    {order.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <Footer restaurant_id={restaurant_id} />
