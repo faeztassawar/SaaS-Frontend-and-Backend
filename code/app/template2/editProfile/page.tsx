@@ -32,12 +32,12 @@ const fetchUserProfile = async (email: string) => {
   }
 };
 const getOrderStatusColor = (status: string) => {
-  if (status === "pending") return "bg-blue-500 text-white"; // Blue for pending
-  if (status === "accepted") return "bg-green-500 text-white"; // Green for accepted
-  if (status === "cancelled") return "bg-red-500 text-white"; // Red for cancelled
+  if (status === "PENDING") return "bg-blue-500 text-white"; // Blue for pending
+  if (status === "ACCEPTED") return "bg-green-500 text-white"; // Green for accepted
+  if (status === "CANCELLED") return "bg-red-500 text-white"; // Red for cancelled
   return "bg-gray-500 text-white"; // Default for other statuses
 };
-interface EditProfileProps {
+  interface EditProfileProps {
   restaurant_id: string;
 }
 

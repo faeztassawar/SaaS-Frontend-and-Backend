@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { RestaurantCustomer } from "@prisma/client";
 
-
 interface UserTabsProps {
   restaurant_id: string;
 }
@@ -16,6 +15,7 @@ const UserTabs = ({ restaurant_id }: UserTabsProps) => {
   const settingsPath = `/restaurants/${restaurant_id}/adminDashboard/settings`;
   const catPath = `/restaurants/${restaurant_id}/adminDashboard/categories`;
   const menuItemPath = `/restaurants/${restaurant_id}/adminDashboard/items`;
+  const orderManage = `/restaurants/${restaurant_id}/adminDashboard/orderManage`;
 
   const path = usePathname();
 
@@ -52,7 +52,6 @@ const UserTabs = ({ restaurant_id }: UserTabsProps) => {
       fetchData();
     }
   }, [status, data?.user?.email]);
-  
 
   return (
     <div className="flex mx-auto gap-2 mt-4 tabs rounded-full justify-center flex-wrap">
@@ -66,49 +65,48 @@ const UserTabs = ({ restaurant_id }: UserTabsProps) => {
       >
         Profile
       </Link>
-          <Link
-            href="/template2/orderManage"
-            className={
-              path === "/template2/orderManage"
-                ? "bg-[#800000] text-white rounded-full px-3 py-2"
-                : "bg-[#9f8881] text-white rounded-full px-3 py-2"
-            }
-          >
-            Manage Orders
-          </Link>
-          <Link
-            href={catPath}
-            className={
-              path === `/restaurants/${restaurant_id}/adminDashboard/categories`
-                ? "bg-[#800000] text-white rounded-full px-3 py-2"
-                : "bg-[#9f8881] text-white rounded-full px-3 py-2"
-            }
-          >
-            Categories
-          </Link>
-          <Link
-            href={menuItemPath}
-            className={
-              path === `/restaurants/${restaurant_id}/adminDashboard/items` ||
-              path === `/restaurants/${restaurant_id}/adminDashboard/items/add` ||
-              path === `/restaurants/${restaurant_id}/adminDashboard/items/edit`
-                ? "bg-[#800000] text-white rounded-full px-3 py-2"
-                : "bg-[#9f8881] text-white rounded-full px-3 py-2"
-            }
-          >
-            Menu Items
-          </Link>
-          <Link
-            href={userpath}
-            className={
-              path === "/template2/users" ||
-              path === "/template2/users/editUser"
-                ? "bg-[#800000] text-white rounded-full px-3 py-2"
-                : "bg-[#9f8881] text-white rounded-full px-3 py-2"
-            }
-          >
-            Users
-          </Link>
+      <Link
+        href={orderManage}
+        className={
+          path === `/restaurants/${restaurant_id}/adminDashboard/orderManage`
+            ? "bg-[#800000] text-white rounded-full px-3 py-2"
+            : "bg-[#9f8881] text-white rounded-full px-3 py-2"
+        }
+      >
+        Manage Orders
+      </Link>
+      <Link
+        href={catPath}
+        className={
+          path === `/restaurants/${restaurant_id}/adminDashboard/categories`
+            ? "bg-[#800000] text-white rounded-full px-3 py-2"
+            : "bg-[#9f8881] text-white rounded-full px-3 py-2"
+        }
+      >
+        Categories
+      </Link>
+      <Link
+        href={menuItemPath}
+        className={
+          path === `/restaurants/${restaurant_id}/adminDashboard/items` ||
+          path === `/restaurants/${restaurant_id}/adminDashboard/items/add` ||
+          path === `/restaurants/${restaurant_id}/adminDashboard/items/edit`
+            ? "bg-[#800000] text-white rounded-full px-3 py-2"
+            : "bg-[#9f8881] text-white rounded-full px-3 py-2"
+        }
+      >
+        Menu Items
+      </Link>
+      <Link
+        href={userpath}
+        className={
+          path === "/template2/users" || path === "/template2/users/editUser"
+            ? "bg-[#800000] text-white rounded-full px-3 py-2"
+            : "bg-[#9f8881] text-white rounded-full px-3 py-2"
+        }
+      >
+        Users
+      </Link>
 
       <Link
         href="/template2/Orders"

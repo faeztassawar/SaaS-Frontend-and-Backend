@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Footer from "@/app/template2/components/Footer";
 import Header from "@/app/template2/components/Header";
 import UserTabs from "@/app/template2/components/UserTabs";
@@ -6,9 +6,9 @@ import OrderRequest from "@/app/template2/components/OrderRequest";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { totalmem } from "os";
 
-interface OrderProps
-{
+interface OrderProps {
   restaurant_id: string;
 }
 
@@ -24,7 +24,7 @@ type Order = {
   totalPrice?: string;
 };
 
-const OrderManage = ({restaurant_id}: OrderProps) => {
+const OrderManage = ({ restaurant_id }: OrderProps) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
@@ -43,7 +43,9 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
     const fetchUserRestaurantId = async () => {
       if (session?.user?.email) {
         try {
-          const response = await fetch(`/api/session/restaurant/${session.user.email}`);
+          const response = await fetch(
+            `/api/session/restaurant/${session.user.email}`
+          );
           if (!response.ok) throw new Error("Failed to fetch restaurant ID");
           const data = await response.json();
           setRestaurantId(data.restaurant_id);
@@ -63,7 +65,7 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
       if (restaurantId && !initialFetchDone.current) {
         try {
           setIsLoading(true);
-          const res = await fetch(`/api/Orders?restaurant_id=${restaurantId}`);
+          const res = await fetch(`/api/orders/${restaurantId}`);
           if (!res.ok) throw new Error("Failed to fetch orders");
           const data = await res.json();
           setOrders(data);
@@ -81,11 +83,13 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
   const handleOrderUpdate = async (orderId: string, newStatus: string) => {
     try {
       setOrders((prevOrders) =>
-        prevOrders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order))
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
       );
 
       let updatedOrder;
-      
+
       if (newStatus === "CANCELLED") {
         const res = await fetch("/api/cancelOrder", {
           method: "POST",
@@ -100,7 +104,8 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: orderId, status: newStatus }),
         });
-        if (!res.ok) throw new Error(`Failed to update order status to ${newStatus}`);
+        if (!res.ok)
+          throw new Error(`Failed to update order status to ${newStatus}`);
         updatedOrder = await res.json();
       }
 
@@ -114,12 +119,13 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
 
   const pendingOrders = orders.filter((order) => order.status === "PENDING");
   const acceptedOrders = orders.filter((order) => order.status === "ACCEPTED");
-  const cancelledOrders = orders.filter((order) => order.status === "CANCELLED");
-  const progressOrders = orders.filter((order) => order.status === "IN PROGRESS");
+  const cancelledOrders = orders.filter(
+    (order) => order.status === "CANCELLED"
+  );
 
   return (
     <div>
-      <Header rest_id={restaurant_id}/>
+      <Header rest_id={restaurant_id} />
       <UserTabs restaurant_id={restaurant_id} />
       <div className="p-6 max-w-4xl mx-auto">
         <h2 className="text-2xl font-semibold mb-4">Manage Orders</h2>
@@ -130,25 +136,39 @@ const OrderManage = ({restaurant_id}: OrderProps) => {
             <section>
               <h3 className="text-xl font-medium mb-2">Pending Orders</h3>
               {pendingOrders.map((order) => (
-                <OrderRequest key={order.id} order={order} onUpdateStatus={handleOrderUpdate} />
+                <OrderRequest
+                  key={order.id}
+                  order={order}
+                  onUpdateStatus={handleOrderUpdate}
+                  status="pending"
+                  price={order.totalPrice ?? ""}
+                />
               ))}
             </section>
             <section>
               <h3 className="text-xl font-medium mt-4 mb-2">Accepted Orders</h3>
               {acceptedOrders.map((order) => (
-                <OrderRequest key={order.id} order={order} onUpdateStatus={handleOrderUpdate} />
+                <OrderRequest
+                  key={order.id}
+                  order={order}
+                  onUpdateStatus={handleOrderUpdate}
+                  status="accepted"
+                  price={order.totalPrice ?? ""}
+                />
               ))}
             </section>
             <section>
-              <h3 className="text-xl font-medium mt-4 mb-2">Orders In Progress</h3>
-              {progressOrders.map((order) => (
-                <OrderRequest key={order.id} order={order} onUpdateStatus={handleOrderUpdate} />
-              ))}
-            </section>
-            <section>
-              <h3 className="text-xl font-medium mt-4 mb-2">Cancelled Orders</h3>
+              <h3 className="text-xl font-medium mt-4 mb-2">
+                Cancelled Orders
+              </h3>
               {cancelledOrders.map((order) => (
-                <OrderRequest key={order.id} order={order} onUpdateStatus={handleOrderUpdate} />
+                <OrderRequest
+                  key={order.id}
+                  order={order}
+                  onUpdateStatus={handleOrderUpdate}
+                  status="cancelled"
+                  price={order.totalPrice ?? ""}
+                />
               ))}
             </section>
           </>

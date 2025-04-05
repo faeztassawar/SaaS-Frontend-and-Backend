@@ -37,6 +37,7 @@ model Order {
   restaurant_id        String             @db.ObjectId
   restaurant           Restaurant         @relation(fields: [restaurant_id], references: [restaurant_id])
   restaurantCustomer   RestaurantCustomer @relation(fields: [restaurantCustomerId], references: [id])
+  createdAt            DateTime           @default(now())
 
   @@map("order")
 }
@@ -124,12 +125,12 @@ model User {
 }
 
 model RestaurantOwner {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String  @unique
-  userId        String  @unique
-  restaurant_id String? @db.ObjectId
-  stripe_customer_id  String?
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  name               String?
+  email              String  @unique
+  userId             String  @unique
+  restaurant_id      String? @db.ObjectId
+  stripe_customer_id String?
 
   customerId String? @unique // Stripe customer ID, this will be important when we need to delete the subscription
 }
