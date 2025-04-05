@@ -11,9 +11,10 @@ type CartItemProp = {
   price: number | string;
   cart: string;
   item: string;
+  img: string;
 };
 
-const CartItem = ({ id, name, price, cart, item }: CartItemProp) => {
+const CartItem = ({ id, name, price, cart, item, img }: CartItemProp) => {
   const { data, status } = useSession();
   const handleDelete = async (id: string) => {
     const deletedItem = await fetch(`/api/cart/${data?.user?.email}`, {
@@ -32,10 +33,11 @@ const CartItem = ({ id, name, price, cart, item }: CartItemProp) => {
       toast.error("Failed to delete item!");
     }
   };
+
   return (
     <div className="max-w-md mx-auto flex items-center justify-center gap-4 mb-2 border-b py-2">
       <div className="w-24">
-        <Image src={PizzaImg} alt="pizza" width={100} height={100} />
+        <Image src={img as string} alt="pizza" width={100} height={100} />
       </div>
       <div className="grow">
         <div className="font-bold">{name}</div>

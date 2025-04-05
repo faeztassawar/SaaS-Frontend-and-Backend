@@ -40,6 +40,12 @@ export const POST = async (req: Request, { params }: { params: { restaurantCusto
       return NextResponse.json({ message: "Customer Email is required" }, { status: 400 });
     }
 
+    const customer = await prisma.restaurantCustomer.findUnique({
+      where: {
+        email: restaurantCustomerEmail
+      }
+    })
+
     const body = await req.json();
     if (!body.item_id) {
       return NextResponse.json({ message: "Item ID is required" }, { status: 400 });
@@ -47,7 +53,7 @@ export const POST = async (req: Request, { params }: { params: { restaurantCusto
 
     // Find existing cart
     const existingCart = await prisma.cart.findUnique({
-      where: { email: restaurantCustomerEmail },
+      where: { email: customer?.email },
       select: { items: true } // Fetch existing items
     });
 
@@ -74,9 +80,17 @@ export const POST = async (req: Request, { params }: { params: { restaurantCusto
     }
 
     // Update the cart in Prisma
-    const updatedCart = await prisma.cart.update({
+    const updatedCart = await prisma.cart.upsert({
       where: { email: restaurantCustomerEmail },
-      data: { items: JSON.stringify(cartItems) } // Store as JSON string
+      update: {
+        items: JSON.stringify(cartItems),
+      },
+      create: {
+        email: restaurantCustomerEmail,
+        name: customer?.name as string, // Replace with real data
+        restaurantCustomerId: customer?.id, // Must be a valid ObjectId string
+        items: JSON.stringify(cartItems),
+      },
     });
 
     console.log("CART UPDATED!", updatedCart);

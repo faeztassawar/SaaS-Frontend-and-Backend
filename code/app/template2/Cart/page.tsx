@@ -109,17 +109,52 @@ const CartPage = ({ restaurant_id }: CartProps) => {
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column for Pizza Items */}
         <div className="px-4">
-          {cartItems?.map((item) => (
-            <>
-              <CartItem
-                id={item.id}
-                name={item.name}
-                price={item.price}
-                cart={cart?.id as string}
-                item={item.id}
-              />
-            </>
-          ))}
+          {cartItems?.map((item) => {
+            const getImageUrl = () => {
+              // If img is an object with numeric keys (incorrectly structured Uint8Array)
+              if (typeof item.image === "object" && item.image !== null) {
+                // If img is an object with numeric keys (incorrectly structured Uint8Array)
+                if (!("type" in item.image)) {
+                  const byteArray = Object.values(item.image); // Extract numeric values
+                  const buffer = Buffer.from(byteArray); // Convert to Buffer
+
+                  return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+                }
+
+                // If img is a serialized Buffer object (e.g., from an API response)
+                if (item.image.type === "Buffer") {
+                  return `data:image/jpeg;base64,${Buffer.from(
+                    item.image.data
+                  ).toString("base64")}`;
+                }
+              }
+
+              // If img is a Uint8Array (direct Prisma format)
+              if (item.image instanceof Uint8Array) {
+                return `data:image/jpeg;base64,${Buffer.from(
+                  item.image
+                ).toString("base64")}`;
+              }
+
+              // If img is already a Base64 string or URL
+              if (typeof item.image === "string") return item.image;
+            };
+
+            const imageUrl = getImageUrl();
+
+            return (
+              <>
+                <CartItem
+                  id={item.id}
+                  name={item.name}
+                  price={item.price}
+                  cart={cart?.id as string}
+                  item={item.id}
+                  img={imageUrl as string}
+                />
+              </>
+            );
+          })}
           <div className="py-2 text-right pr-12 flex justify-center mt-6 items-center">
             <span className="text-gray-500">Total:</span>
             <span className="font-bold text-lg pl-2">$ {totalPrice}</span>
@@ -132,7 +167,7 @@ const CartPage = ({ restaurant_id }: CartProps) => {
         </div>
       </div>
 
-      <Footer restaurant_id={restaurant_id}/>
+      <Footer restaurant_id={restaurant_id} />
     </div>
   );
 };
