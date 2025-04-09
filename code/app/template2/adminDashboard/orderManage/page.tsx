@@ -142,6 +142,8 @@ const OrderManage = ({ restaurant_id }: OrderProps) => {
                   onUpdateStatus={handleOrderUpdate}
                   status="pending"
                   price={order.totalPrice ?? ""}
+                  phone={order.phno}
+                  address={order.address}
                 />
               ))}
             </section>
@@ -154,6 +156,8 @@ const OrderManage = ({ restaurant_id }: OrderProps) => {
                   onUpdateStatus={handleOrderUpdate}
                   status="accepted"
                   price={order.totalPrice ?? ""}
+                  phone={order.phno}
+                  address={order.address}
                 />
               ))}
             </section>
@@ -168,6 +172,8 @@ const OrderManage = ({ restaurant_id }: OrderProps) => {
                   onUpdateStatus={handleOrderUpdate}
                   status="cancelled"
                   price={order.totalPrice ?? ""}
+                  phone={order.phno}
+                  address={order.address}
                 />
               ))}
             </section>
