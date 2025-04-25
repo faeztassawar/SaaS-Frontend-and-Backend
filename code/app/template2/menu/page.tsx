@@ -70,7 +70,7 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
         setCategories(categoryData);
         // Fetch items for each category
         const itemsPromises = categoryData.map(async (category) => {
-          const itemResponse = await fetch(`/api/items/${category.id}`);
+          const itemResponse = await fetch(`/api/items/category/${category.id}`);
           if (!itemResponse.ok) {
             throw new Error(
               `Failed to fetch items for category ${category.id}`

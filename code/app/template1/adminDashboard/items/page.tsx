@@ -58,7 +58,7 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
 
         const itemsPromises = categoriesData.map(async (cat: Category) => {
           const itemsRes = await fetch(
-            `http://localhost:3000/api/items/${cat.id}`
+            `http://localhost:3000/api/items/category/${cat.id}`
           );
           if (itemsRes.ok) {
             const itemsData = await itemsRes.json();
