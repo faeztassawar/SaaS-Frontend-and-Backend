@@ -30,6 +30,7 @@ model Order {
   email                String
   city                 String
   phno                 String
+  date                 String
   address              String
   status               String
   restaurantCustomerId String             @db.ObjectId

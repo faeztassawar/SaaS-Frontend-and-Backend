@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
+import { json } from "stream/consumers";
 
 interface HeaderProps {
   rest_id?: string;
@@ -11,7 +12,7 @@ interface HeaderProps {
   isAdmin?: boolean; // ✅ Add this
 }
 
-const Header = ({ rest_id = "", rest_name = "", isAdmin }: HeaderProps) => {
+const Header = ({ rest_id, rest_name, isAdmin }: HeaderProps) => {
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
   const [restaurantId, setRestaurantId] = useState(rest_id);
@@ -36,7 +37,7 @@ const Header = ({ rest_id = "", rest_name = "", isAdmin }: HeaderProps) => {
 
         const jsonData = await response.json();
         if (jsonData?.restaurant_id) {
-          if (isAdmin) setAllowed(true);
+          if (jsonData?.isAdmin) setAllowed(true);
           setRestaurantId(jsonData.restaurant_id);
         }
       } catch (error) {
@@ -62,7 +63,7 @@ const Header = ({ rest_id = "", rest_name = "", isAdmin }: HeaderProps) => {
         <Link href={menuPath}>Menu</Link>
         <Link href={aboutPath}>About</Link>
 
-        {isAdmin ? (
+        {allowed ? (
           <Link href={dashboardPath}>Dashboard</Link>
         ) : (
           <Link href={profilePath}>Profile</Link>

@@ -144,6 +144,7 @@ const OrderManage = ({ restaurant_id }: OrderProps) => {
                   price={order.totalPrice ?? ""}
                   phone={order.phno}
                   address={order.address}
+                  date={order.date}
                 />
               ))}
             </section>
@@ -158,6 +159,7 @@ const OrderManage = ({ restaurant_id }: OrderProps) => {
                   price={order.totalPrice ?? ""}
                   phone={order.phno}
                   address={order.address}
+                  date={order.date}
                 />
               ))}
             </section>
@@ -174,6 +176,7 @@ const OrderManage = ({ restaurant_id }: OrderProps) => {
                   price={order.totalPrice ?? ""}
                   phone={order.phno}
                   address={order.address}
+                  date={order.date}
                 />
               ))}
             </section>

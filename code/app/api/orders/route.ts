@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/connect";
+import { now } from "next-auth/client/_utils";
 
 export async function POST(req: Request) {
     try {
@@ -23,6 +24,10 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Customer not found" }, { status: 404 });
         }
 
+        const date = new Date();
+        const dateStr = date.toISOString().split("T")[0];
+        const dateTime = date.toISOString().split("T")[1];
+
         // ✅ Create order
         const order = await prisma.order.create({
             data: {
@@ -33,6 +38,7 @@ export async function POST(req: Request) {
                 city,
                 email,
                 address,
+                date: dateStr + " " + dateTime,
                 items, // This is a string[]
                 totalPrice, // Stored as string
                 status: "PENDING",

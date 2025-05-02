@@ -70,7 +70,9 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
         setCategories(categoryData);
         // Fetch items for each category
         const itemsPromises = categoryData.map(async (category) => {
-          const itemResponse = await fetch(`/api/items/category/${category.id}`);
+          const itemResponse = await fetch(
+            `/api/items/category/${category.id}`
+          );
           if (!itemResponse.ok) {
             throw new Error(
               `Failed to fetch items for category ${category.id}`
@@ -141,7 +143,9 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
 
   return (
     <div className="min-h-screen">
-      <div className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}>
+      <div
+        className={`${isModalOpen ? "blur-sm" : ""} transition duration-300`}
+      >
         <Header rest_id={restaurant_id} rest_name="Menu" />
 
         {/* Menu Sections */}
@@ -193,7 +197,7 @@ export default function MenuPage({ id, restaurant_id }: MenuProps) {
       )}
 
       <ToastContainer />
-      <Footer restaurant_id={restaurant_id}/>
+      <Footer restaurant_id={restaurant_id} />
     </div>
   );
 }

@@ -15,6 +15,7 @@ interface OrderRequestProps {
   price: string;
   phone: string;
   address: string;
+  date: string;
 }
 
 const OrderRequest: React.FC<OrderRequestProps> = ({
@@ -24,6 +25,7 @@ const OrderRequest: React.FC<OrderRequestProps> = ({
   price,
   phone,
   address,
+  date,
 }) => {
   return (
     <div className="flex bg-gray-50 mb-2 p-4 rounded-lg items-center gap-10">
@@ -36,6 +38,7 @@ const OrderRequest: React.FC<OrderRequestProps> = ({
           <div className="text-gray-500 text-xs">Price: {price}</div>
           <div className="text-gray-500 text-xs">Phone: {phone}</div>
           <div className="text-gray-500 text-xs">Address: {address}</div>
+          <div className="text-gray-500 text-xs">Date: {date}</div>
         </div>
       </div>
       <div className="justify-end flex gap-2 items-center whitespace-nowrap">
