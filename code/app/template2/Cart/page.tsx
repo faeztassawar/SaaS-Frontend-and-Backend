@@ -64,7 +64,7 @@ const CartPage = ({ restaurant_id }: CartProps) => {
       console.log("🛒 Item Counts:", itemCounts);
 
       // 🔹 Fetch unique items from DB
-      const allItemsRes = await fetch(`/api/items`, {
+      const allItemsRes = await fetch(`/api/items/cartItems`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: Object.keys(itemCounts) }), // Send only unique IDs

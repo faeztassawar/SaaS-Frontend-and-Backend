@@ -17,8 +17,21 @@ type RestaurantProps = {
 export default function Home({ restaurant_id }: RestaurantProps) {
   const { data, status } = useSession();
   const [restaurantData, setRestaurantData] = useState<Restaurant | null>(null);
+  const [isAdmin, setAdmin] = useState<Boolean>(false);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const email = data?.user?.email;
+      if (email) {
+        try {
+          const response = await fetch(`/api/session/restaurant/${email}`);
+          const jsonData = await response.json();
+          setAdmin(jsonData?.isAdmin);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }
+    };
     const fetchRestaurant = async () => {
       try {
         const res = await fetch(`/api/restaurant/${restaurant_id}`);
@@ -33,10 +46,9 @@ export default function Home({ restaurant_id }: RestaurantProps) {
       }
     };
 
-    if (restaurant_id) {
-      fetchRestaurant();
-    }
-  }, [restaurant_id]); // ✅ Correct dependency array
+    fetchRestaurant();
+    fetchData();
+  }, [status]); // ✅ Correct dependency array
 
   // Set cookie for restaurant_id
   useEffect(() => {
@@ -46,16 +58,25 @@ export default function Home({ restaurant_id }: RestaurantProps) {
   }, [restaurant_id]);
 
   const timing = restaurantData
-    ? `${restaurantData.opentiming || "9:00 AM"} to ${restaurantData.closetiming || "10:00 PM"}`
+    ? `${restaurantData.opentiming || "9:00 AM"} to ${
+        restaurantData.closetiming || "10:00 PM"
+      }`
     : "Opening Hours Not Available";
 
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header Section */}
-      <Header rest_id={restaurantData?.restaurant_id || ""} rest_name={restaurantData?.name || ""} />
+      <Header
+        rest_id={restaurantData?.restaurant_id || ""}
+        rest_name={restaurantData?.name || ""}
+        isAdmin={isAdmin as boolean}
+      />
 
       {/* Hero Section */}
-      <Hero line={restaurantData?.desc || "Welcome to our restaurant!"} />
+      <Hero
+        restaurant_id={restaurant_id}
+        line={restaurantData?.desc || "Welcome to our restaurant!"}
+      />
 
       {/* About Us Section */}
       {restaurantData && (
@@ -63,13 +84,20 @@ export default function Home({ restaurant_id }: RestaurantProps) {
           <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mt-8 sm:mt-10 lg:my-16 border border-gray-300 rounded-lg p-6 max-w-5xl mx-auto shadow-lg bg-white">
             {/* Image Section */}
             <div className="w-full lg:w-1/2 flex justify-center">
-              <Image src={imgBg} alt="Our Story" className="max-w-full h-auto rounded-lg shadow-md" />
+              <Image
+                src={imgBg}
+                alt="Our Story"
+                className="max-w-full h-auto rounded-lg shadow-md"
+              />
             </div>
 
             {/* About Us Content */}
             <div className="w-full lg:w-1/2 text-gray-700 flex flex-col gap-4 text-center lg:text-left">
               <SectionHeader subHeader="OUR STORY" mainHeader="About Us" />
-              <p className="text-base">{restaurantData.about_us || "We serve the best food with love and quality!"}</p>
+              <p className="text-base">
+                {restaurantData.about_us ||
+                  "We serve the best food with love and quality!"}
+              </p>
             </div>
           </div>
 
@@ -84,7 +112,10 @@ export default function Home({ restaurant_id }: RestaurantProps) {
           <div className="text-center mt-10 sm:mt-20 mb-8">
             <SectionHeader subHeader="DON'T HESITATE" mainHeader="Contact Us" />
             <div className="mt-8">
-              <a href={`tel:${restaurantData.phone}`} className="text-2xl sm:text-3xl lg:text-4xl text-gray-800 hover:underline">
+              <a
+                href={`tel:${restaurantData.phone}`}
+                className="text-2xl sm:text-3xl lg:text-4xl text-gray-800 hover:underline"
+              >
                 {restaurantData.phone || "Contact number not available"}
               </a>
             </div>

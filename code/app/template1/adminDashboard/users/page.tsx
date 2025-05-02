@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 
 type userProps = {
   users: RestaurantCustomer[];
+  restaurantId: string;
 };
 
 const handleDelete = async (item: RestaurantCustomer) => {

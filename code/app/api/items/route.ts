@@ -103,3 +103,4 @@ export const PUT = async (req: Request) => {
     return NextResponse.json({ message: "Something went wrong!" }, { status: 500 })
   }
 }
+

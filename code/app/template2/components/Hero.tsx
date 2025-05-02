@@ -6,9 +6,11 @@ import Link from "next/link";
 
 type HeroProps = {
   line: string | undefined;
+  restaurant_id: string;
 };
 
-const Hero = ({ line }: HeroProps) => {
+const Hero = ({ line, restaurant_id }: HeroProps) => {
+  const path = `/restaurants/${restaurant_id}/menu`;
   return (
     <div className="flex justify-evenly items-center py-10 px-4">
       <div className="flex flex-col gap-4">
@@ -21,7 +23,7 @@ const Hero = ({ line }: HeroProps) => {
           <span className="text-primaryTem2 font-bold">Food</span>
         </h1>
         <p className="text-gray-500 text-sm">{}</p>
-        <Link href="/template2/menu">
+        <Link href={path}>
           <button className="mt-4 uppercase bg-primaryTem2 text-center text-white flex gap-2 px-3 py-3 rounded-full items-center self-start">
             Order Now
             <FiArrowRightCircle />

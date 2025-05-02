@@ -38,7 +38,7 @@ const page = async ({ params }: never) => {
   const Template = await loadTemplate(restaurant?.tempModel);
   console.log("USers are: ", RestaurantUsers);
   // Pass the restaurant object to the template
-  return <Template users={RestaurantUsers} />;
+  return <Template restaurantId={restaurant_id} users={RestaurantUsers} />;
 };
 
 export default page;

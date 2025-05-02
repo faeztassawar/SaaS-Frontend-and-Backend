@@ -11,11 +11,10 @@ interface HeaderProps {
   isAdmin?: boolean; // ✅ Add this
 }
 
-const Header = ({ rest_id = "", rest_name = ""}: HeaderProps) => {
-
+const Header = ({ rest_id = "", rest_name = "", isAdmin }: HeaderProps) => {
   const { data, status } = useSession();
   const [allowed, setAllowed] = useState(false);
-  const [restaurantId, setRestaurantId] = useState(rest_id)
+  const [restaurantId, setRestaurantId] = useState(rest_id);
 
   // Dynamic paths based on `rest_id`
   const homePath = `/restaurants/${rest_id}`;
@@ -37,8 +36,8 @@ const Header = ({ rest_id = "", rest_name = ""}: HeaderProps) => {
 
         const jsonData = await response.json();
         if (jsonData?.restaurant_id) {
-          setAllowed(true)
-          setRestaurantId(jsonData.restaurant_id)
+          if (isAdmin) setAllowed(true);
+          setRestaurantId(jsonData.restaurant_id);
         }
       } catch (error) {
         console.error("Error fetching session data:", error);
@@ -63,7 +62,7 @@ const Header = ({ rest_id = "", rest_name = ""}: HeaderProps) => {
         <Link href={menuPath}>Menu</Link>
         <Link href={aboutPath}>About</Link>
 
-        {status === "authenticated" && allowed ? (
+        {isAdmin ? (
           <Link href={dashboardPath}>Dashboard</Link>
         ) : (
           <Link href={profilePath}>Profile</Link>

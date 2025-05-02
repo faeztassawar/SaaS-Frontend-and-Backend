@@ -22,6 +22,21 @@ export const DELETE = async (req: Request) => {
             })
         })
 
+        const orders = await prisma.order.findMany({
+            where: {
+                restaurantCustomerId: body.id,
+                restaurant_id: body.restaurant_id
+            }
+        })
+
+        orders.forEach(async (item) => {
+            const res = await prisma.order.delete({
+                where: {
+                    id: item.id
+                }
+            })
+        })
+
 
         const customer = await prisma.restaurantCustomer.delete({
             where: {
@@ -42,7 +57,6 @@ export const POST = async (req: Request) => {
     const cookiesData = await cookies()
     const adminValue = cookiesData.get("admin")?.value
     console.log("ADMIN VALUE: ", adminValue)
-    console.log(" MAKEEEEEEEEE ADMINNNNN ")
     try {
         const body = await req.json()
 

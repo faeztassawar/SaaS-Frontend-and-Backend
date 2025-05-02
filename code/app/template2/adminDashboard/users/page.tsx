@@ -13,11 +13,12 @@ import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
 type userProps = {
-  users: RestaurantCustomer[],
-  restaurantId: string
+  users: RestaurantCustomer[];
+  restaurantId: string;
 };
 
 const handleDelete = async (item: RestaurantCustomer) => {
+  console.log("Deleting", item);
   await fetch(`/api/restaurantUsers`, {
     method: "DELETE",
     body: JSON.stringify({
@@ -28,6 +29,7 @@ const handleDelete = async (item: RestaurantCustomer) => {
 };
 
 const handleAdmin = async (item: RestaurantCustomer) => {
+  console.log("Handling Admin");
   await fetch(`/api/restaurantUsers`, {
     method: "POST",
     body: JSON.stringify({
@@ -75,7 +77,9 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
 
     const result = await MySwal.fire({
       title: <p className="text-2xl">Are you sure?</p>,
-      text: `You are about to ${action.replace(/([A-Z])/g, ' $1').toLowerCase()}.`,
+      text: `You are about to ${action
+        .replace(/([A-Z])/g, " $1")
+        .toLowerCase()}.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -98,7 +102,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header rest_id={restaurantId}/>
+      <Header rest_id={restaurantId} />
       <div className="text-center mt-8 mb-12">
         <UserTabs restaurant_id={restaurantId} />
       </div>
@@ -127,19 +131,29 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
                   )}
                   {!user.isAdmin && !user.isOwner && (
                     <button
-                      onClick={() => confirmAction(user, "makeAdmin")}
+                      onClick={async () => {
+                        document.cookie = "admin=true;path=/; SameSite=Lax";
+                        await confirmAction(user, "makeAdmin");
+                        router.refresh();
+                      }}
                       className="button bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700"
                     >
                       Make Admin
                     </button>
                   )}
-                  {user.isAdmin && !user.isOwner && (
+                  {user.isAdmin && !user.isOwner ? (
                     <button
-                      onClick={() => confirmAction(user, "removeAdmin")}
+                      onClick={async () => {
+                        document.cookie = "admin=false;path=/; SameSite=Lax";
+                        await confirmAction(user, "removeAdmin");
+                        router.refresh();
+                      }}
                       className="button bg-yellow-600 text-white px-4 py-2 rounded font-semibold hover:bg-yellow-700"
                     >
                       Remove Admin
                     </button>
+                  ) : (
+                    <></>
                   )}
                   {user.isOwner && (
                     <span className="font-semibold text-gray-700">OWNER</span>
@@ -152,7 +166,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
           )}
         </div>
       </div>
-      <Footer restaurant_id={restaurantId}/>
+      <Footer restaurant_id={restaurantId} />
     </div>
   );
 };

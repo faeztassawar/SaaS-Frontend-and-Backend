@@ -37,7 +37,7 @@ const getOrderStatusColor = (status: string) => {
   if (status === "CANCELLED") return "bg-red-500 text-white"; // Red for cancelled
   return "bg-gray-500 text-white"; // Default for other statuses
 };
-  interface EditProfileProps {
+interface EditProfileProps {
   restaurant_id: string;
 }
 
@@ -53,7 +53,7 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [orders, setOrders] = useState<Order[]>();
-
+  const [isAdmin, setAdmin] = useState<Boolean>();
   const [editFirstName, setEditFirstName] = useState<boolean>(false);
   const [editLastName, setEditLastName] = useState<boolean>(false);
   const [editPhone, setEditPhone] = useState<boolean>(false);
@@ -63,6 +63,18 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const email = session?.user?.email;
+      if (email) {
+        try {
+          const response = await fetch(`/api/session/restaurant/${email}`);
+          const jsonData = await response.json();
+          setAdmin(jsonData?.isAdmin);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }
+    };
     const getUserData = async () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
@@ -97,6 +109,7 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
     };
     getOrder();
     getUserData();
+    fetchData();
   }, [session, status]);
 
   const handleUpdateName = async (
@@ -145,10 +158,18 @@ const EditProfile = ({ restaurant_id }: EditProfileProps) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <Header isAdmin={true} rest_name="Profile" />
-      <div className="mt-8">
-        <UserTabs restaurant_id={restaurant_id} />
-      </div>
+      <Header
+        isAdmin={isAdmin as boolean}
+        rest_name="Profile"
+        rest_id={restaurant_id}
+      />
+      {isAdmin ? (
+        <div className="mt-8">
+          <UserTabs restaurant_id={restaurant_id} />
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className="flex-grow flex justify-center items-center mt-7">
         <div className="p-8 rounded-lg shadow-2xl w-1/3 bg-gray-100 mt-5">
