@@ -133,19 +133,44 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
                 </th>
               </tr>
               <tr className="flex justify-between p-4 border-b border-gray-600">
-                <th className="text-xl font-semibold w-[25%] text-left">Name</th>
-                <th className="text-xl font-semibold w-[25%] text-center">Price</th>
-                <th className="text-xl font-semibold w-[25%] text-center">Category</th>
-                <th className="text-xl font-semibold w-[25%] text-right">Action</th>
+                <th className="text-xl font-semibold w-[25%] text-left">
+                  Name
+                </th>
+                <th className="text-xl font-semibold w-[25%] text-center">
+                  Price
+                </th>
+                <th className="text-xl font-semibold w-[25%] text-center">
+                  Category
+                </th>
+                <th className="text-xl font-semibold w-[25%] text-right">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
               {itemsList.map((item) => (
-                <tr key={item.id} className="flex justify-between p-4 hover:bg-[#283d6f] transition-colors">
-                  <td className="text-xl font-semibold w-[25%] truncate">{item.name}</td>
-                  <td className="text-xl font-semibold w-[25%] text-center">{item.price}</td>
-                  <td className="text-xl font-semibold w-[25%] text-center truncate">{item.desc}</td>
+                <tr
+                  key={item.id}
+                  className="flex justify-between p-4 hover:bg-[#283d6f] transition-colors"
+                >
+                  <td className="text-xl font-semibold w-[25%] truncate">
+                    {item.name}
+                  </td>
+                  <td className="text-xl font-semibold w-[25%] text-center">
+                    {item.price}
+                  </td>
+                  <td className="text-xl font-semibold w-[25%] text-center truncate">
+                    {item.desc}
+                  </td>
                   <td className="text-xl font-semibold w-[25%] text-right">
+                    <button className="px-4 py-2 mx-2 hover:scale-110 transition-all bg-green-700 rounded">
+                      <Link
+                        className=""
+                        href={`/restaurants/${restaurantId}/adminDashboard/items/edit/${item.id}`}
+                      >
+                        Edit
+                      </Link>
+                    </button>
                     <button
                       onClick={() => confirmDelete(item)}
                       className="px-4 py-2 hover:scale-110 bg-red-700 transition-all rounded"
@@ -162,7 +187,11 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
 
       {/* Delete Confirmation Modal */}
       <Transition.Root show={isDeleteOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setIsDeleteOpen(false)}>
+        <Dialog
+          as="div"
+          className="relative z-50"
+          onClose={() => setIsDeleteOpen(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-200"
@@ -186,7 +215,9 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-[#172340] border border-gray-600 p-6 text-white shadow-xl transition-all">
-                <Dialog.Title className="text-2xl font-bold mb-4">Are you sure?</Dialog.Title>
+                <Dialog.Title className="text-2xl font-bold mb-4">
+                  Are you sure?
+                </Dialog.Title>
                 <Dialog.Description className="mb-6 text-gray-300">
                   You won't be able to revert this action!
                 </Dialog.Description>
