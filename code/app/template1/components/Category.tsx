@@ -16,7 +16,7 @@ const Category = ({ cat_id, cat_name }: CategoryProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/items/${cat_id}`); // API endpoint for fetching items by category
+        const response = await fetch(`/api/items/category/${cat_id}`); // API endpoint for fetching items by category
         const jsonData: Item[] = await response.json();
         setItems(jsonData);
       } catch (error) {

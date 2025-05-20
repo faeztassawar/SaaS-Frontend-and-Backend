@@ -3,9 +3,8 @@ import DSearch from "@/app/template1/components/DSearch";
 import { Category, Item } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import React, { useEffect, useState, Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import { toast } from "react-hot-toast";
 
 type ItemProps = {
@@ -26,9 +25,7 @@ const handleDelete = async (item: Item) => {
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to delete category");
-    }
+    if (!response.ok) throw new Error("Failed to delete item");
 
     return response.json();
   } catch (error) {
@@ -36,7 +33,6 @@ const handleDelete = async (item: Item) => {
     throw error;
   }
 };
-const MySwal = withReactContent(Swal);
 
 const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
   const router = useRouter();
@@ -44,36 +40,26 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
   const [itemsList, setItemsList] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const categoriesRes = await fetch(
-        `http://localhost:3000/api/categories/${menuId}`
+      const categoriesRes = await fetch(`/api/categories/${menuId}`);
+      if (!categoriesRes.ok) throw new Error("Failed to fetch categories");
+
+      const categoriesData = await categoriesRes.json();
+      setCategories(categoriesData);
+
+      const itemsPromises = categoriesData.map((cat: Category) =>
+        fetch(`/api/items/category/${cat.id}`).then((res) =>
+          res.ok ? res.json() : []
+        )
       );
 
-      if (categoriesRes.ok) {
-        const categoriesData = await categoriesRes.json();
-        console.log("Categories Data:", categoriesData);
-        setCategories(categoriesData);
-
-        const itemsPromises = categoriesData.map(async (cat: Category) => {
-          const itemsRes = await fetch(
-            `http://localhost:3000/api/items/category/${cat.id}`
-          );
-          if (itemsRes.ok) {
-            const itemsData = await itemsRes.json();
-            return itemsData;
-          } else {
-            console.error(`Failed to fetch items for category ${cat.id}`);
-            return [];
-          }
-        });
-
-        const allItems = (await Promise.all(itemsPromises)).flat();
-        setItemsList(allItems);
-      } else {
-        console.error("Failed to fetch categories");
-      }
+      const allItems = (await Promise.all(itemsPromises)).flat();
+      setItemsList(allItems);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -84,62 +70,52 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
   useEffect(() => {
     fetchData();
   }, [menuId]);
-  const confirmDelete = async (item: Item) => {
-    MySwal.fire({
-      title: <p className="text-2xl">Are you sure?</p>,
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-      background: "#172340",
-      color: "#fff",
-      customClass: {
-        popup: "rounded-xl border-gray-600",
-        confirmButton: "bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg",
-        cancelButton: "bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg mr-3",
-      },
-    }).then(async (result: any) => {
-      if (result.isConfirmed) {
-        try {
-          await handleDelete(item);
-          toast.success("Category deleted successfully!", {
-            position: "top-right",
-            style: {
-              background: "#172340",
-              color: "#fff",
-              border: "1px solid #283d6f",
-              borderRadius: "12px",
-            },
-          });
-          await fetchData();
-        } catch (error) {
-          toast.error("Failed to delete category", {
-            position: "top-right",
-            style: {
-              background: "#450a0a",
-              color: "#fff",
-              border: "1px solid #7f1d1d",
-              borderRadius: "12px",
-            },
-          });
-        }
-      }
-    });
+
+  const confirmDelete = (item: Item) => {
+    setItemToDelete(item);
+    setIsDeleteOpen(true);
   };
+
+  const proceedDelete = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      await handleDelete(itemToDelete);
+      toast.success("Item deleted successfully!", {
+        style: {
+          background: "#172340",
+          color: "#fff",
+          border: "1px solid #283d6f",
+          borderRadius: "12px",
+        },
+      });
+      await fetchData();
+    } catch {
+      toast.error("Failed to delete item", {
+        style: {
+          background: "#450a0a",
+          color: "#fff",
+          border: "1px solid #7f1d1d",
+          borderRadius: "12px",
+        },
+      });
+    } finally {
+      setIsDeleteOpen(false);
+      setItemToDelete(null);
+    }
+  };
+
   const pathName = `/restaurants/${restaurantId}/adminDashboard/items/add`;
+
   return (
     <div className="p-5">
       <div className="flex justify-between items-center mb-5">
         <DSearch placeholder="Search for a product .." />
-        <Link href="/template1/adminDashboard/products/add">
-          <Link
-            href={pathName}
-            className="px-4 py-2 bg-[#1c9cea] text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Add new
-          </Link>
+        <Link
+          href={pathName}
+          className="px-4 py-2 bg-[#1c9cea] text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          Add new
         </Link>
       </div>
 
@@ -157,46 +133,25 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
                 </th>
               </tr>
               <tr className="flex justify-between p-4 border-b border-gray-600">
-                <th className="text-xl font-semibold w-[25%] text-left">
-                  Name
-                </th>
-                <th className="text-xl font-semibold w-[25%] text-center">
-                  Price
-                </th>
-                <th className="text-xl font-semibold w-[25%] text-center">
-                  Category
-                </th>
-                <th className="text-xl font-semibold w-[25%] text-right">
-                  Action
-                </th>
+                <th className="text-xl font-semibold w-[25%] text-left">Name</th>
+                <th className="text-xl font-semibold w-[25%] text-center">Price</th>
+                <th className="text-xl font-semibold w-[25%] text-center">Category</th>
+                <th className="text-xl font-semibold w-[25%] text-right">Action</th>
               </tr>
             </thead>
             <tbody>
-              {itemsList?.map((item) => (
-                <tr
-                  key={item.id}
-                  className="flex justify-between p-4 hover:bg-[#283d6f] transition-colors"
-                >
-                  <td className="text-xl font-semibold w-[25%] truncate">
-                    {item.name}
-                  </td>
-                  <td className="text-xl font-semibold w-[25%] text-center">
-                    {item.price}
-                  </td>
-                  <td className="text-xl font-semibold w-[25%] text-center truncate">
-                    {item.desc}
-                  </td>
+              {itemsList.map((item) => (
+                <tr key={item.id} className="flex justify-between p-4 hover:bg-[#283d6f] transition-colors">
+                  <td className="text-xl font-semibold w-[25%] truncate">{item.name}</td>
+                  <td className="text-xl font-semibold w-[25%] text-center">{item.price}</td>
+                  <td className="text-xl font-semibold w-[25%] text-center truncate">{item.desc}</td>
                   <td className="text-xl font-semibold w-[25%] text-right">
-                    <div className="flex gap-4 justify-end">
-                      <button
-                        onClick={() => {
-                          confirmDelete(item);
-                        }}
-                        className="px-4 py-2 hover:scale-110 bg-red-700 transition-all rounded"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => confirmDelete(item)}
+                      className="px-4 py-2 hover:scale-110 bg-red-700 transition-all rounded"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -204,6 +159,56 @@ const ItemPage = ({ menuId, restaurantId }: ItemProps) => {
           </table>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Transition.Root show={isDeleteOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={() => setIsDeleteOpen(false)}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-200"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-100"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-[#172340] border border-gray-600 p-6 text-white shadow-xl transition-all">
+                <Dialog.Title className="text-2xl font-bold mb-4">Are you sure?</Dialog.Title>
+                <Dialog.Description className="mb-6 text-gray-300">
+                  You won't be able to revert this action!
+                </Dialog.Description>
+                <div className="flex justify-end gap-3">
+                  <button
+                    className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg"
+                    onClick={() => setIsDeleteOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg"
+                    onClick={proceedDelete}
+                  >
+                    Yes, delete it
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </div>
   );
 };

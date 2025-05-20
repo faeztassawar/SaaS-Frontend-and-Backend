@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import Header from "@/app/template2/components/Header";
 import Footer from "@/app/template2/components/Footer";
 import UserTabs from "@/app/template2/components/UserTabs";
 import { RestaurantCustomer } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-
-const MySwal = withReactContent(Swal);
+import { Dialog, Transition } from "@headlessui/react";
 
 type userProps = {
   users: RestaurantCustomer[];
@@ -44,6 +41,13 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
   const router = useRouter();
   const [fetchedUsers, setFetchedUsers] = useState<RestaurantCustomer[]>([]);
 
+  // For Headless UI Dialog modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentAction, setCurrentAction] = useState<
+    "delete" | "makeAdmin" | "removeAdmin" | null
+  >(null);
+  const [currentUser, setCurrentUser] = useState<RestaurantCustomer | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       const email = data?.user?.email;
@@ -68,36 +72,57 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
     fetchData();
   }, [status, data, router]);
 
-  const confirmAction = async (item: RestaurantCustomer, action: string) => {
-    const actionMap: { [key: string]: () => Promise<void> } = {
-      delete: () => handleDelete(item),
-      makeAdmin: () => handleAdmin(item),
-      removeAdmin: () => handleAdmin(item),
-    };
+  const openConfirmModal = (
+    user: RestaurantCustomer,
+    action: "delete" | "makeAdmin" | "removeAdmin"
+  ) => {
+    setCurrentUser(user);
+    setCurrentAction(action);
+    setIsOpen(true);
+  };
 
-    const result = await MySwal.fire({
-      title: <p className="text-2xl">Are you sure?</p>,
-      text: `You are about to ${action
-        .replace(/([A-Z])/g, " $1")
-        .toLowerCase()}.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes!",
-      background: "#969292",
-      color: "#fff",
-      customClass: {
-        popup: "rounded-xl border-gray-600",
-        confirmButton: "bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg",
-        cancelButton: "bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg mr-3",
-      },
-    });
+  const closeModal = () => {
+    setIsOpen(false);
+    setCurrentUser(null);
+    setCurrentAction(null);
+  };
 
-    if (result.isConfirmed) {
-      await actionMap[action]();
+  const confirmAction = async () => {
+    if (!currentUser || !currentAction) return;
+
+    try {
+      if (currentAction === "delete") {
+        await handleDelete(currentUser);
+      } else if (currentAction === "makeAdmin" || currentAction === "removeAdmin") {
+        await handleAdmin(currentUser);
+      }
       router.refresh();
+    } catch (error) {
+      console.error("Action failed:", error);
+    } finally {
+      closeModal();
     }
+  };
+
+  const getActionText = () => {
+    if (!currentAction) return "";
+    switch (currentAction) {
+      case "delete":
+        return "You won't be able to revert this!";
+      case "makeAdmin":
+        return "This action is reversible.";
+      case "removeAdmin":
+        return "This action is reversible.";
+      default:
+        return "";
+    }
+  };
+
+  const getConfirmButtonClass = () => {
+    if (currentAction === "delete") return "bg-red-600 hover:bg-red-700";
+    if (currentAction === "makeAdmin") return "bg-green-600 hover:bg-green-700";
+    if (currentAction === "removeAdmin") return "bg-yellow-600 hover:bg-yellow-700";
+    return "bg-blue-600 hover:bg-blue-700";
   };
 
   return (
@@ -123,7 +148,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
                 <div className="flex gap-2">
                   {!user.isOwner && (
                     <button
-                      onClick={() => confirmAction(user, "delete")}
+                      onClick={() => openConfirmModal(user, "delete")}
                       className="button bg-red-600 text-white px-4 py-2 rounded font-semibold hover:bg-red-700"
                     >
                       Delete
@@ -133,8 +158,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
                     <button
                       onClick={async () => {
                         document.cookie = "admin=true;path=/; SameSite=Lax";
-                        await confirmAction(user, "makeAdmin");
-                        router.refresh();
+                        openConfirmModal(user, "makeAdmin");
                       }}
                       className="button bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700"
                     >
@@ -145,8 +169,7 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
                     <button
                       onClick={async () => {
                         document.cookie = "admin=false;path=/; SameSite=Lax";
-                        await confirmAction(user, "removeAdmin");
-                        router.refresh();
+                        openConfirmModal(user, "removeAdmin");
                       }}
                       className="button bg-yellow-600 text-white px-4 py-2 rounded font-semibold hover:bg-yellow-700"
                     >
@@ -167,6 +190,66 @@ const UsersPage = ({ users, restaurantId }: userProps) => {
         </div>
       </div>
       <Footer restaurant_id={restaurantId} />
+
+      {/* Confirmation Modal */}
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-50"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-50"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black" aria-hidden="true" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-[#172340] p-6 text-left align-middle shadow-xl transition-all border border-gray-600">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-white"
+                  >
+                    Are you sure?
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-300">{getActionText()}</p>
+                  </div>
+
+                  <div className="mt-4 flex justify-end gap-3">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600"
+                      onClick={closeModal}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className={`inline-flex justify-center rounded-md px-4 py-2 text-sm font-medium text-white ${getConfirmButtonClass()}`}
+                      onClick={confirmAction}
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 };
