@@ -2,10 +2,7 @@ import GoogleProvider from "next-auth/providers/google";
 import prisma from "./connect";
 import { getServerSession, NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { useRouter } from "next/router";
 import { cookies } from 'next/headers'
-import { connect } from "http2";
-import { Cart } from "@prisma/client";
 
 
 const authOptions: NextAuthOptions = {
