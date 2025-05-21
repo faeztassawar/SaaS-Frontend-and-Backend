@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { GoTrash } from "react-icons/go";
-import PizzaImg from "@/app/template2/images/pizza.png";
 import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -42,7 +41,7 @@ const CartItem = ({ id, name, price, cart, item, img }: CartItemProp) => {
       <div className="grow">
         <div className="font-bold">{name}</div>
       </div>
-      <div className="text-lg font-semibold">{price}</div>
+      <div className="text-lg font-semibold">${price}</div>
       <div className="ml-2">
         <button
           onClick={async () => await handleDelete(id)}

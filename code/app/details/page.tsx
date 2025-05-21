@@ -34,7 +34,10 @@ const Details = () => {
   useEffect(() => {
     if (templateParam) {
       setTemplateId(templateParam === "classic" ? "1" : "2");
-      sessionStorage.setItem("templateId", templateParam === "classic" ? "1" : "2");
+      sessionStorage.setItem(
+        "templateId",
+        templateParam === "classic" ? "1" : "2"
+      );
     } else {
       // Retrieve from session storage if lost after redirection
       const storedTemplate = sessionStorage.getItem("templateId");
@@ -106,6 +109,9 @@ const Details = () => {
         {templateParam === "classic" ? (
           <div className="flex flex-col items-center">
             <h1 className="text-5xl font-bold">Classic Restaurant Details</h1>
+            <h2 className="text-2xl font-bold py-9">
+              Only for $100 per Month Subscription
+            </h2>
             <div className="border px-10 py-10 border-[rgb(193,151,98)] rounded-3xl flex flex-col mt-12 w-full items-center shadow-[0_0_15px_5px] shadow-[rgb(193,151,98)]/50">
               <div>
                 <Image
@@ -119,13 +125,19 @@ const Details = () => {
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Clean and intuitive homepage layout with quick access to key
+                    sections
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>
+                    Navigation bar includes Menu, Categories, About Us, and Book
+                    a Table
+                  </li>
+                  <li>
+                    Visually appealing design to capture user interest
+                    immediately
+                  </li>
+                  <li>Call-to-action button for easy table booking</li>
+                  <li>Seamless navigation to enhance user experience</li>
                 </ul>
               </div>
             </div>
@@ -142,13 +154,18 @@ const Details = () => {
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Organized display of food categories with items listed under
+                    each
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>Categories make browsing seamless for customers</li>
+                  <li>
+                    Each item includes name, description, and price for clarity
+                  </li>
+                  <li>Consistent left-side navigation same as Home Page</li>
+                  <li>
+                    Visually appealing and responsive layout for better user
+                    interaction
+                  </li>
                 </ul>
               </div>
             </div>
@@ -164,14 +181,13 @@ const Details = () => {
               </div>
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
+                  <li>Interactive reservation form to easily book a table</li>
+                  <li>Users can select date, time, and number of guests</li>
+                  <li>Form validation to ensure accurate booking details</li>
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Simple and clean interface for hassle-free reservations
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>Instant feedback on booking submission status</li>
                 </ul>
               </div>
             </div>
@@ -188,13 +204,21 @@ const Details = () => {
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Centralized admin dashboard for managing the restaurant
+                    system
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>View, accept, or reject table reservation requests</li>
+                  <li>
+                    Sidebar navigation with links to various admin
+                    functionalities
+                  </li>
+                  <li>
+                    Dedicated pages for menu management, reservation control,
+                    and analytics
+                  </li>
+                  <li>
+                    Secure and structured layout for efficient admin operations
+                  </li>
                 </ul>
               </div>
             </div>
@@ -230,6 +254,9 @@ const Details = () => {
             <h1 className="text-5xl font-bold py-10">
               Fast Food Restaurant Details
             </h1>
+            <h2 className="text-2xl font-bold py-07">
+              Only for $100 per Month Subscription
+            </h2>
             <div className="border px-10 py-10 border-white rounded-3xl flex flex-col mt-12 w-full items-center shadow-[0_0_15px_5px] shadow-white/50">
               <div>
                 <Image
@@ -243,13 +270,15 @@ const Details = () => {
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Homepage with a top navigation bar including About Us,
+                    Order, and Admin Dashboard
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>Sleek design to direct users to key features quickly</li>
+                  <li>Visually engaging layout with easy navigation</li>
+                  <li>Clear entry points for customers and admins</li>
+                  <li>
+                    Responsive design ensuring smooth access across devices
+                  </li>
                 </ul>
               </div>
             </div>
@@ -266,13 +295,14 @@ const Details = () => {
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Displays a wide variety of menu items organized by category
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>Top navigation bar for consistent user experience</li>
+                  <li>
+                    Each item includes details like name, description, and price
+                  </li>
+
+                  <li>User-friendly layout for quick item discovery</li>
                 </ul>
               </div>
             </div>
@@ -289,13 +319,15 @@ const Details = () => {
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
                   <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
+                    Cart displays selected items with quantity and price
+                    breakdown
                   </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>Easy-to-edit cart for updating or removing items</li>
+                  <li>
+                    Checkout form collects customer details for order processing
+                  </li>
+                  <li>Real-time price calculation based on selected items</li>
+                  <li>Simple form submission for orders</li>
                 </ul>
               </div>
             </div>
@@ -311,14 +343,11 @@ const Details = () => {
               </div>
               <div>
                 <ul className="text-left text-lg sm:text-xl text-white/80 w-full mt-10 list-disc list-inside">
-                  <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Vero aut enim quos accusamus, voluptatibus, atque et{" "}
-                  </li>
-                  <li>Reservation system for easy table booking</li>
-                  <li>Comprehensive menu management system</li>
-                  <li>Admin dashboard for managing menus and reservations</li>
-                  <li>User-friendly interface for customer engagement</li>
+                  <li>Admin dashboard to view and manage incoming orders</li>
+                  <li>Accept or reject orders with a single click</li>
+                  <li>Navigation bar for quick access to other admin tools</li>
+                  <li>Real-time updates for efficient order processing</li>
+                  <li>Interface to streamline administrative tasks</li>
                 </ul>
               </div>
             </div>

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { CiEdit } from "react-icons/ci";
 import Link from "next/link";
+import Image from "next/image"
+import bgImage from "@/app/template1/images/Landing.png"
 
 interface Booking {
   id: string;
@@ -11,6 +13,9 @@ interface Booking {
   status: string;
 }
 
+type EditProfileProps={
+  restaurant_id: string
+}
 const fetchUserProfile = async (email: string) => {
   try {
     console.log("EMAIL", email);
@@ -36,7 +41,7 @@ const fetchUserProfile = async (email: string) => {
   }
 };
 
-const EditProfile = () => {
+const EditProfile = ({restaurant_id}: EditProfileProps) => {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -132,12 +137,19 @@ const EditProfile = () => {
 
   return (
     <div className="relative h-screen w-screen overflow-y-auto">
+      <Image
+              className="absolute top-0 left-0 object-cover brightness-50 h-full w-full"
+              src={bgImage || "/placeholder.svg"}
+              fill
+              alt="Background"
+              priority
+            />
       <div className="relative z-10 flex items-center justify-center h-screen w-screen">
         <div className="text-white bg-[#101010]/90 w-[90%] flex flex-col gap-5">
           <div className="flex items-center justify-between font-rose m-5 p-5 text-[#E8B97C]">
             <h1 className="text-6xl">Personal Information</h1>
             <h1 className="text-6xl">
-              <Link href="/template1">X</Link>
+              <Link href={`/restaurants/${restaurant_id}`}>X</Link>
             </h1>
           </div>
 
