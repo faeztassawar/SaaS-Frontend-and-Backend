@@ -52,6 +52,7 @@ const Details = () => {
       if (res.ok) {
         const { url } = await res.json();
         router.push(url); // Redirect to Stripe checkout
+        
       } else {
         console.error("Failed to create checkout session");
       }

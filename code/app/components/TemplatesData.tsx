@@ -9,26 +9,32 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Restaurant } from "@prisma/client";
+const TsCount = [0,0]
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-type Template = {
-  name: string;
-  customerCount: number;
-};
+
 
 const TemplatesData = () => {
-  const [templates, setTemplates] = useState<Template[]>([]);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
 
   
   useEffect(() => {
-    const fetchTemplates = async () => {
+    const fetchRestaurants = async () => {
       try {
-        const response = await fetch("/api/template");
+        const response = await fetch("/api/restaurants");
         const data = await response.json();
-        console.log("CHARTTTTTT")
+        console.log("RESTS HERE")
         if (response.ok) {
-          setTemplates(data);
+          setRestaurants(data);
+          restaurants.forEach((item)=>{
+            if(item.tempModel == "1"){
+              TsCount[0] = TsCount[0] + 1
+            }else{
+              TsCount[1] = TsCount[1] + 1
+            }
+          })
         } else {
           console.error("Error fetching templates:", data.message);
         }
@@ -37,15 +43,15 @@ const TemplatesData = () => {
       }
     };
 
-    fetchTemplates();
+    fetchRestaurants();
   }, []);
 
   const chartData = {
-    labels: templates.map((template) => template.name),
+    labels: restaurants.map((template) => template.name),
     datasets: [
       {
         label: "Number Of Users",
-        data: templates.map((template) => template.customerCount),
+        data: TsCount.map((template) => template),
         backgroundColor: ["#face8d", "#800000"],
         borderWidth: 1,
       },
@@ -70,22 +76,7 @@ const TemplatesData = () => {
     <div className="flex flex-col p-6">
       <div className="flex flex-col gap-3 w-full">
         <h1 className="text-4xl font-bold">Templates</h1>
-        <div className="flex flex-col w-full overflow-hidden">
-          <div className="flex justify-between bg-[#2f2f2f] text-lg font-semibold py-3 px-4 rounded-t-lg">
-            <div className="basis-1/2">Template Name</div>
-            <div className="basis-1/2">Number Of Users</div>
-          </div>
-
-          {templates.map((template, index) => (
-            <div
-              key={index}
-              className="flex justify-between bg-[#1f1f1f] py-4 px-4 transition-colors hover:bg-[#3f3f3f]"
-            >
-              <div className="basis-1/2 font-semibold">{template.name}</div>
-              <div className="basis-1/2 font-semibold">{template.customerCount}</div>
-            </div>
-          ))}
-        </div>
+         
 
         <div className="mt-8 p-6 bg-[#2f2f2f] rounded-lg h-80 w-full">
           <h2 className="text-2xl font-semibold mb-4">Template Popularity</h2>

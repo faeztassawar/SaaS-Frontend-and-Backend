@@ -138,7 +138,7 @@ model RestaurantOwner {
 
 model Template {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  model         String
+  model         String @unique
   name          String
   customerCount Int
 }

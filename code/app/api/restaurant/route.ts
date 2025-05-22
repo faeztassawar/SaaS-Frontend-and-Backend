@@ -1,5 +1,6 @@
 import { getAuthSession } from "@/lib/auth"
 import prisma from "@/lib/connect"
+import { initCustomTraceSubscriber } from "next/dist/build/swc"
 import { NextResponse } from "next/server"
 
 export const POST = async (req: Request) => {
@@ -42,6 +43,21 @@ export const POST = async (req: Request) => {
             }
         })
 
+// const temp = await prisma.template.findFirst({
+//     where:{
+//         model: body.tempModel as string,
+//     }
+// })
+// console.log("TEMPLATE MODEL: ",body.tempModel)
+// const t = await prisma.template.update({
+//     where:{
+//         id: temp.id
+//     },data:{
+//         customerCount:{
+//             increment: 1
+//         }
+//     }
+// })
         const ownerProfile = await prisma.restaurantCustomer.create({
             data: {
                 email: body.owner_email,
@@ -127,3 +143,17 @@ export const POST = async (req: Request) => {
         return new NextResponse(JSON.stringify({ message: "Something Went Wrong!" }), { status: 500 })
     }
 }
+
+
+export const GET = async () => {
+  try {
+    const restaurants = await prisma.restaurant.findMany();
+
+    return NextResponse.json(restaurants, { status: 200 });
+  } 
+  catch (error) 
+  {
+    console.error("Error fetching rests:", error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+};

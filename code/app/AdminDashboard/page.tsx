@@ -42,18 +42,10 @@ const page = () => {
               <TiUser />
               Users
             </div>
-            <div
-              onClick={() => setDetails(false)}
-              className={`border-b rounded-xl cursor-pointer ${
-                details === false ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
-              } border-gray-600 border-spacing-3 flex justify-center gap-3 items-center text-lg w-full text-center py-8`}
-            >
-              <IoRestaurantOutline />
-              Template Stats
-            </div>
+            
           </div>
           <div className="basis-3/4 bg-black rounded-2xl px-4 py-6 overflow-hidden">
-            {details === true ? <Clients /> : <TemplatesData />}
+            {details === true ? <Clients /> :<></>}
           </div>
         </div>
       </div>

@@ -25,8 +25,7 @@ const Clients = () => {
           console.log("CLIENTSSSS" , data )
           const formattedClients = data.map((owner: any) => ({
             Name: owner.name || "N/A",
-            Email: owner.email,
-            Template: owner.template ||"N/A", 
+            Email: owner.email, 
             RestaurantId: owner.restaurant_id || "N/A",
             LastPaymentDate: "N/A", 
             NextPaymentDate: "N/A", 
@@ -120,7 +119,6 @@ Combines them with the spread operator (...) to form a new array without the ite
           <div className="flex justify-between bg-[#2f2f2f] text-lg font-semibold py-3 px-4 rounded-t-lg">
             <div className="basis-1/5">Client Name</div>
             <div className="basis-2/5">Client Email</div>
-            <div className="basis-1/5">Template</div>
             <div className="basis-1/5">Restaurant ID</div>
           </div>
 
@@ -134,7 +132,6 @@ Combines them with the spread operator (...) to form a new array without the ite
                 <div className="basis-2/5 font-semibold truncate">
                   {client.Email}
                 </div>
-                <div className="basis-1/5 font-semibold">{client.Template}</div>
                 <div className="basis-1/5 font-semibold">
                   {client.RestaurantId}
                 </div>
