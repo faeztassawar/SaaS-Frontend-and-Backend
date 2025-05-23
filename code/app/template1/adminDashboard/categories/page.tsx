@@ -66,7 +66,9 @@ const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
 
       if (response.ok) {
         toast.success(
-          item.isArchive ? "Category reverted successfully!" : "Category archived successfully!"
+          item.isArchive
+            ? "Category reverted successfully!"
+            : "Category archived successfully!"
         );
         await fetchCategories();
       }
@@ -131,8 +133,12 @@ const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
                 </th>
               </tr>
               <tr className="flex justify-between p-4 border-b border-gray-600">
-                <th className="text-xl font-semibold w-[70%] text-left">Name</th>
-                <th className="text-xl font-semibold w-[30%] text-right">Action</th>
+                <th className="text-xl font-semibold w-[70%] text-left">
+                  Name
+                </th>
+                <th className="text-xl font-semibold w-[30%] text-right">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -142,12 +148,11 @@ const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
                     key={item.id}
                     className="flex justify-between p-4 hover:bg-[#283d6f] transition-colors"
                   >
-                    <td className="text-xl font-semibold w-[70%] truncate">{item.name}</td>
+                    <td className="text-xl font-semibold w-[70%] truncate">
+                      {item.name}
+                    </td>
                     <td className="text-xl font-semibold w-[30%] text-right">
                       <div className="flex gap-4 justify-end">
-                        <button className="px-4 py-2 hover:scale-110 transition-all bg-green-700 rounded">
-                          Edit
-                        </button>
                         <button
                           onClick={() => openDialog(item)}
                           className="px-4 py-2 hover:scale-110 bg-red-700 transition-all rounded"
@@ -171,8 +176,12 @@ const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
                 </th>
               </tr>
               <tr className="flex justify-between p-4 border-b border-gray-600">
-                <th className="text-xl font-semibold w-[70%] text-left">Name</th>
-                <th className="text-xl font-semibold w-[30%] text-right">Action</th>
+                <th className="text-xl font-semibold w-[70%] text-left">
+                  Name
+                </th>
+                <th className="text-xl font-semibold w-[30%] text-right">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -182,7 +191,9 @@ const CategoriesPage = ({ menuId, restaurantId }: CategoryProps) => {
                     key={item.id}
                     className="flex justify-between p-4 hover:bg-[#283d6f] transition-colors"
                   >
-                    <td className="text-xl font-semibold w-[70%] truncate">{item.name}</td>
+                    <td className="text-xl font-semibold w-[70%] truncate">
+                      {item.name}
+                    </td>
                     <td className="text-xl font-semibold w-[30%] text-right">
                       <div className="flex gap-4 justify-end">
                         <button
