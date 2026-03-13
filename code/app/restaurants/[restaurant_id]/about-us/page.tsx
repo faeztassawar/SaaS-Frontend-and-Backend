@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic"
 
 const getRest = async (restaurant_id: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const res = await fetch(`${apiUrl}/api/restaurant/${restaurant_id}`)
   if (!res.ok) {
     throw new Error("Failed to fetch restaurant data")

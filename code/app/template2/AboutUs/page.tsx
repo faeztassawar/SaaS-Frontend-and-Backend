@@ -20,7 +20,7 @@ const AboutUs: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
   useEffect(() => {
     const fetchAboutUs = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
         const response = await fetch(`${apiUrl}/api/about-us/${restaurant_id}`)
         if (!response.ok) {
           throw new Error("Failed to fetch about us content")
@@ -38,7 +38,7 @@ const AboutUs: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
 
   const handleSave = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
       const response = await fetch(`${apiUrl}/api/about-us/${restaurant_id}`, {
         method: "POST",
         headers: {
@@ -68,9 +68,9 @@ const AboutUs: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
         <div className="text-center mt-8 sm:mt-10 lg:my-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-[#333333] mb-4">Our Story</h2>
           <div className="text-[#333333] max-w-md sm:max-w-xl lg:max-w-4xl mx-auto px-4 lg:px-0 flex flex-col gap-6">
-                <div className="text-sm sm:text-base leading-relaxed">
-                  {aboutUsContent || "Welcome to our restaurant, where passion meets flavor. Our journey began..."}
-                </div>
+            <div className="text-sm sm:text-base leading-relaxed">
+              {aboutUsContent || "Welcome to our restaurant, where passion meets flavor. Our journey began..."}
+            </div>
           </div>
         </div>
 
@@ -87,7 +87,7 @@ const AboutUs: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
       </main>
 
       {/* Footer */}
-      <Footer restaurant_id={restaurant_id}/>
+      <Footer restaurant_id={restaurant_id} />
     </div>
   )
 }

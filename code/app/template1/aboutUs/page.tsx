@@ -23,7 +23,7 @@ const AboutUsPage: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
   useEffect(() => {
     const fetchAboutUs = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
         const response = await fetch(`${apiUrl}/api/about-us/${restaurant_id}`)
         if (!response.ok) {
           throw new Error("Failed to fetch about us content")
@@ -41,7 +41,7 @@ const AboutUsPage: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
 
   const handleSave = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
       const response = await fetch(`${apiUrl}/api/about-us/${restaurant_id}`, {
         method: "POST",
         headers: {
@@ -121,7 +121,7 @@ const AboutUsPage: React.FC<AboutUsPageProps> = ({ restaurant_id, name }) => {
         </div>
         <NavBar rest_id={restaurant_id} />
       </div>
-      <Footer restaurant_id={restaurant_id}/>
+      <Footer restaurant_id={restaurant_id} />
       <style jsx>{`
         @keyframes fadeIn {
           0% {
